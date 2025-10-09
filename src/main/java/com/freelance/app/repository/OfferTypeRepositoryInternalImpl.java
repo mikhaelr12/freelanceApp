@@ -5,6 +5,8 @@ import com.freelance.app.domain.criteria.OfferTypeCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.OfferTypeRowMapper;
 import com.freelance.app.repository.rowmapper.SubcategoryRowMapper;
+import com.freelance.app.repository.sqlhelper.OfferTypeSqlHelper;
+import com.freelance.app.repository.sqlhelper.SubcategorySqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -70,15 +72,18 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
     RowsFetchSpec<OfferType> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = OfferTypeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(SubcategorySqlHelper.getColumns(subcategoryTable, "subcategory"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(subcategoryTable)
             .on(Column.create("subcategory_id", entityTable))
             .equals(Column.create("id", subcategoryTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, OfferType.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -125,9 +130,13 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
 
     @Override
     public Mono<Long> countByCriteria(OfferTypeCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(OfferTypeCriteria criteria) {

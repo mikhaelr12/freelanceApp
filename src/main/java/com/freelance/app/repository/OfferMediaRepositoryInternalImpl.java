@@ -6,6 +6,9 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.FileObjectRowMapper;
 import com.freelance.app.repository.rowmapper.OfferMediaRowMapper;
 import com.freelance.app.repository.rowmapper.OfferRowMapper;
+import com.freelance.app.repository.sqlhelper.FileObjectSqlHelper;
+import com.freelance.app.repository.sqlhelper.OfferMediaSqlHelper;
+import com.freelance.app.repository.sqlhelper.OfferSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -76,6 +79,10 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
         List<Expression> columns = OfferMediaSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(OfferSqlHelper.getColumns(offerTable, "offer"));
         columns.addAll(FileObjectSqlHelper.getColumns(fileTable, "file"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -85,9 +92,8 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
             .leftOuterJoin(fileTable)
             .on(Column.create("file_id", entityTable))
             .equals(Column.create("id", fileTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, OfferMedia.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -135,9 +141,13 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
 
     @Override
     public Mono<Long> countByCriteria(OfferMediaCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(OfferMediaCriteria criteria) {

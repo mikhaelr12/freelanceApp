@@ -1,4 +1,4 @@
-package com.freelance.app.repository;
+package com.freelance.app.repository.sqlhelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,9 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ConversationRowMapper;
 import com.freelance.app.repository.rowmapper.MessageRowMapper;
 import com.freelance.app.repository.rowmapper.UserRowMapper;
+import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
+import com.freelance.app.repository.sqlhelper.MessageSqlHelper;
+import com.freelance.app.repository.sqlhelper.UserSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -76,6 +79,10 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
         List<Expression> columns = MessageSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(ConversationSqlHelper.getColumns(conversationTable, "conversation"));
         columns.addAll(UserSqlHelper.getColumns(senderTable, "sender"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -85,9 +92,8 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
             .leftOuterJoin(senderTable)
             .on(Column.create("sender_id", entityTable))
             .equals(Column.create("id", senderTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Message.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -135,9 +141,13 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
 
     @Override
     public Mono<Long> countByCriteria(MessageCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(MessageCriteria criteria) {

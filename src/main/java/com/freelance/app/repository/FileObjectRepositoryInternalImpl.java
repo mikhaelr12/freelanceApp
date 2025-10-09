@@ -4,10 +4,12 @@ import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.criteria.FileObjectCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.FileObjectRowMapper;
+import com.freelance.app.repository.sqlhelper.FileObjectSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.crypto.Data;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
@@ -64,10 +66,13 @@ class FileObjectRepositoryInternalImpl extends SimpleR2dbcRepository<FileObject,
 
     RowsFetchSpec<FileObject> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = FileObjectSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, FileObject.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -98,9 +103,13 @@ class FileObjectRepositoryInternalImpl extends SimpleR2dbcRepository<FileObject,
 
     @Override
     public Mono<Long> countByCriteria(FileObjectCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(FileObjectCriteria criteria) {

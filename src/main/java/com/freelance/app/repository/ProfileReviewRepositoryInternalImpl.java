@@ -5,6 +5,8 @@ import com.freelance.app.domain.criteria.ProfileReviewCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ProfileReviewRowMapper;
 import com.freelance.app.repository.rowmapper.ProfileRowMapper;
+import com.freelance.app.repository.sqlhelper.ProfileReviewSqlHelper;
+import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -72,6 +74,10 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
         List<Expression> columns = ProfileReviewSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(ProfileSqlHelper.getColumns(reviewerTable, "reviewer"));
         columns.addAll(ProfileSqlHelper.getColumns(revieweeTable, "reviewee"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -81,9 +87,8 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
             .leftOuterJoin(revieweeTable)
             .on(Column.create("reviewee_id", entityTable))
             .equals(Column.create("id", revieweeTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, ProfileReview.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -116,9 +121,13 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
 
     @Override
     public Mono<Long> countByCriteria(ProfileReviewCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(ProfileReviewCriteria criteria) {

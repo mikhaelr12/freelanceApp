@@ -4,6 +4,7 @@ import com.freelance.app.domain.Tag;
 import com.freelance.app.domain.criteria.TagCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.TagRowMapper;
+import com.freelance.app.repository.sqlhelper.TagSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -64,10 +65,13 @@ class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> impleme
 
     RowsFetchSpec<Tag> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = TagSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Tag.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -98,9 +102,13 @@ class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> impleme
 
     @Override
     public Mono<Long> countByCriteria(TagCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(TagCriteria criteria) {

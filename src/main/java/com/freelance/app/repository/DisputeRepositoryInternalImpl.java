@@ -5,6 +5,8 @@ import com.freelance.app.domain.criteria.DisputeCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.DisputeRowMapper;
 import com.freelance.app.repository.rowmapper.OrderRowMapper;
+import com.freelance.app.repository.sqlhelper.DisputeSqlHelper;
+import com.freelance.app.repository.sqlhelper.OrderSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -70,15 +72,18 @@ class DisputeRepositoryInternalImpl extends SimpleR2dbcRepository<Dispute, Long>
     RowsFetchSpec<Dispute> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = DisputeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(OrderSqlHelper.getColumns(orderTable, "order"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
+    }
+
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(orderTable)
             .on(Column.create("order_id", entityTable))
             .equals(Column.create("id", orderTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Dispute.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return db.sql(select);
     }
 
     @Override
@@ -110,9 +115,13 @@ class DisputeRepositoryInternalImpl extends SimpleR2dbcRepository<Dispute, Long>
 
     @Override
     public Mono<Long> countByCriteria(DisputeCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
+        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
+            row.get(0, Long.class)
+        );
     }
 
     private Condition buildConditions(DisputeCriteria criteria) {
