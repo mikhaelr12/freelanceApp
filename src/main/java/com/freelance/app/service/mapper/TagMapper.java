@@ -6,7 +6,10 @@ import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.TagDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 /**
  * Mapper for the entity {@link Tag} and its DTO {@link TagDTO}.

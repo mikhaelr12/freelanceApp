@@ -10,7 +10,10 @@ import com.freelance.app.service.dto.SkillDTO;
 import com.freelance.app.service.dto.UserDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 /**
  * Mapper for the entity {@link Profile} and its DTO {@link ProfileDTO}.

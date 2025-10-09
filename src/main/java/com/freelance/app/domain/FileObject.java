@@ -1,6 +1,8 @@
 package com.freelance.app.domain;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
@@ -12,8 +14,9 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("file_object")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class FileObject implements Serializable {
+public class FileObject extends AbstractAuditingEntity<Long> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -43,21 +46,6 @@ public class FileObject implements Serializable {
 
     @Column("duration_seconds")
     private Integer durationSeconds;
-
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -152,21 +140,9 @@ public class FileObject implements Serializable {
         this.durationSeconds = durationSeconds;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public FileObject createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public FileObject lastModifiedDate(Instant lastModifiedDate) {
@@ -174,34 +150,14 @@ public class FileObject implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public FileObject createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return this.lastModifiedBy;
-    }
-
     public FileObject lastModifiedBy(String lastModifiedBy) {
         this.setLastModifiedBy(lastModifiedBy);
         return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

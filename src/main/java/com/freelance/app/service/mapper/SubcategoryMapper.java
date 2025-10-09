@@ -4,7 +4,10 @@ import com.freelance.app.domain.Category;
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.service.dto.CategoryDTO;
 import com.freelance.app.service.dto.SubcategoryDTO;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 /**
  * Mapper for the entity {@link Subcategory} and its DTO {@link SubcategoryDTO}.

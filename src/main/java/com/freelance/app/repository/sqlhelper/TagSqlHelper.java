@@ -1,4 +1,4 @@
-package com.freelance.app.repository;
+package com.freelance.app.repository.sqlhelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.sql.Column;
 import org.springframework.data.relational.core.sql.Expression;
 import org.springframework.data.relational.core.sql.Table;
 
-public class SkillSqlHelper {
+public class TagSqlHelper {
 
     public static List<Expression> getColumns(Table table, String columnPrefix) {
         List<Expression> columns = new ArrayList<>();
@@ -16,9 +16,7 @@ public class SkillSqlHelper {
         columns.add(Column.aliased("last_modified_date", table, columnPrefix + "_last_modified_date"));
         columns.add(Column.aliased("created_by", table, columnPrefix + "_created_by"));
         columns.add(Column.aliased("last_modified_by", table, columnPrefix + "_last_modified_by"));
-        columns.add(Column.aliased("active", table, columnPrefix + "_active"));
 
-        columns.add(Column.aliased("category_id", table, columnPrefix + "_category_id"));
         return columns;
     }
 }

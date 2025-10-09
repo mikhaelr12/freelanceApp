@@ -56,23 +56,24 @@ public class TagResource {
      *
      * @param tagDTO the tagDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tagDTO, or with status {@code 400 (Bad Request)} if the tag has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<TagDTO>> createTag(@Valid @RequestBody TagDTO tagDTO) throws URISyntaxException {
+    public Mono<ResponseEntity<TagDTO>> createTag(@Valid @RequestBody TagDTO tagDTO) {
         LOG.debug("REST request to save Tag : {}", tagDTO);
         if (tagDTO.getId() != null) {
-            throw new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return tagService
             .save(tagDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/tags/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/tags/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -85,19 +86,18 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tagDTO,
      * or with status {@code 400 (Bad Request)} if the tagDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the tagDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<TagDTO>> updateTag(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody TagDTO tagDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Tag : {}, {}", id, tagDTO);
         if (tagDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, tagDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return tagRepository
@@ -127,19 +127,18 @@ public class TagResource {
      * or with status {@code 400 (Bad Request)} if the tagDTO is not valid,
      * or with status {@code 404 (Not Found)} if the tagDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the tagDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<TagDTO>> partialUpdateTag(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody TagDTO tagDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Tag partially : {}, {}", id, tagDTO);
         if (tagDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, tagDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return tagRepository

@@ -56,23 +56,24 @@ public class SkillResource {
      *
      * @param skillDTO the skillDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new skillDTO, or with status {@code 400 (Bad Request)} if the skill has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<SkillDTO>> createSkill(@Valid @RequestBody SkillDTO skillDTO) throws URISyntaxException {
+    public Mono<ResponseEntity<SkillDTO>> createSkill(@Valid @RequestBody SkillDTO skillDTO) {
         LOG.debug("REST request to save Skill : {}", skillDTO);
         if (skillDTO.getId() != null) {
-            throw new BadRequestAlertException("A new skill cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new skill cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return skillService
             .save(skillDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/skills/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/skills/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -85,19 +86,18 @@ public class SkillResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated skillDTO,
      * or with status {@code 400 (Bad Request)} if the skillDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the skillDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<SkillDTO>> updateSkill(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody SkillDTO skillDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Skill : {}, {}", id, skillDTO);
         if (skillDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, skillDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return skillRepository
@@ -127,19 +127,18 @@ public class SkillResource {
      * or with status {@code 400 (Bad Request)} if the skillDTO is not valid,
      * or with status {@code 404 (Not Found)} if the skillDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the skillDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<SkillDTO>> partialUpdateSkill(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody SkillDTO skillDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Skill partially : {}, {}", id, skillDTO);
         if (skillDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, skillDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return skillRepository

@@ -81,7 +81,7 @@ public class ConversationService {
     @Transactional(readOnly = true)
     public Flux<ConversationDTO> findByCriteria(ConversationCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Conversations by Criteria");
-        return conversationRepository.findByCriteria(criteria, pageable).map(conversationMapper::toDto);
+        return conversationRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -112,7 +112,7 @@ public class ConversationService {
     @Transactional(readOnly = true)
     public Mono<ConversationDTO> findOne(Long id) {
         LOG.debug("Request to get Conversation : {}", id);
-        return conversationRepository.findById(id).map(conversationMapper::toDto);
+        return conversationRepository.findDTOById(id);
     }
 
     /**

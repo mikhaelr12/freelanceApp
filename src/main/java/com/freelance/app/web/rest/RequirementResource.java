@@ -56,24 +56,24 @@ public class RequirementResource {
      *
      * @param requirementDTO the requirementDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new requirementDTO, or with status {@code 400 (Bad Request)} if the requirement has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<RequirementDTO>> createRequirement(@Valid @RequestBody RequirementDTO requirementDTO)
-        throws URISyntaxException {
+    public Mono<ResponseEntity<RequirementDTO>> createRequirement(@Valid @RequestBody RequirementDTO requirementDTO) {
         LOG.debug("REST request to save Requirement : {}", requirementDTO);
         if (requirementDTO.getId() != null) {
-            throw new BadRequestAlertException("A new requirement cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new requirement cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return requirementService
             .save(requirementDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/requirements/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/requirements/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -86,19 +86,18 @@ public class RequirementResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirementDTO,
      * or with status {@code 400 (Bad Request)} if the requirementDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the requirementDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<RequirementDTO>> updateRequirement(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody RequirementDTO requirementDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Requirement : {}, {}", id, requirementDTO);
         if (requirementDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, requirementDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return requirementRepository
@@ -134,13 +133,13 @@ public class RequirementResource {
     public Mono<ResponseEntity<RequirementDTO>> partialUpdateRequirement(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody RequirementDTO requirementDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Requirement partially : {}, {}", id, requirementDTO);
         if (requirementDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, requirementDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return requirementRepository

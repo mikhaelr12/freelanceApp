@@ -81,7 +81,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public Flux<CategoryDTO> findByCriteria(CategoryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Categories by Criteria");
-        return categoryRepository.findByCriteria(criteria, pageable).map(categoryMapper::toDto);
+        return categoryRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -112,7 +112,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public Mono<CategoryDTO> findOne(Long id) {
         LOG.debug("Request to get Category : {}", id);
-        return categoryRepository.findById(id).map(categoryMapper::toDto);
+        return categoryRepository.findDTOById(id);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Conversation;
+import com.freelance.app.service.dto.ConversationDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -25,6 +26,14 @@ public class ConversationRowMapper implements BiFunction<Row, String, Conversati
     @Override
     public Conversation apply(Row row, String prefix) {
         Conversation entity = new Conversation();
+        entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
+        entity.setCreatedAt(converter.fromRow(row, prefix + "_created_at", Instant.class));
+        entity.setOrderId(converter.fromRow(row, prefix + "_order_id", Long.class));
+        return entity;
+    }
+
+    public ConversationDTO applyDto(Row row, String prefix) {
+        ConversationDTO entity = new ConversationDTO();
         entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
         entity.setCreatedAt(converter.fromRow(row, prefix + "_created_at", Instant.class));
         entity.setOrderId(converter.fromRow(row, prefix + "_order_id", Long.class));

@@ -16,7 +16,6 @@ import com.freelance.app.repository.ConversationRepository;
 import com.freelance.app.repository.EntityManager;
 import com.freelance.app.repository.MessageRepository;
 import com.freelance.app.repository.UserRepository;
-import com.freelance.app.repository.UserRepository;
 import com.freelance.app.service.MessageService;
 import com.freelance.app.service.dto.MessageDTO;
 import com.freelance.app.service.mapper.MessageMapper;

@@ -56,23 +56,24 @@ public class FileObjectResource {
      *
      * @param fileObjectDTO the fileObjectDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fileObjectDTO, or with status {@code 400 (Bad Request)} if the fileObject has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<FileObjectDTO>> createFileObject(@Valid @RequestBody FileObjectDTO fileObjectDTO) throws URISyntaxException {
+    public Mono<ResponseEntity<FileObjectDTO>> createFileObject(@Valid @RequestBody FileObjectDTO fileObjectDTO) {
         LOG.debug("REST request to save FileObject : {}", fileObjectDTO);
         if (fileObjectDTO.getId() != null) {
-            throw new BadRequestAlertException("A new fileObject cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new fileObject cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return fileObjectService
             .save(fileObjectDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/file-objects/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/file-objects/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -85,19 +86,18 @@ public class FileObjectResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fileObjectDTO,
      * or with status {@code 400 (Bad Request)} if the fileObjectDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the fileObjectDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<FileObjectDTO>> updateFileObject(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody FileObjectDTO fileObjectDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update FileObject : {}, {}", id, fileObjectDTO);
         if (fileObjectDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, fileObjectDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return fileObjectRepository
@@ -127,19 +127,18 @@ public class FileObjectResource {
      * or with status {@code 400 (Bad Request)} if the fileObjectDTO is not valid,
      * or with status {@code 404 (Not Found)} if the fileObjectDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the fileObjectDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<FileObjectDTO>> partialUpdateFileObject(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody FileObjectDTO fileObjectDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update FileObject partially : {}, {}", id, fileObjectDTO);
         if (fileObjectDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, fileObjectDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return fileObjectRepository

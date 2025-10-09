@@ -6,7 +6,9 @@ import com.freelance.app.service.MailService;
 import com.freelance.app.service.UserService;
 import com.freelance.app.service.dto.AdminUserDTO;
 import com.freelance.app.service.dto.PasswordChangeDTO;
-import com.freelance.app.web.rest.errors.*;
+import com.freelance.app.web.rest.errors.EmailAlreadyUsedException;
+import com.freelance.app.web.rest.errors.InvalidPasswordException;
+import com.freelance.app.web.rest.errors.LoginAlreadyUsedException;
 import com.freelance.app.web.rest.vm.KeyAndPasswordVM;
 import com.freelance.app.web.rest.vm.ManagedUserVM;
 import jakarta.validation.Valid;
@@ -58,7 +60,7 @@ public class AccountResource {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Void> registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
-            throw new InvalidPasswordException();
+            return Mono.error(new InvalidPasswordException());
         }
         return userService.registerUser(managedUserVM, managedUserVM.getPassword()).doOnSuccess(mailService::sendActivationEmail).then();
     }
@@ -109,7 +111,7 @@ public class AccountResource {
                     .hasElement()
                     .flatMap(emailExists -> {
                         if (emailExists) {
-                            throw new EmailAlreadyUsedException();
+                            return Mono.error(new EmailAlreadyUsedException());
                         }
                         return userRepository.findOneByLogin(userLogin);
                     })
@@ -135,7 +137,7 @@ public class AccountResource {
     @PostMapping(path = "/account/change-password")
     public Mono<Void> changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
         if (isPasswordLengthInvalid(passwordChangeDto.getNewPassword())) {
-            throw new InvalidPasswordException();
+            return Mono.error(new InvalidPasswordException());
         }
         return userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
     }
@@ -171,7 +173,7 @@ public class AccountResource {
     @PostMapping(path = "/account/reset-password/finish")
     public Mono<Void> finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
         if (isPasswordLengthInvalid(keyAndPassword.getNewPassword())) {
-            throw new InvalidPasswordException();
+            return Mono.error(new InvalidPasswordException());
         }
         return userService
             .completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey())

@@ -1,6 +1,6 @@
 package com.freelance.app.service.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class ConversationDTO implements Serializable {
     @NotNull(message = "must not be null")
     private Instant createdAt;
 
-    private OrderDTO order;
+    private Long orderId;
 
     public Long getId() {
         return id;
@@ -34,12 +34,12 @@ public class ConversationDTO implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public OrderDTO getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(OrderDTO order) {
-        this.order = order;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ConversationDTO implements Serializable {
         return "ConversationDTO{" +
             "id=" + getId() +
             ", createdAt='" + getCreatedAt() + "'" +
-            ", order=" + getOrder() +
+            ", orderID=" + getOrderId() +
             "}";
     }
 }
