@@ -1,0 +1,428 @@
+package com.freelance.app.domain.criteria;
+
+import com.freelance.app.domain.enumeration.PackageTier;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.Optional;
+import org.springdoc.core.annotations.ParameterObject;
+import tech.jhipster.service.Criteria;
+import tech.jhipster.service.filter.*;
+
+/**
+ * Criteria class for the {@link com.freelance.app.domain.OfferPackage} entity. This class is used
+ * in {@link com.freelance.app.web.rest.OfferPackageResource} to receive all the possible filtering options from
+ * the Http GET request parameters.
+ * For example the following could be a valid request:
+ * {@code /offer-packages?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
+ * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
+ * fix type specific filters.
+ */
+@ParameterObject
+@SuppressWarnings("common-java:DuplicatedBlocks")
+public class OfferPackageCriteria implements Serializable, Criteria {
+
+    /**
+     * Class for filtering PackageTier
+     */
+    public static class PackageTierFilter extends Filter<PackageTier> {
+
+        public PackageTierFilter() {}
+
+        public PackageTierFilter(PackageTierFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public PackageTierFilter copy() {
+            return new PackageTierFilter(this);
+        }
+    }
+
+    private static final long serialVersionUID = 1L;
+
+    private LongFilter id;
+
+    private StringFilter name;
+
+    private StringFilter description;
+
+    private BigDecimalFilter price;
+
+    private StringFilter currency;
+
+    private IntegerFilter deliveryDays;
+
+    private PackageTierFilter packageTier;
+
+    private BooleanFilter active;
+
+    private InstantFilter createdDate;
+
+    private InstantFilter lastModifiedDate;
+
+    private StringFilter createdBy;
+
+    private StringFilter lastModifiedBy;
+
+    private LongFilter offerId;
+
+    private Boolean distinct;
+
+    public OfferPackageCriteria() {}
+
+    public OfferPackageCriteria(OfferPackageCriteria other) {
+        this.id = other.optionalId().map(LongFilter::copy).orElse(null);
+        this.name = other.optionalName().map(StringFilter::copy).orElse(null);
+        this.description = other.optionalDescription().map(StringFilter::copy).orElse(null);
+        this.price = other.optionalPrice().map(BigDecimalFilter::copy).orElse(null);
+        this.currency = other.optionalCurrency().map(StringFilter::copy).orElse(null);
+        this.deliveryDays = other.optionalDeliveryDays().map(IntegerFilter::copy).orElse(null);
+        this.packageTier = other.optionalPackageTier().map(PackageTierFilter::copy).orElse(null);
+        this.active = other.optionalActive().map(BooleanFilter::copy).orElse(null);
+        this.createdDate = other.optionalCreatedDate().map(InstantFilter::copy).orElse(null);
+        this.lastModifiedDate = other.optionalLastModifiedDate().map(InstantFilter::copy).orElse(null);
+        this.createdBy = other.optionalCreatedBy().map(StringFilter::copy).orElse(null);
+        this.lastModifiedBy = other.optionalLastModifiedBy().map(StringFilter::copy).orElse(null);
+        this.offerId = other.optionalOfferId().map(LongFilter::copy).orElse(null);
+        this.distinct = other.distinct;
+    }
+
+    @Override
+    public OfferPackageCriteria copy() {
+        return new OfferPackageCriteria(this);
+    }
+
+    public LongFilter getId() {
+        return id;
+    }
+
+    public Optional<LongFilter> optionalId() {
+        return Optional.ofNullable(id);
+    }
+
+    public LongFilter id() {
+        if (id == null) {
+            setId(new LongFilter());
+        }
+        return id;
+    }
+
+    public void setId(LongFilter id) {
+        this.id = id;
+    }
+
+    public StringFilter getName() {
+        return name;
+    }
+
+    public Optional<StringFilter> optionalName() {
+        return Optional.ofNullable(name);
+    }
+
+    public StringFilter name() {
+        if (name == null) {
+            setName(new StringFilter());
+        }
+        return name;
+    }
+
+    public void setName(StringFilter name) {
+        this.name = name;
+    }
+
+    public StringFilter getDescription() {
+        return description;
+    }
+
+    public Optional<StringFilter> optionalDescription() {
+        return Optional.ofNullable(description);
+    }
+
+    public StringFilter description() {
+        if (description == null) {
+            setDescription(new StringFilter());
+        }
+        return description;
+    }
+
+    public void setDescription(StringFilter description) {
+        this.description = description;
+    }
+
+    public BigDecimalFilter getPrice() {
+        return price;
+    }
+
+    public Optional<BigDecimalFilter> optionalPrice() {
+        return Optional.ofNullable(price);
+    }
+
+    public BigDecimalFilter price() {
+        if (price == null) {
+            setPrice(new BigDecimalFilter());
+        }
+        return price;
+    }
+
+    public void setPrice(BigDecimalFilter price) {
+        this.price = price;
+    }
+
+    public StringFilter getCurrency() {
+        return currency;
+    }
+
+    public Optional<StringFilter> optionalCurrency() {
+        return Optional.ofNullable(currency);
+    }
+
+    public StringFilter currency() {
+        if (currency == null) {
+            setCurrency(new StringFilter());
+        }
+        return currency;
+    }
+
+    public void setCurrency(StringFilter currency) {
+        this.currency = currency;
+    }
+
+    public IntegerFilter getDeliveryDays() {
+        return deliveryDays;
+    }
+
+    public Optional<IntegerFilter> optionalDeliveryDays() {
+        return Optional.ofNullable(deliveryDays);
+    }
+
+    public IntegerFilter deliveryDays() {
+        if (deliveryDays == null) {
+            setDeliveryDays(new IntegerFilter());
+        }
+        return deliveryDays;
+    }
+
+    public void setDeliveryDays(IntegerFilter deliveryDays) {
+        this.deliveryDays = deliveryDays;
+    }
+
+    public PackageTierFilter getPackageTier() {
+        return packageTier;
+    }
+
+    public Optional<PackageTierFilter> optionalPackageTier() {
+        return Optional.ofNullable(packageTier);
+    }
+
+    public PackageTierFilter packageTier() {
+        if (packageTier == null) {
+            setPackageTier(new PackageTierFilter());
+        }
+        return packageTier;
+    }
+
+    public void setPackageTier(PackageTierFilter packageTier) {
+        this.packageTier = packageTier;
+    }
+
+    public BooleanFilter getActive() {
+        return active;
+    }
+
+    public Optional<BooleanFilter> optionalActive() {
+        return Optional.ofNullable(active);
+    }
+
+    public BooleanFilter active() {
+        if (active == null) {
+            setActive(new BooleanFilter());
+        }
+        return active;
+    }
+
+    public void setActive(BooleanFilter active) {
+        this.active = active;
+    }
+
+    public InstantFilter getCreatedDate() {
+        return createdDate;
+    }
+
+    public Optional<InstantFilter> optionalCreatedDate() {
+        return Optional.ofNullable(createdDate);
+    }
+
+    public InstantFilter createdDate() {
+        if (createdDate == null) {
+            setCreatedDate(new InstantFilter());
+        }
+        return createdDate;
+    }
+
+    public void setCreatedDate(InstantFilter createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public InstantFilter getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public Optional<InstantFilter> optionalLastModifiedDate() {
+        return Optional.ofNullable(lastModifiedDate);
+    }
+
+    public InstantFilter lastModifiedDate() {
+        if (lastModifiedDate == null) {
+            setLastModifiedDate(new InstantFilter());
+        }
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(InstantFilter lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public StringFilter getCreatedBy() {
+        return createdBy;
+    }
+
+    public Optional<StringFilter> optionalCreatedBy() {
+        return Optional.ofNullable(createdBy);
+    }
+
+    public StringFilter createdBy() {
+        if (createdBy == null) {
+            setCreatedBy(new StringFilter());
+        }
+        return createdBy;
+    }
+
+    public void setCreatedBy(StringFilter createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public StringFilter getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public Optional<StringFilter> optionalLastModifiedBy() {
+        return Optional.ofNullable(lastModifiedBy);
+    }
+
+    public StringFilter lastModifiedBy() {
+        if (lastModifiedBy == null) {
+            setLastModifiedBy(new StringFilter());
+        }
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(StringFilter lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public LongFilter getOfferId() {
+        return offerId;
+    }
+
+    public Optional<LongFilter> optionalOfferId() {
+        return Optional.ofNullable(offerId);
+    }
+
+    public LongFilter offerId() {
+        if (offerId == null) {
+            setOfferId(new LongFilter());
+        }
+        return offerId;
+    }
+
+    public void setOfferId(LongFilter offerId) {
+        this.offerId = offerId;
+    }
+
+    public Boolean getDistinct() {
+        return distinct;
+    }
+
+    public Optional<Boolean> optionalDistinct() {
+        return Optional.ofNullable(distinct);
+    }
+
+    public Boolean distinct() {
+        if (distinct == null) {
+            setDistinct(true);
+        }
+        return distinct;
+    }
+
+    public void setDistinct(Boolean distinct) {
+        this.distinct = distinct;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final OfferPackageCriteria that = (OfferPackageCriteria) o;
+        return (
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(price, that.price) &&
+            Objects.equals(currency, that.currency) &&
+            Objects.equals(deliveryDays, that.deliveryDays) &&
+            Objects.equals(packageTier, that.packageTier) &&
+            Objects.equals(active, that.active) &&
+            Objects.equals(createdDate, that.createdDate) &&
+            Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
+            Objects.equals(createdBy, that.createdBy) &&
+            Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
+            Objects.equals(offerId, that.offerId) &&
+            Objects.equals(distinct, that.distinct)
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            id,
+            name,
+            description,
+            price,
+            currency,
+            deliveryDays,
+            packageTier,
+            active,
+            createdDate,
+            lastModifiedDate,
+            createdBy,
+            lastModifiedBy,
+            offerId,
+            distinct
+        );
+    }
+
+    // prettier-ignore
+    @Override
+    public String toString() {
+        return "OfferPackageCriteria{" +
+            optionalId().map(f -> "id=" + f + ", ").orElse("") +
+            optionalName().map(f -> "name=" + f + ", ").orElse("") +
+            optionalDescription().map(f -> "description=" + f + ", ").orElse("") +
+            optionalPrice().map(f -> "price=" + f + ", ").orElse("") +
+            optionalCurrency().map(f -> "currency=" + f + ", ").orElse("") +
+            optionalDeliveryDays().map(f -> "deliveryDays=" + f + ", ").orElse("") +
+            optionalPackageTier().map(f -> "packageTier=" + f + ", ").orElse("") +
+            optionalActive().map(f -> "active=" + f + ", ").orElse("") +
+            optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
+            optionalLastModifiedDate().map(f -> "lastModifiedDate=" + f + ", ").orElse("") +
+            optionalCreatedBy().map(f -> "createdBy=" + f + ", ").orElse("") +
+            optionalLastModifiedBy().map(f -> "lastModifiedBy=" + f + ", ").orElse("") +
+            optionalOfferId().map(f -> "offerId=" + f + ", ").orElse("") +
+            optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
+        "}";
+    }
+}

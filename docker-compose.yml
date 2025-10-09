@@ -1,0 +1,19 @@
+services:
+  postgresql:
+    image: postgres:17.2
+    restart: always
+    mem_reservation: 4096m
+    mem_limit: 4096m
+    volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d
+      - ~/volumes/mgerp/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 127.0.0.1:5432:5432
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '10'

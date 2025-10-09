@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity Profile.
+    -->
+    <changeSet id="20251009121203-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="profile"
+                                 constraintName="fk_profile__user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="profile_picture_id"
+                                 baseTableName="profile"
+                                 constraintName="fk_profile__profile_picture_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="file_object"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="profile_id"
+                                 baseTableName="rel_profile__skill"
+                                 constraintName="fk_rel_profile__skill__profile_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="profile"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="skill_id"
+                                 baseTableName="rel_profile__skill"
+                                 constraintName="fk_rel_profile__skill__skill_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="skill"
+                                 />
+    </changeSet>
+</databaseChangeLog>
