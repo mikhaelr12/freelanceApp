@@ -1,0 +1,32 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "freelanceApp",
+    "buildTool": "maven",
+    "cacheProvider": null,
+    "clientFramework": "react",
+    "clientTestFrameworks": [],
+    "clientTheme": "none",
+    "creationTimestamp": 1760006450171,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableHibernateCache": null,
+    "enableTranslation": false,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "8.11.0",
+    "jwtSecretKey": "Nzg3MjY3YmI4OGIyN2FkZDhmMWIwM2Y5NDY4YmZjOWNlNzc4MmQ0NWU4MTQxMmY1ZDQ5YzYxZTYyNzhjNjQwODk3NDEyMmYxMmQyYWIyODRjMDM5YmVhZDg1N2Q0ZjNhYTVlOTY4NjE1NDFiNTZjZWFmMWE0NjFiZGI2MDg0Mzg=",
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "en",
+    "packageName": "com.freelance.app",
+    "prodDatabaseType": "postgresql",
+    "reactive": true,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": true
+  }
+}
