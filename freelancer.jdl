@@ -1,0 +1,243 @@
+// ENUMS
+enum OfferStatus {
+  ACTIVE("Active"), PAUSED("Paused"), DENIED("Denied"), CANCELED("Canceled")
+}
+
+enum PackageTier {
+  BASIC("Basic"), PREMIUM("Premium"), STANDARD("Standard")
+}
+
+enum MediaKind {
+  IMAGE("Image"), VIDEO("Video"), DOCUMENT("Document")
+}
+
+enum OrderStatus {
+  PENDING("Pending"), ACTIVE("Active"), DELIVERED("Delivered"), COMPLETED("Completed"),
+  CANCELED("Canceled"), DISPUTED("Disputed"), REFUNDED("Refunded")
+}
+
+// CATALOGS
+entity Category{
+  name String required maxlength(128) unique,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+  active Boolean required
+}
+
+entity Subcategory{
+  name String required maxlength(128),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+  active Boolean required
+}
+
+entity OfferType{
+  name String required maxlength(50) unique,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+  active Boolean required
+}
+
+entity Country{
+  name String required maxlength(128),
+  iso2 String maxlength(2),
+  iso3 String maxlength(3),
+  region String required maxlength(20),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+  active Boolean required
+}
+
+// SKILLS
+entity Skill{
+  name String required maxlength(128) unique,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+  active Boolean required
+}
+
+// OFFER
+entity Offer{
+  name String required maxlength(255),
+  description String required maxlength(2048),
+  rating Double min(0) max(5),
+  status OfferStatus required,
+  visibility Boolean required,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+}
+
+entity OfferPackage {
+  name String required maxlength(50),
+  description String required maxlength(200),
+  price BigDecimal required,
+  currency String required maxlength(3),
+  deliveryDays Integer required min(1),
+  packageTier PackageTier required,
+  active Boolean required,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+}
+
+entity OfferReview {
+  text String maxlength(500),
+  rating Double required min(1) max(5),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+}
+
+entity OfferMedia {
+  mediaKind MediaKind required,
+  isPrimary Boolean required,
+  caption String maxlength(140),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+}
+
+// PROFILE REVIEW
+entity ProfileReview {
+  text String maxlength(500),
+  rating Double required min(1) max(5),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),}
+
+entity Profile {
+  firstName String required maxlength(20),
+  lastName String required maxlength(20),
+  description String maxlength(2048),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+}
+
+entity FileObject {
+  bucket String required maxlength(80),
+  objectKey String required maxlength(255),
+  contentType String maxlength(120),
+  fileSize Long,
+  checksum String maxlength(64),
+  durationSeconds Integer,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),}
+
+entity Order {
+  status OrderStatus required,
+  totalAmount BigDecimal required,
+  currency String required maxlength(3),
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),}
+
+// DISCOVERY
+entity Tag {
+  name String required maxlength(64) unique,
+  createdDate Instant required,
+  lastModifiedDate Instant,
+  createdBy String maxlength(50),
+  lastModifiedBy String maxlength(50),
+}
+
+entity FavoriteOffer {
+  createdAt Instant required,
+}
+
+// ORDER LIFECYCLE
+entity Requirement {
+  prompt String required maxlength(512),
+  answer String maxlength(2048),
+}
+
+entity Delivery {
+  note String maxlength(1024),
+  deliveredAt Instant required,
+}
+
+entity Dispute {
+  reason String required maxlength(512),
+  openedAt Instant required,
+  closedAt Instant,
+}
+
+//CONVERSATION
+entity Conversation{
+  createdAt Instant required,
+}
+
+entity Message{
+  body String required maxlength(4096),
+  sentAt Instant required,
+}
+
+relationship ManyToOne{
+  OfferType{subcategory(name)} to Subcategory
+  Subcategory{category(name)} to Category
+
+  Skill{category(name)} to Category
+
+  OfferReview{offer(name)} to Offer
+  OfferReview{reviewer(id)} to Profile
+  OfferMedia{offer(name)} to Offer
+  OfferMedia{file(objectKey)} to FileObject
+  OfferPackage{offer(name)} to Offer
+  Offer{owner(id)} to Profile
+  Offer{offertype(name)} to OfferType
+
+  Profile{profilePicture(objectKey)} to FileObject
+
+  Order{buyer(login)} to User with builtInEntity
+  Order{seller(login)} to User with builtInEntity
+  Order{offerpackage(id)} to OfferPackage
+
+  ProfileReview{reviewer(id)} to Profile
+  ProfileReview{reviewee(id)} to Profile
+
+  Requirement{order(id)} to Order
+  Delivery{order(id)} to Order
+  Delivery{file(objectKey)} to FileObject
+  Dispute{order(id)} to Order
+
+  Conversation{order(id)} to Order
+  Message{conversation(id)} to Conversation
+  Message{sender(login)} to User with builtInEntity
+
+  FavoriteOffer{profile(id)} to Profile
+  FavoriteOffer{offer(id)} to Offer
+}
+
+relationship ManyToMany{
+  Profile{skill(id)} to Skill{profile(id)}
+  Offer{tag(name)} to Tag{offer(name)}
+}
+
+relationship OneToOne{
+  Profile{user(login)} to User with builtInEntity
+}
+
+paginate * with pagination
+dto * with mapstruct
+service * with serviceClass
+filter *

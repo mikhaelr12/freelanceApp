@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity Offer.
+    -->
+    <changeSet id="20251009121158-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="owner_id"
+                                 baseTableName="offer"
+                                 constraintName="fk_offer__owner_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="profile"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="offertype_id"
+                                 baseTableName="offer"
+                                 constraintName="fk_offer__offertype_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="offer_type"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="offer_id"
+                                 baseTableName="rel_offer__tag"
+                                 constraintName="fk_rel_offer__tag__offer_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="offer"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="rel_offer__tag"
+                                 constraintName="fk_rel_offer__tag__tag_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tag"
+                                 />
+    </changeSet>
+</databaseChangeLog>
