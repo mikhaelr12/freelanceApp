@@ -16,6 +16,7 @@ import com.freelance.app.repository.FavoriteOfferRepository;
 import com.freelance.app.repository.OfferRepository;
 import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.service.dto.FavoriteOfferDTO;
+import com.freelance.app.service.mapper.FavoriteOfferMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

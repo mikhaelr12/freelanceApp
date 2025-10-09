@@ -7,6 +7,7 @@ import com.freelance.app.repository.rowmapper.ConversationRowMapper;
 import com.freelance.app.repository.rowmapper.OrderRowMapper;
 import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
 import com.freelance.app.repository.sqlhelper.OrderSqlHelper;
+import com.freelance.app.service.dto.ConversationDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -109,13 +110,23 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
     }
 
     @Override
-    public Flux<Conversation> findByCriteria(ConversationCriteria conversationCriteria, Pageable page) {
-        return createQuery(page, buildConditions(conversationCriteria)).all();
+    public Flux<ConversationDTO> findByCriteria(ConversationCriteria conversationCriteria, Pageable page) {
+        List<Expression> columns = ConversationSqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(page, buildConditions(conversationCriteria), columns)
+            .map((row, rowMetadata) -> conversationMapper.applyDto(row, "e"))
+            .all();
     }
 
     @Override
     public Mono<Long> countByCriteria(ConversationCriteria criteria) {
         return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    @Override
+    public Mono<ConversationDTO> findDTOById(Long id) {
+        List<Expression> columns = ConversationSqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS);
+        Condition whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
+        return createQuery(null, whereClause, columns).map((row, rowMetadata) -> conversationMapper.applyDto(row, "e")).one();
     }
 
     private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {

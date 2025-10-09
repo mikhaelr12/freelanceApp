@@ -18,20 +18,6 @@ public class CategoryDTO implements Serializable {
     @Size(max = 128)
     private String name;
 
-    @NotNull(message = "must not be null")
-    private Instant createdDate;
-
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    private String createdBy;
-
-    @Size(max = 50)
-    private String lastModifiedBy;
-
-    @NotNull(message = "must not be null")
-    private Boolean active;
-
     public Long getId() {
         return id;
     }
@@ -46,46 +32,6 @@ public class CategoryDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     @Override
@@ -115,11 +61,6 @@ public class CategoryDTO implements Serializable {
         return "CategoryDTO{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", createdDate='" + getCreatedDate() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", active='" + getActive() + "'" +
             "}";
     }
 }

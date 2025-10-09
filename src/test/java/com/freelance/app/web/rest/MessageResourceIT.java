@@ -18,6 +18,7 @@ import com.freelance.app.repository.MessageRepository;
 import com.freelance.app.repository.UserRepository;
 import com.freelance.app.service.MessageService;
 import com.freelance.app.service.dto.MessageDTO;
+import com.freelance.app.service.mapper.MessageMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

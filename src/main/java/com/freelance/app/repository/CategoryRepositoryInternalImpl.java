@@ -5,6 +5,7 @@ import com.freelance.app.domain.criteria.CategoryCriteria;
 import com.freelance.app.repository.rowmapper.CategoryRowMapper;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.sqlhelper.CategorySqlHelper;
+import com.freelance.app.service.dto.CategoryDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -96,13 +97,23 @@ class CategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Category, Lon
     }
 
     @Override
-    public Flux<Category> findByCriteria(CategoryCriteria categoryCriteria, Pageable page) {
-        return createQuery(page, buildConditions(categoryCriteria)).all();
+    public Flux<CategoryDTO> findByCriteria(CategoryCriteria categoryCriteria, Pageable page) {
+        List<Expression> columns = CategorySqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(page, buildConditions(categoryCriteria), columns)
+            .map((row, rowMetadata) -> categoryMapper.applyDTO(row, "e"))
+            .all();
     }
 
     @Override
     public Mono<Long> countByCriteria(CategoryCriteria criteria) {
         return createCountQuery(buildConditions(criteria)).one();
+    }
+
+    @Override
+    public Mono<CategoryDTO> findDTOById(Long id) {
+        List<Expression> columns = CategorySqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS);
+        Condition whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
+        return createQuery(null, whereClause, columns).map((row, rowMetadata) -> categoryMapper.applyDTO(row, "e")).one();
     }
 
     private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {

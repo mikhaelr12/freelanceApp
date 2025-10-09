@@ -19,6 +19,7 @@ import com.freelance.app.repository.OfferMediaRepository;
 import com.freelance.app.repository.OfferRepository;
 import com.freelance.app.service.OfferMediaService;
 import com.freelance.app.service.dto.OfferMediaDTO;
+import com.freelance.app.service.mapper.OfferMediaMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

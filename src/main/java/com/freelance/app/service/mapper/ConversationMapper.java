@@ -10,12 +10,4 @@ import org.mapstruct.*;
  * Mapper for the entity {@link Conversation} and its DTO {@link ConversationDTO}.
  */
 @Mapper(componentModel = "spring")
-public interface ConversationMapper extends EntityMapper<ConversationDTO, Conversation> {
-    @Mapping(target = "order", source = "order", qualifiedByName = "orderId")
-    ConversationDTO toDto(Conversation s);
-
-    @Named("orderId")
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    OrderDTO toDtoOrderId(Order order);
-}
+public interface ConversationMapper extends EntityMapper<ConversationDTO, Conversation> {}

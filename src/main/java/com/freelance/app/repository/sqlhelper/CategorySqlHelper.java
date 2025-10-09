@@ -20,4 +20,8 @@ public class CategorySqlHelper {
 
         return columns;
     }
+
+    public static List<Expression> getColumnsDTO(Table table, String columnPrefix) {
+        return List.of(Column.aliased("id", table, columnPrefix + "_id"), Column.aliased("name", table, columnPrefix + "_name"));
+    }
 }
