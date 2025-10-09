@@ -16,7 +16,6 @@ import com.freelance.app.repository.OfferTypeRepository;
 import com.freelance.app.repository.SubcategoryRepository;
 import com.freelance.app.service.OfferTypeService;
 import com.freelance.app.service.dto.OfferTypeDTO;
-import com.freelance.app.service.mapper.OfferTypeMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

@@ -14,7 +14,6 @@ import com.freelance.app.repository.ConversationRepository;
 import com.freelance.app.repository.EntityManager;
 import com.freelance.app.repository.OrderRepository;
 import com.freelance.app.service.dto.ConversationDTO;
-import com.freelance.app.service.mapper.ConversationMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

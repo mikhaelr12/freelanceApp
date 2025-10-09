@@ -4,7 +4,10 @@ import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.ProfileReview;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileReviewDTO;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 /**
  * Mapper for the entity {@link ProfileReview} and its DTO {@link ProfileReviewDTO}.

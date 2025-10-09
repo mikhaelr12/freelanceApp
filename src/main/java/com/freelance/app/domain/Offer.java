@@ -2,7 +2,11 @@ package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freelance.app.domain.enumeration.OfferStatus;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -16,8 +20,9 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("offer")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Offer implements Serializable {
+public class Offer extends AbstractAuditingEntity<Long> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -46,21 +51,6 @@ public class Offer implements Serializable {
     @NotNull(message = "must not be null")
     @Column("visibility")
     private Boolean visibility;
-
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "user", "profilePicture", "skills" }, allowSetters = true)
@@ -160,21 +150,9 @@ public class Offer implements Serializable {
         this.visibility = visibility;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public Offer createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public Offer lastModifiedDate(Instant lastModifiedDate) {
@@ -182,34 +160,14 @@ public class Offer implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public Offer createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return this.lastModifiedBy;
-    }
-
     public Offer lastModifiedBy(String lastModifiedBy) {
         this.setLastModifiedBy(lastModifiedBy);
         return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     public Profile getOwner() {

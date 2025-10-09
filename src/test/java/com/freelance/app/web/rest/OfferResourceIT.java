@@ -19,7 +19,6 @@ import com.freelance.app.repository.OfferTypeRepository;
 import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.service.OfferService;
 import com.freelance.app.service.dto.OfferDTO;
-import com.freelance.app.service.mapper.OfferMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

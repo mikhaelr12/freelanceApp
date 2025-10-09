@@ -1,8 +1,6 @@
 package com.freelance.app.web.rest;
 
-import static com.freelance.app.security.SecurityUtils.AUTHORITIES_CLAIM;
-import static com.freelance.app.security.SecurityUtils.JWT_ALGORITHM;
-import static com.freelance.app.security.SecurityUtils.USER_ID_CLAIM;
+import static com.freelance.app.security.SecurityUtils.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.freelance.app.security.DomainUserDetailsService.UserWithId;

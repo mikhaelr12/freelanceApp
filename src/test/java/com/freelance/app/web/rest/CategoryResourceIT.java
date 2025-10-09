@@ -12,7 +12,6 @@ import com.freelance.app.domain.Category;
 import com.freelance.app.repository.CategoryRepository;
 import com.freelance.app.repository.EntityManager;
 import com.freelance.app.service.dto.CategoryDTO;
-import com.freelance.app.service.mapper.CategoryMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;

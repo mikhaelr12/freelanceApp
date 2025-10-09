@@ -2,7 +2,9 @@ package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freelance.app.domain.enumeration.MediaKind;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
@@ -14,8 +16,9 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("offer_media")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class OfferMedia implements Serializable {
+public class OfferMedia extends AbstractAuditingEntity<Long> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -33,21 +36,6 @@ public class OfferMedia implements Serializable {
     @Size(max = 140)
     @Column("caption")
     private String caption;
-
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "owner", "offertype", "tags" }, allowSetters = true)
@@ -116,21 +104,9 @@ public class OfferMedia implements Serializable {
         this.caption = caption;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public OfferMedia createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public OfferMedia lastModifiedDate(Instant lastModifiedDate) {
@@ -138,34 +114,14 @@ public class OfferMedia implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public OfferMedia createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return this.lastModifiedBy;
-    }
-
     public OfferMedia lastModifiedBy(String lastModifiedBy) {
         this.setLastModifiedBy(lastModifiedBy);
         return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     public Offer getOffer() {

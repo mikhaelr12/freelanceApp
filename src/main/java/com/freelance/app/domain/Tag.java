@@ -1,7 +1,9 @@
 package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -15,8 +17,9 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("tag")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Tag implements Serializable {
+public class Tag extends AbstractAuditingEntity<Long> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -27,21 +30,6 @@ public class Tag implements Serializable {
     @Size(max = 64)
     @Column("name")
     private String name;
-
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "owner", "offertype", "tags" }, allowSetters = true)
@@ -75,21 +63,9 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public Tag createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public Tag lastModifiedDate(Instant lastModifiedDate) {
@@ -97,34 +73,14 @@ public class Tag implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public Tag createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return this.lastModifiedBy;
-    }
-
     public Tag lastModifiedBy(String lastModifiedBy) {
         this.setLastModifiedBy(lastModifiedBy);
         return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     public Set<Offer> getOffers() {

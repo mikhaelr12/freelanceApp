@@ -1,7 +1,11 @@
 package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
@@ -13,8 +17,9 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("profile_review")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class ProfileReview implements Serializable {
+public class ProfileReview extends AbstractAuditingEntity<Long> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -30,21 +35,6 @@ public class ProfileReview implements Serializable {
     @DecimalMax(value = "5")
     @Column("rating")
     private Double rating;
-
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "user", "profilePicture", "skills" }, allowSetters = true)
@@ -101,21 +91,9 @@ public class ProfileReview implements Serializable {
         this.rating = rating;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public ProfileReview createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public ProfileReview lastModifiedDate(Instant lastModifiedDate) {
@@ -123,34 +101,14 @@ public class ProfileReview implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public ProfileReview createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return this.lastModifiedBy;
-    }
-
     public ProfileReview lastModifiedBy(String lastModifiedBy) {
         this.setLastModifiedBy(lastModifiedBy);
         return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     public Profile getReviewer() {

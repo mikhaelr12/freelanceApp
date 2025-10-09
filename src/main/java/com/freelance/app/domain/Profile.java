@@ -1,7 +1,9 @@
 package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -15,8 +17,9 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("profile")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Profile implements Serializable {
+public class Profile extends AbstractAuditingEntity<Long> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -36,17 +39,6 @@ public class Profile implements Serializable {
     @Size(max = 2048)
     @Column("description")
     private String description;
-
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
 
     @Size(max = 50)
     @Column("last_modified_by")
@@ -122,21 +114,9 @@ public class Profile implements Serializable {
         this.description = description;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public Profile createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public Profile lastModifiedDate(Instant lastModifiedDate) {
@@ -144,21 +124,9 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public Profile createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     public String getLastModifiedBy() {
