@@ -56,23 +56,24 @@ public class DisputeResource {
      *
      * @param disputeDTO the disputeDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new disputeDTO, or with status {@code 400 (Bad Request)} if the dispute has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<DisputeDTO>> createDispute(@Valid @RequestBody DisputeDTO disputeDTO) throws URISyntaxException {
+    public Mono<ResponseEntity<DisputeDTO>> createDispute(@Valid @RequestBody DisputeDTO disputeDTO) {
         LOG.debug("REST request to save Dispute : {}", disputeDTO);
         if (disputeDTO.getId() != null) {
-            throw new BadRequestAlertException("A new dispute cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new dispute cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return disputeService
             .save(disputeDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/disputes/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/disputes/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -85,19 +86,18 @@ public class DisputeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated disputeDTO,
      * or with status {@code 400 (Bad Request)} if the disputeDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the disputeDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<DisputeDTO>> updateDispute(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody DisputeDTO disputeDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Dispute : {}, {}", id, disputeDTO);
         if (disputeDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, disputeDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return disputeRepository
@@ -127,19 +127,18 @@ public class DisputeResource {
      * or with status {@code 400 (Bad Request)} if the disputeDTO is not valid,
      * or with status {@code 404 (Not Found)} if the disputeDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the disputeDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<DisputeDTO>> partialUpdateDispute(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody DisputeDTO disputeDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Dispute partially : {}, {}", id, disputeDTO);
         if (disputeDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, disputeDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return disputeRepository

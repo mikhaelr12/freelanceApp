@@ -114,7 +114,7 @@ public class UserResource {
         LOG.debug("REST request to save User : {}", userDTO);
 
         if (userDTO.getId() != null) {
-            throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
+            return Mono.error(new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists"));
             // Lowercase the user login before comparing with database
         }
         return userRepository

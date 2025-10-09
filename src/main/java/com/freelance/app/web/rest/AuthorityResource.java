@@ -60,13 +60,15 @@ public class AuthorityResource {
                 }
                 return authorityRepository
                     .save(authority)
-                    .map(result -> {
+                    .handle((result, sink) -> {
                         try {
-                            return ResponseEntity.created(new URI("/api/authorities/" + result.getName()))
-                                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getName()))
-                                .body(result);
+                            sink.next(
+                                ResponseEntity.created(new URI("/api/authorities/" + result.getName()))
+                                    .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getName()))
+                                    .body(result)
+                            );
                         } catch (URISyntaxException e) {
-                            throw new RuntimeException(e);
+                            sink.error(new RuntimeException(e));
                         }
                     });
             });

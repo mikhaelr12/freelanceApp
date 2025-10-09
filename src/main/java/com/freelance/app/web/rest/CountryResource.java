@@ -59,20 +59,22 @@ public class CountryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<CountryDTO>> createCountry(@Valid @RequestBody CountryDTO countryDTO) throws URISyntaxException {
+    public Mono<ResponseEntity<CountryDTO>> createCountry(@Valid @RequestBody CountryDTO countryDTO) {
         LOG.debug("REST request to save Country : {}", countryDTO);
         if (countryDTO.getId() != null) {
-            throw new BadRequestAlertException("A new country cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new country cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return countryService
             .save(countryDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/countries/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/countries/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -85,19 +87,18 @@ public class CountryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated countryDTO,
      * or with status {@code 400 (Bad Request)} if the countryDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the countryDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<CountryDTO>> updateCountry(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody CountryDTO countryDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Country : {}, {}", id, countryDTO);
         if (countryDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, countryDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return countryRepository
@@ -127,19 +128,18 @@ public class CountryResource {
      * or with status {@code 400 (Bad Request)} if the countryDTO is not valid,
      * or with status {@code 404 (Not Found)} if the countryDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the countryDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<CountryDTO>> partialUpdateCountry(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody CountryDTO countryDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Country partially : {}, {}", id, countryDTO);
         if (countryDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, countryDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return countryRepository
