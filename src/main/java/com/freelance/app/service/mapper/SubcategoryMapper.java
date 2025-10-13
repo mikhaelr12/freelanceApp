@@ -1,13 +1,12 @@
 package com.freelance.app.service.mapper;
 
 import com.freelance.app.domain.Category;
+import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.service.dto.CategoryDTO;
+import com.freelance.app.service.dto.OfferMediaDTO;
 import com.freelance.app.service.dto.SubcategoryDTO;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 /**
  * Mapper for the entity {@link Subcategory} and its DTO {@link SubcategoryDTO}.
@@ -22,4 +21,10 @@ public interface SubcategoryMapper extends EntityMapper<SubcategoryDTO, Subcateg
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
     CategoryDTO toDtoCategoryName(Category category);
+
+    @BeanMapping(ignoreByDefault = true)
+    Subcategory toEntity(SubcategoryDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget Subcategory entity, SubcategoryDTO dto);
 }

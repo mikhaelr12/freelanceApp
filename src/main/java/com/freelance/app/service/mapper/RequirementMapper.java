@@ -1,13 +1,12 @@
 package com.freelance.app.service.mapper;
 
+import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.Order;
 import com.freelance.app.domain.Requirement;
+import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.OrderDTO;
 import com.freelance.app.service.dto.RequirementDTO;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 /**
  * Mapper for the entity {@link Requirement} and its DTO {@link RequirementDTO}.
@@ -21,4 +20,10 @@ public interface RequirementMapper extends EntityMapper<RequirementDTO, Requirem
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     OrderDTO toDtoOrderId(Order order);
+
+    @BeanMapping(ignoreByDefault = true)
+    Requirement toEntity(RequirementDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget Requirement entity, RequirementDTO dto);
 }

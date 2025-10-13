@@ -43,6 +43,11 @@
       "fieldType": "String",
       "fieldValidateRules": ["maxlength"],
       "fieldValidateRulesMaxlength": "50"
+    },
+    {
+      "fieldName": "profileType",
+      "fieldType": "ProfileType",
+      "fieldValues": "CLIENT,FREELANCER"
     }
   ],
   "jpaMetamodelFiltering": true,

@@ -1,7 +1,9 @@
 package com.freelance.app.service.mapper;
 
+import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.Order;
+import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.DisputeDTO;
 import com.freelance.app.service.dto.OrderDTO;
 import org.mapstruct.*;
@@ -18,4 +20,10 @@ public interface DisputeMapper extends EntityMapper<DisputeDTO, Dispute> {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     OrderDTO toDtoOrderId(Order order);
+
+    @BeanMapping(ignoreByDefault = true)
+    Order toEntity(OrderDTO orderDTO);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget Dispute entity, DisputeDTO dto);
 }

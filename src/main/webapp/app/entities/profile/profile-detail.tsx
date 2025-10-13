@@ -62,6 +62,10 @@ export const ProfileDetail = () => {
             <span id="lastModifiedBy">Last Modified By</span>
           </dt>
           <dd>{profileEntity.lastModifiedBy}</dd>
+          <dt>
+            <span id="profileType">Profile Type</span>
+          </dt>
+          <dd>{profileEntity.profileType}</dd>
           <dt>User</dt>
           <dd>{profileEntity.user ? profileEntity.user.login : ''}</dd>
           <dt>Profile Picture</dt>

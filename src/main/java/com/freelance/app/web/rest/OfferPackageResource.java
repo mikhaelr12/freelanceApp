@@ -59,22 +59,21 @@ public class OfferPackageResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<OfferPackageDTO>> createOfferPackage(@Valid @RequestBody OfferPackageDTO offerPackageDTO) {
+    public Mono<ResponseEntity<OfferPackageDTO>> createOfferPackage(@Valid @RequestBody OfferPackageDTO offerPackageDTO)
+        throws URISyntaxException {
         LOG.debug("REST request to save OfferPackage : {}", offerPackageDTO);
         if (offerPackageDTO.getId() != null) {
-            return Mono.error(new BadRequestAlertException("A new offerPackage cannot already have an ID", ENTITY_NAME, "idexists"));
+            throw new BadRequestAlertException("A new offerPackage cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return offerPackageService
             .save(offerPackageDTO)
-            .handle((result, sink) -> {
+            .map(result -> {
                 try {
-                    sink.next(
-                        ResponseEntity.created(new URI("/api/offer-packages/" + result.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
+                    return ResponseEntity.created(new URI("/api/offer-packages/" + result.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                        .body(result);
                 } catch (URISyntaxException e) {
-                    sink.error(new RuntimeException(e));
+                    throw new RuntimeException(e);
                 }
             });
     }
@@ -87,18 +86,19 @@ public class OfferPackageResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerPackageDTO,
      * or with status {@code 400 (Bad Request)} if the offerPackageDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the offerPackageDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<OfferPackageDTO>> updateOfferPackage(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody OfferPackageDTO offerPackageDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to update OfferPackage : {}, {}", id, offerPackageDTO);
         if (offerPackageDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, offerPackageDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return offerPackageRepository
@@ -128,18 +128,19 @@ public class OfferPackageResource {
      * or with status {@code 400 (Bad Request)} if the offerPackageDTO is not valid,
      * or with status {@code 404 (Not Found)} if the offerPackageDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the offerPackageDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<OfferPackageDTO>> partialUpdateOfferPackage(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody OfferPackageDTO offerPackageDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to partial update OfferPackage partially : {}, {}", id, offerPackageDTO);
         if (offerPackageDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, offerPackageDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return offerPackageRepository

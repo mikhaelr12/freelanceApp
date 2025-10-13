@@ -1,8 +1,10 @@
 package com.freelance.app.service.mapper;
 
+import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.OfferMedia;
+import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.FileObjectDTO;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferMediaDTO;
@@ -28,4 +30,10 @@ public interface OfferMediaMapper extends EntityMapper<OfferMediaDTO, OfferMedia
     @Mapping(target = "id", source = "id")
     @Mapping(target = "objectKey", source = "objectKey")
     FileObjectDTO toDtoFileObjectObjectKey(FileObject fileObject);
+
+    @BeanMapping(ignoreByDefault = true)
+    OfferMedia toEntity(OfferMediaDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget OfferMedia entity, OfferMediaDTO dto);
 }

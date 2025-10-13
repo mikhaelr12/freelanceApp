@@ -6,7 +6,6 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ProfileReviewRowMapper;
 import com.freelance.app.repository.rowmapper.ProfileRowMapper;
 import com.freelance.app.repository.sqlhelper.ProfileReviewSqlHelper;
-import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;

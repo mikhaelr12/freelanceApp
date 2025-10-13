@@ -13,18 +13,24 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring")
 public interface DeliveryMapper extends EntityMapper<DeliveryDTO, Delivery> {
-    //    @Mapping(target = "order", source = "order", qualifiedByName = "orderId")
-    //    @Mapping(target = "file", source = "file", qualifiedByName = "fileObjectObjectKey")
-    //    DeliveryDTO toDto(Delivery s);
-    //
-    //    @Named("orderId")
-    //    @BeanMapping(ignoreByDefault = true)
-    //    @Mapping(target = "id", source = "id")
-    //    OrderDTO toDtoOrderId(Order order);
-    //
-    //    @Named("fileObjectObjectKey")
-    //    @BeanMapping(ignoreByDefault = true)
-    //    @Mapping(target = "id", source = "id")
-    //    @Mapping(target = "objectKey", source = "objectKey")
-    //    FileObjectDTO toDtoFileObjectObjectKey(FileObject fileObject);
+    @Mapping(target = "order", source = "order", qualifiedByName = "orderId")
+    @Mapping(target = "file", source = "file", qualifiedByName = "fileObjectObjectKey")
+    DeliveryDTO toDto(Delivery s);
+
+    @Named("orderId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    OrderDTO toDtoOrderId(Order order);
+
+    @Named("fileObjectObjectKey")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "objectKey", source = "objectKey")
+    FileObjectDTO toDtoFileObjectObjectKey(FileObject fileObject);
+
+    @BeanMapping(ignoreByDefault = true)
+    Delivery toEntity(DeliveryDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget Delivery entity, DeliveryDTO dto);
 }

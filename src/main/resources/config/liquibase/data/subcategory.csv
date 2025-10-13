@@ -1,0 +1,193 @@
+id;name;created_date;last_modified_date;created_by;last_modified_by;active;category_id
+1500;Website Copywriting;2024-10-03T10:00:00;;system;;true;1001
+1501;Blog Writing;2024-10-03T10:00:00;;system;;true;1001
+1502;Technical Writing;2024-10-03T10:00:00;;system;;true;1001
+1503;Creative Writing;2024-10-03T10:00:00;;system;;true;1001
+1504;Proofreading & Editing;2024-10-03T10:00:00;;system;;true;1001
+1505;Translation Services;2024-10-03T10:00:00;;system;;true;1001
+1506;Social Media Marketing;2024-10-03T10:00:00;;system;;true;1002
+1507;Paid Ads (PPC);2024-10-03T10:00:00;;system;;true;1002
+1508;Email Marketing;2024-10-03T10:00:00;;system;;true;1002
+1509;Content Marketing;2024-10-03T10:00:00;;system;;true;1002
+1510;Affiliate Marketing;2024-10-03T10:00:00;;system;;true;1002
+1511;Marketing Automation;2024-10-03T10:00:00;;system;;true;1002
+1512;APIs & Integrations;2024-10-03T10:00:00;;system;;true;1003
+1513;Automation Scripts;2024-10-03T10:00:00;;system;;true;1003
+1514;DevOps & CI/CD;2024-10-03T10:00:00;;system;;true;1003
+1515;Cloud Services;2024-10-03T10:00:00;;system;;true;1003
+1516;SaaS Development;2024-10-03T10:00:00;;system;;true;1003
+1517;IoT & Embedded;2024-10-03T10:00:00;;system;;true;1003
+1518;Model Development;2024-10-03T10:00:00;;system;;true;1004
+1519;RAG/Knowledge Bases;2024-10-03T10:00:00;;system;;true;1004
+1520;AI Integrations;2024-10-03T10:00:00;;system;;true;1004
+1521;Fine-Tuning & Optimization;2024-10-03T10:00:00;;system;;true;1004
+1522;Computer Vision;2024-10-03T10:00:00;;system;;true;1004
+1523;NLP Applications;2024-10-03T10:00:00;;system;;true;1004
+1524;Dashboards & BI;2024-10-03T10:00:00;;system;;true;1005
+1525;Data Cleaning;2024-10-03T10:00:00;;system;;true;1005
+1526;Experiment Design (A/B);2024-10-03T10:00:00;;system;;true;1005
+1527;Forecasting & Time Series;2024-10-03T10:00:00;;system;;true;1005
+1528;Data Warehousing;2024-10-03T10:00:00;;system;;true;1005
+1529;ETL/ELT Pipelines;2024-10-03T10:00:00;;system;;true;1005
+1530;Frontend Development;2024-10-03T10:00:00;;system;;true;1006
+1531;Backend Development;2024-10-03T10:00:00;;system;;true;1006
+1532;Full-Stack Websites;2024-10-03T10:00:00;;system;;true;1006
+1533;Site Performance & SEO;2024-10-03T10:00:00;;system;;true;1006
+1534;Website Maintenance;2024-10-03T10:00:00;;system;;true;1006
+1535;Web Accessibility;2024-10-03T10:00:00;;system;;true;1006
+1536;iOS Development;2024-10-03T10:00:00;;system;;true;1007
+1537;Android Development;2024-10-03T10:00:00;;system;;true;1007
+1538;Cross-Platform (Flutter/React Native);2024-10-03T10:00:00;;system;;true;1007
+1539;App Publishing & QA;2024-10-03T10:00:00;;system;;true;1007
+1540;Mobile UI/UX;2024-10-03T10:00:00;;system;;true;1007
+1541;App Integrations;2024-10-03T10:00:00;;system;;true;1007
+1542;Unity Development;2024-10-03T10:00:00;;system;;true;1008
+1543;Unreal Development;2024-10-03T10:00:00;;system;;true;1008
+1544;Game Design (GDD);2024-10-03T10:00:00;;system;;true;1008
+1545;Game Assets & UI;2024-10-03T10:00:00;;system;;true;1008
+1546;Multiplayer/Server Setup;2024-10-03T10:00:00;;system;;true;1008
+1547;AR/VR Games;2024-10-03T10:00:00;;system;;true;1008
+1548;Smart Contracts;2024-10-03T10:00:00;;system;;true;1009
+1549;DApps & Wallets;2024-10-03T10:00:00;;system;;true;1009
+1550;NFT Platforms;2024-10-03T10:00:00;;system;;true;1009
+1551;Audits & Security;2024-10-03T10:00:00;;system;;true;1009
+1552;Layer-2 Solutions;2024-10-03T10:00:00;;system;;true;1009
+1553;DeFi Protocols;2024-10-03T10:00:00;;system;;true;1009
+1554;Security Audits;2024-10-03T10:00:00;;system;;true;1010
+1555;Vulnerability Scanning;2024-10-03T10:00:00;;system;;true;1010
+1556;Compliance (SOC2/ISO);2024-10-03T10:00:00;;system;;true;1010
+1557;Incident Response;2024-10-03T10:00:00;;system;;true;1010
+1558;Penetration Testing;2024-10-03T10:00:00;;system;;true;1010
+1559;Security Awareness;2024-10-03T10:00:00;;system;;true;1010
+1560;Logo & Branding;2024-10-03T10:00:00;;system;;true;1011
+1561;UI/UX Design;2024-10-03T10:00:00;;system;;true;1011
+1562;Design Systems;2024-10-03T10:00:00;;system;;true;1011
+1563;Pitch Decks & Presentations;2024-10-03T10:00:00;;system;;true;1011
+1564;Illustration;2024-10-03T10:00:00;;system;;true;1011
+1565;Design Audits;2024-10-03T10:00:00;;system;;true;1011
+1566;Video Editing;2024-10-03T10:00:00;;system;;true;1012
+1567;Motion Graphics;2024-10-03T10:00:00;;system;;true;1012
+1568;3D Animation;2024-10-03T10:00:00;;system;;true;1012
+1569;Short-Form Content;2024-10-03T10:00:00;;system;;true;1012
+1570;Explainer Videos;2024-10-03T10:00:00;;system;;true;1012
+1571;Subtitles & Captions;2024-10-03T10:00:00;;system;;true;1012
+1572;Music Production;2024-10-03T10:00:00;;system;;true;1013
+1573;Mixing & Mastering;2024-10-03T10:00:00;;system;;true;1013
+1574;Sound Design;2024-10-03T10:00:00;;system;;true;1013
+1575;Voice Over Recording;2024-10-03T10:00:00;;system;;true;1013
+1576;Podcast Editing;2024-10-03T10:00:00;;system;;true;1013
+1577;Audio Restoration;2024-10-03T10:00:00;;system;;true;1013
+1578;Product Photography;2024-10-03T10:00:00;;system;;true;1014
+1579;Portrait Photography;2024-10-03T10:00:00;;system;;true;1014
+1580;Event Photography;2024-10-03T10:00:00;;system;;true;1014
+1581;Photo Retouching;2024-10-03T10:00:00;;system;;true;1014
+1582;Real Estate Photography;2024-10-03T10:00:00;;system;;true;1014
+1583;Food Photography;2024-10-03T10:00:00;;system;;true;1014
+1584;Space Planning;2024-10-03T10:00:00;;system;;true;1015
+1585;3D Renders;2024-10-03T10:00:00;;system;;true;1015
+1586;Interior Styling;2024-10-03T10:00:00;;system;;true;1015
+1587;Landscape & Exterior;2024-10-03T10:00:00;;system;;true;1015
+1588;Renovation Plans;2024-10-03T10:00:00;;system;;true;1015
+1589;Lighting Design;2024-10-03T10:00:00;;system;;true;1015
+1590;Industrial Design;2024-10-03T10:00:00;;system;;true;1016
+1591;3D Modeling (CAD);2024-10-03T10:00:00;;system;;true;1016
+1592;Prototyping;2024-10-03T10:00:00;;system;;true;1016
+1593;Design for Manufacturing;2024-10-03T10:00:00;;system;;true;1016
+1594;FEA & Simulation;2024-10-03T10:00:00;;system;;true;1016
+1595;Technical Drawings;2024-10-03T10:00:00;;system;;true;1016
+1596;PCB Design;2024-10-03T10:00:00;;system;;true;1017
+1597;Power Electronics;2024-10-03T10:00:00;;system;;true;1017
+1598;Embedded Systems;2024-10-03T10:00:00;;system;;true;1017
+1599;Signal/EMC Consulting;2024-10-03T10:00:00;;system;;true;1017
+1600;FPGA/HDL Design;2024-10-03T10:00:00;;system;;true;1017
+1601;Battery Management;2024-10-03T10:00:00;;system;;true;1017
+1602;Mechanical CAD;2024-10-03T10:00:00;;system;;true;1018
+1603;Simulation/FEA;2024-10-03T10:00:00;;system;;true;1018
+1604;Materials & Tolerances;2024-10-03T10:00:00;;system;;true;1018
+1605;Manufacturing Drawings;2024-10-03T10:00:00;;system;;true;1018
+1606;Mechatronics;2024-10-03T10:00:00;;system;;true;1018
+1607;Thermal Design;2024-10-03T10:00:00;;system;;true;1018
+1608;Store Setup;2024-10-03T10:00:00;;system;;true;1019
+1609;Product Catalog & Feeds;2024-10-03T10:00:00;;system;;true;1019
+1610;Payments & Checkout;2024-10-03T10:00:00;;system;;true;1019
+1611;Conversion Optimization;2024-10-03T10:00:00;;system;;true;1019
+1612;Subscriptions & CRM;2024-10-03T10:00:00;;system;;true;1019
+1613;Marketplace Integrations;2024-10-03T10:00:00;;system;;true;1019
+1614;Site Audit;2024-10-03T10:00:00;;system;;true;1020
+1615;Keyword Research;2024-10-03T10:00:00;;system;;true;1020
+1616;On-Page SEO;2024-10-03T10:00:00;;system;;true;1020
+1617;Technical SEO;2024-10-03T10:00:00;;system;;true;1020
+1618;Link Building;2024-10-03T10:00:00;;system;;true;1020
+1619;Local SEO;2024-10-03T10:00:00;;system;;true;1020
+1620;Content Calendar;2024-10-03T10:00:00;;system;;true;1021
+1621;Community Management;2024-10-03T10:00:00;;system;;true;1021
+1622;Ad Creatives;2024-10-03T10:00:00;;system;;true;1021
+1623;Influencer Outreach;2024-10-03T10:00:00;;system;;true;1021
+1624;Social Listening;2024-10-03T10:00:00;;system;;true;1021
+1625;UGC Programs;2024-10-03T10:00:00;;system;;true;1021
+1626;Inbox & Calendar;2024-10-03T10:00:00;;system;;true;1022
+1627;Data Entry & Research;2024-10-03T10:00:00;;system;;true;1022
+1628;CRM Management;2024-10-03T10:00:00;;system;;true;1022
+1629;Docs & Minutes;2024-10-03T10:00:00;;system;;true;1022
+1630;Travel & Scheduling;2024-10-03T10:00:00;;system;;true;1022
+1631;Bookkeeping Support;2024-10-03T10:00:00;;system;;true;1022
+1632;Math & Science;2024-10-03T10:00:00;;system;;true;1023
+1633;Programming Tutoring;2024-10-03T10:00:00;;system;;true;1023
+1634;Language Tutoring;2024-10-03T10:00:00;;system;;true;1023
+1635;Test Preparation;2024-10-03T10:00:00;;system;;true;1023
+1636;Academic Writing;2024-10-03T10:00:00;;system;;true;1023
+1637;Study Skills Coaching;2024-10-03T10:00:00;;system;;true;1023
+1638;Career Strategy;2024-10-03T10:00:00;;system;;true;1024
+1639;CV/Resume & LinkedIn;2024-10-03T10:00:00;;system;;true;1024
+1640;Interview Coaching;2024-10-03T10:00:00;;system;;true;1024
+1641;Productivity & Habits;2024-10-03T10:00:00;;system;;true;1024
+1642;Leadership Coaching;2024-10-03T10:00:00;;system;;true;1024
+1643;Life Direction Coaching;2024-10-03T10:00:00;;system;;true;1024
+1644;Personal Training;2024-10-03T10:00:00;;system;;true;1025
+1645;Meal Plans & Nutrition;2024-10-03T10:00:00;;system;;true;1025
+1646;Yoga & Mindfulness;2024-10-03T10:00:00;;system;;true;1025
+1647;Sports Coaching;2024-10-03T10:00:00;;system;;true;1025
+1648;Posture & Mobility;2024-10-03T10:00:00;;system;;true;1025
+1649;Habit Coaching;2024-10-03T10:00:00;;system;;true;1025
+1650;Fashion Illustration;2024-10-03T10:00:00;;system;;true;1026
+1651;Tech Packs;2024-10-03T10:00:00;;system;;true;1026
+1652;Styling & Wardrobe;2024-10-03T10:00:00;;system;;true;1026
+1653;Lookbooks & Catalogs;2024-10-03T10:00:00;;system;;true;1026
+1654;Pattern Making;2024-10-03T10:00:00;;system;;true;1026
+1655;Trend Research;2024-10-03T10:00:00;;system;;true;1026
+1656;Jewelry & Accessories;2024-10-03T10:00:00;;system;;true;1027
+1657;Wood & Leather;2024-10-03T10:00:00;;system;;true;1027
+1658;Knitting & Crochet;2024-10-03T10:00:00;;system;;true;1027
+1659;Resin & Epoxy;2024-10-03T10:00:00;;system;;true;1027
+1660;Paper Crafts;2024-10-03T10:00:00;;system;;true;1027
+1661;Ceramics & Pottery;2024-10-03T10:00:00;;system;;true;1027
+1662;Commercial VO;2024-10-03T10:00:00;;system;;true;1028
+1663;Explainer & eLearning;2024-10-03T10:00:00;;system;;true;1028
+1664;IVR/Telephony;2024-10-03T10:00:00;;system;;true;1028
+1665;Character & Animation VO;2024-10-03T10:00:00;;system;;true;1028
+1666;Audiobooks;2024-10-03T10:00:00;;system;;true;1028
+1667;Dubbing & ADR;2024-10-03T10:00:00;;system;;true;1028
+1668;Audition Coaching;2024-10-03T10:00:00;;system;;true;1029
+1669;Monologue Coaching;2024-10-03T10:00:00;;system;;true;1029
+1670;Stage Movement;2024-10-03T10:00:00;;system;;true;1029
+1671;Showreel Editing;2024-10-03T10:00:00;;system;;true;1029
+1672;Scene Study;2024-10-03T10:00:00;;system;;true;1029
+1673;Voice & Diction;2024-10-03T10:00:00;;system;;true;1029
+1674;Contract Review;2024-10-03T10:00:00;;system;;true;1030
+1675;Company Policies & Terms;2024-10-03T10:00:00;;system;;true;1030
+1676;Trademark & IP;2024-10-03T10:00:00;;system;;true;1030
+1677;GDPR/Privacy Compliance;2024-10-03T10:00:00;;system;;true;1030
+1678;Employment Law Docs;2024-10-03T10:00:00;;system;;true;1030
+1679;Founders/Startup Docs;2024-10-03T10:00:00;;system;;true;1030
+1680;Bookkeeping;2024-10-03T10:00:00;;system;;true;1031
+1681;Financial Statements;2024-10-03T10:00:00;;system;;true;1031
+1682;Tax Preparation;2024-10-03T10:00:00;;system;;true;1031
+1683;Financial Modeling;2024-10-03T10:00:00;;system;;true;1031
+1684;Payroll & Invoicing;2024-10-03T10:00:00;;system;;true;1031
+1685;Budgeting & Forecasting;2024-10-03T10:00:00;;system;;true;1031
+1686;Helpdesk Setup;2024-10-03T10:00:00;;system;;true;1032
+1687;Knowledge Base;2024-10-03T10:00:00;;system;;true;1032
+1688;Live Chat Support;2024-10-03T10:00:00;;system;;true;1032
+1689;Customer Feedback & NPS;2024-10-03T10:00:00;;system;;true;1032
+1690;QA & Playbooks;2024-10-03T10:00:00;;system;;true;1032
+1691;Support Analytics;2024-10-03T10:00:00;;system;;true;1032

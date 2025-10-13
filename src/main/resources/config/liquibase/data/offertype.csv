@@ -1,0 +1,961 @@
+id;name;created_date;last_modified_date;created_by;last_modified_by;active;subcategory_id
+3000;Homepage copy;2024-10-03T10:00:00;;system;;true;1500
+3001;Services page copy;2024-10-03T10:00:00;;system;;true;1500
+3002;Product page microcopy;2024-10-03T10:00:00;;system;;true;1500
+3003;Landing page narrative;2024-10-03T10:00:00;;system;;true;1500
+3004;UX microcopy & CTAs;2024-10-03T10:00:00;;system;;true;1500
+3005;Thought‑leadership article;2024-10-03T10:00:00;;system;;true;1501
+3006;How‑to tutorial;2024-10-03T10:00:00;;system;;true;1501
+3007;Industry roundup;2024-10-03T10:00:00;;system;;true;1501
+3008;Interview‑based case study;2024-10-03T10:00:00;;system;;true;1501
+3009;News/trend commentary;2024-10-03T10:00:00;;system;;true;1501
+3010;API reference;2024-10-03T10:00:00;;system;;true;1502
+3011;Developer quickstart;2024-10-03T10:00:00;;system;;true;1502
+3012;System architecture overview;2024-10-03T10:00:00;;system;;true;1502
+3013;Release notes;2024-10-03T10:00:00;;system;;true;1502
+3014;Knowledge base articles;2024-10-03T10:00:00;;system;;true;1502
+3015;Brand story;2024-10-03T10:00:00;;system;;true;1503
+3016;Ad copy concepts;2024-10-03T10:00:00;;system;;true;1503
+3017;Slogans & taglines;2024-10-03T10:00:00;;system;;true;1503
+3018;Email sequences;2024-10-03T10:00:00;;system;;true;1503
+3019;Short narrative;2024-10-03T10:00:00;;system;;true;1503
+3020;Proofreading (light);2024-10-03T10:00:00;;system;;true;1504
+3021;Copyediting (medium);2024-10-03T10:00:00;;system;;true;1504
+3022;Substantive editing;2024-10-03T10:00:00;;system;;true;1504
+3023;Style & tone alignment;2024-10-03T10:00:00;;system;;true;1504
+3024;Fact check & references;2024-10-03T10:00:00;;system;;true;1504
+3025;EN↔RO website localization;2024-10-03T10:00:00;;system;;true;1505
+3026;EN↔RO technical manual;2024-10-03T10:00:00;;system;;true;1505
+3027;Legal contract translation;2024-10-03T10:00:00;;system;;true;1505
+3028;Marketing collateral localization;2024-10-03T10:00:00;;system;;true;1505
+3029;App strings & store listing;2024-10-03T10:00:00;;system;;true;1505
+3030;30‑day content plan;2024-10-03T10:00:00;;system;;true;1506
+3031;Campaign launch kit;2024-10-03T10:00:00;;system;;true;1506
+3032;Community management;2024-10-03T10:00:00;;system;;true;1506
+3033;Analytics & reporting;2024-10-03T10:00:00;;system;;true;1506
+3034;Creator collab program;2024-10-03T10:00:00;;system;;true;1506
+3035;Google Ads search;2024-10-03T10:00:00;;system;;true;1507
+3036;Meta Ads (FB/IG);2024-10-03T10:00:00;;system;;true;1507
+3037;YouTube/Display setup;2024-10-03T10:00:00;;system;;true;1507
+3038;Retargeting funnel;2024-10-03T10:00:00;;system;;true;1507
+3039;PPC audit & optimizations;2024-10-03T10:00:00;;system;;true;1507
+3040;Welcome flow;2024-10-03T10:00:00;;system;;true;1508
+3041;Abandoned cart flow;2024-10-03T10:00:00;;system;;true;1508
+3042;Newsletter production;2024-10-03T10:00:00;;system;;true;1508
+3043;Re‑engagement series;2024-10-03T10:00:00;;system;;true;1508
+3044;Deliverability fixes;2024-10-03T10:00:00;;system;;true;1508
+3045;Editorial strategy;2024-10-03T10:00:00;;system;;true;1509
+3046;Topic cluster map;2024-10-03T10:00:00;;system;;true;1509
+3047;SEO content briefs;2024-10-03T10:00:00;;system;;true;1509
+3048;Distribution playbook;2024-10-03T10:00:00;;system;;true;1509
+3049;Quarterly performance review;2024-10-03T10:00:00;;system;;true;1509
+3050;Program setup;2024-10-03T10:00:00;;system;;true;1510
+3051;Affiliate recruitment;2024-10-03T10:00:00;;system;;true;1510
+3052;Tracking & attribution;2024-10-03T10:00:00;;system;;true;1510
+3053;Payout workflow;2024-10-03T10:00:00;;system;;true;1510
+3054;Promotional toolkit;2024-10-03T10:00:00;;system;;true;1510
+3055;HubSpot workflows;2024-10-03T10:00:00;;system;;true;1511
+3056;Mailchimp automations;2024-10-03T10:00:00;;system;;true;1511
+3057;Klaviyo flows;2024-10-03T10:00:00;;system;;true;1511
+3058;Zapier/Make scenarios;2024-10-03T10:00:00;;system;;true;1511
+3059;Lead scoring rules;2024-10-03T10:00:00;;system;;true;1511
+3060;REST API design;2024-10-03T10:00:00;;system;;true;1512
+3061;OAuth/OpenID Connect;2024-10-03T10:00:00;;system;;true;1512
+3062;3rd‑party SaaS integration;2024-10-03T10:00:00;;system;;true;1512
+3063;Webhook/event handlers;2024-10-03T10:00:00;;system;;true;1512
+3064;API monitoring & alerts;2024-10-03T10:00:00;;system;;true;1512
+3065;ETL job;2024-10-03T10:00:00;;system;;true;1513
+3066;Headless browser tasks;2024-10-03T10:00:00;;system;;true;1513
+3067;Data sync service;2024-10-03T10:00:00;;system;;true;1513
+3068;File ingestion pipeline;2024-10-03T10:00:00;;system;;true;1513
+3069;Health checks;2024-10-03T10:00:00;;system;;true;1513
+3070;GitHub Actions pipeline;2024-10-03T10:00:00;;system;;true;1514
+3071;Terraform/IaC;2024-10-03T10:00:00;;system;;true;1514
+3072;Dockerization;2024-10-03T10:00:00;;system;;true;1514
+3073;Observability stack;2024-10-03T10:00:00;;system;;true;1514
+3074;Release & rollback plan;2024-10-03T10:00:00;;system;;true;1514
+3075;AWS architecture;2024-10-03T10:00:00;;system;;true;1515
+3076;Azure architecture;2024-10-03T10:00:00;;system;;true;1515
+3077;GCP architecture;2024-10-03T10:00:00;;system;;true;1515
+3078;Serverless functions;2024-10-03T10:00:00;;system;;true;1515
+3079;Kubernetes cluster setup;2024-10-03T10:00:00;;system;;true;1515
+3080;Multi‑tenant auth/RBAC;2024-10-03T10:00:00;;system;;true;1516
+3081;Billing & subscriptions;2024-10-03T10:00:00;;system;;true;1516
+3082;Admin portal;2024-10-03T10:00:00;;system;;true;1516
+3083;Usage metering;2024-10-03T10:00:00;;system;;true;1516
+3084;Audit logging;2024-10-03T10:00:00;;system;;true;1516
+3085;MQTT backend;2024-10-03T10:00:00;;system;;true;1517
+3086;Device provisioning;2024-10-03T10:00:00;;system;;true;1517
+3087;Firmware OTA updater;2024-10-03T10:00:00;;system;;true;1517
+3088;Edge data pipeline;2024-10-03T10:00:00;;system;;true;1517
+3089;Dashboard & alerts;2024-10-03T10:00:00;;system;;true;1517
+3090;Dataset preparation;2024-10-03T10:00:00;;system;;true;1518
+3091;Baseline training;2024-10-03T10:00:00;;system;;true;1518
+3092;Evaluation & metrics;2024-10-03T10:00:00;;system;;true;1518
+3093;Serving pipeline;2024-10-03T10:00:00;;system;;true;1518
+3094;Monitoring & drift;2024-10-03T10:00:00;;system;;true;1518
+3095;Document ingestion;2024-10-03T10:00:00;;system;;true;1519
+3096;Retriever index (BM25/Vec);2024-10-03T10:00:00;;system;;true;1519
+3097;Prompt templates;2024-10-03T10:00:00;;system;;true;1519
+3098;Evaluation harness;2024-10-03T10:00:00;;system;;true;1519
+3099;Safety guardrails;2024-10-03T10:00:00;;system;;true;1519
+3100;OpenAI API integration;2024-10-03T10:00:00;;system;;true;1520
+3101;Vision/OCR pipeline;2024-10-03T10:00:00;;system;;true;1520
+3102;Tool‑using agent;2024-10-03T10:00:00;;system;;true;1520
+3103;Chat backend;2024-10-03T10:00:00;;system;;true;1520
+3104;Batch inference jobs;2024-10-03T10:00:00;;system;;true;1520
+3105;Data curation & SFT;2024-10-03T10:00:00;;system;;true;1521
+3106;Hyperparameter sweep;2024-10-03T10:00:00;;system;;true;1521
+3107;Quantization/distillation;2024-10-03T10:00:00;;system;;true;1521
+3108;Latency/cost tuning;2024-10-03T10:00:00;;system;;true;1521
+3109;Policy/Safety alignment;2024-10-03T10:00:00;;system;;true;1521
+3110;Object detection;2024-10-03T10:00:00;;system;;true;1522
+3111;Image classification;2024-10-03T10:00:00;;system;;true;1522
+3112;OCR & layout parsing;2024-10-03T10:00:00;;system;;true;1522
+3113;Visual QA;2024-10-03T10:00:00;;system;;true;1522
+3114;Video analytics;2024-10-03T10:00:00;;system;;true;1522
+3115;Text classification;2024-10-03T10:00:00;;system;;true;1523
+3116;Summarization;2024-10-03T10:00:00;;system;;true;1523
+3117;Named‑entity recognition;2024-10-03T10:00:00;;system;;true;1523
+3118;Semantic search;2024-10-03T10:00:00;;system;;true;1523
+3119;Topic modeling;2024-10-03T10:00:00;;system;;true;1523
+3120;Metric taxonomy;2024-10-03T10:00:00;;system;;true;1524
+3121;Data modeling;2024-10-03T10:00:00;;system;;true;1524
+3122;BI dashboard build;2024-10-03T10:00:00;;system;;true;1524
+3123;Data tests & QA;2024-10-03T10:00:00;;system;;true;1524
+3124;Insights deck;2024-10-03T10:00:00;;system;;true;1524
+3125;Schema/type repair;2024-10-03T10:00:00;;system;;true;1525
+3126;Deduplication;2024-10-03T10:00:00;;system;;true;1525
+3127;Missing values strategy;2024-10-03T10:00:00;;system;;true;1525
+3128;Anomaly detection;2024-10-03T10:00:00;;system;;true;1525
+3129;Validation suite;2024-10-03T10:00:00;;system;;true;1525
+3130;Hypothesis & metrics;2024-10-03T10:00:00;;system;;true;1526
+3131;Test plan & cohorts;2024-10-03T10:00:00;;system;;true;1526
+3132;Instrumentation guide;2024-10-03T10:00:00;;system;;true;1526
+3133;Result analysis;2024-10-03T10:00:00;;system;;true;1526
+3134;Rollout plan;2024-10-03T10:00:00;;system;;true;1526
+3135;Diagnostics & stationarity;2024-10-03T10:00:00;;system;;true;1527
+3136;Backtests & selection;2024-10-03T10:00:00;;system;;true;1527
+3137;Feature engineering;2024-10-03T10:00:00;;system;;true;1527
+3138;Forecast dashboard;2024-10-03T10:00:00;;system;;true;1527
+3139;Monitoring & alerts;2024-10-03T10:00:00;;system;;true;1527
+3140;BigQuery setup;2024-10-03T10:00:00;;system;;true;1528
+3141;Redshift warehouse;2024-10-03T10:00:00;;system;;true;1528
+3142;Snowflake modeling;2024-10-03T10:00:00;;system;;true;1528
+3143;Partitioning & clustering;2024-10-03T10:00:00;;system;;true;1528
+3144;Security & governance;2024-10-03T10:00:00;;system;;true;1528
+3145;Airflow orchestration;2024-10-03T10:00:00;;system;;true;1529
+3146;dbt models;2024-10-03T10:00:00;;system;;true;1529
+3147;CDC pipeline;2024-10-03T10:00:00;;system;;true;1529
+3148;Batch/stream ingestion;2024-10-03T10:00:00;;system;;true;1529
+3149;Observability for data;2024-10-03T10:00:00;;system;;true;1529
+3150;React;2024-10-03T10:00:00;;system;;true;1530
+3151;Vue;2024-10-03T10:00:00;;system;;true;1530
+3152;Angular;2024-10-03T10:00:00;;system;;true;1530
+3153;Next.js;2024-10-03T10:00:00;;system;;true;1530
+3154;Svelte;2024-10-03T10:00:00;;system;;true;1530
+3155;Node.js (Express/Nest);2024-10-03T10:00:00;;system;;true;1531
+3156;Java Spring Boot;2024-10-03T10:00:00;;system;;true;1531
+3157;Python Django/FastAPI;2024-10-03T10:00:00;;system;;true;1531
+3158;.NET Core;2024-10-03T10:00:00;;system;;true;1531
+3159;Go (Fiber/Gin);2024-10-03T10:00:00;;system;;true;1531
+3160;MVP build;2024-10-03T10:00:00;;system;;true;1532
+3161;CMS & admin;2024-10-03T10:00:00;;system;;true;1532
+3162;Payments & forms;2024-10-03T10:00:00;;system;;true;1532
+3163;Analytics & SEO;2024-10-03T10:00:00;;system;;true;1532
+3164;Launch & handover;2024-10-03T10:00:00;;system;;true;1532
+3165;Core Web Vitals pass;2024-10-03T10:00:00;;system;;true;1533
+3166;Bundle optimization;2024-10-03T10:00:00;;system;;true;1533
+3167;Image/font pipeline;2024-10-03T10:00:00;;system;;true;1533
+3168;Server tuning;2024-10-03T10:00:00;;system;;true;1533
+3169;Schema/meta setup;2024-10-03T10:00:00;;system;;true;1533
+3170;Monthly care plan;2024-10-03T10:00:00;;system;;true;1534
+3171;Security patches;2024-10-03T10:00:00;;system;;true;1534
+3172;Content updates;2024-10-03T10:00:00;;system;;true;1534
+3173;Backups & uptime;2024-10-03T10:00:00;;system;;true;1534
+3174;Bug fixes queue;2024-10-03T10:00:00;;system;;true;1534
+3175;WCAG 2.2 audit;2024-10-03T10:00:00;;system;;true;1535
+3176;Remediation plan;2024-10-03T10:00:00;;system;;true;1535
+3177;ARIA & keyboard support;2024-10-03T10:00:00;;system;;true;1535
+3178;Color/contrast fixes;2024-10-03T10:00:00;;system;;true;1535
+3179;Compliance report;2024-10-03T10:00:00;;system;;true;1535
+3180;SwiftUI app;2024-10-03T10:00:00;;system;;true;1536
+3181;UIKit module;2024-10-03T10:00:00;;system;;true;1536
+3182;Offline sync layer;2024-10-03T10:00:00;;system;;true;1536
+3183;Push notifications;2024-10-03T10:00:00;;system;;true;1536
+3184;App Store submission;2024-10-03T10:00:00;;system;;true;1536
+3185;Kotlin app;2024-10-03T10:00:00;;system;;true;1537
+3186;Jetpack Compose UI;2024-10-03T10:00:00;;system;;true;1537
+3187;Room/Retrofit stack;2024-10-03T10:00:00;;system;;true;1537
+3188;Crash & ANR fixes;2024-10-03T10:00:00;;system;;true;1537
+3189;Play Store submission;2024-10-03T10:00:00;;system;;true;1537
+3190;Flutter starter;2024-10-03T10:00:00;;system;;true;1538
+3191;React Native components;2024-10-03T10:00:00;;system;;true;1538
+3192;State management;2024-10-03T10:00:00;;system;;true;1538
+3193;Native module bridge;2024-10-03T10:00:00;;system;;true;1538
+3194;CI build pipelines;2024-10-03T10:00:00;;system;;true;1538
+3195;Test plan & cases;2024-10-03T10:00:00;;system;;true;1539
+3196;Manual/automation runs;2024-10-03T10:00:00;;system;;true;1539
+3197;Bug triage;2024-10-03T10:00:00;;system;;true;1539
+3198;Store listing assets;2024-10-03T10:00:00;;system;;true;1539
+3199;Release checklist;2024-10-03T10:00:00;;system;;true;1539
+3200;User flows;2024-10-03T10:00:00;;system;;true;1540
+3201;Wireframes;2024-10-03T10:00:00;;system;;true;1540
+3202;Hi‑fi screens;2024-10-03T10:00:00;;system;;true;1540
+3203;Prototype;2024-10-03T10:00:00;;system;;true;1540
+3204;Design QA;2024-10-03T10:00:00;;system;;true;1540
+3205;Payments & billing;2024-10-03T10:00:00;;system;;true;1541
+3206;Analytics & attribution;2024-10-03T10:00:00;;system;;true;1541
+3207;Auth & SSO;2024-10-03T10:00:00;;system;;true;1541
+3208;Push/Deep links;2024-10-03T10:00:00;;system;;true;1541
+3209;CRM/SDK wiring;2024-10-03T10:00:00;;system;;true;1541
+3210;Core gameplay loop;2024-10-03T10:00:00;;system;;true;1542
+3211;Level/scene setup;2024-10-03T10:00:00;;system;;true;1542
+3212;UI/HUD implementation;2024-10-03T10:00:00;;system;;true;1542
+3213;Optimization pass;2024-10-03T10:00:00;;system;;true;1542
+3214;Build & packaging;2024-10-03T10:00:00;;system;;true;1542
+3215;Blueprint mechanics;2024-10-03T10:00:00;;system;;true;1543
+3216;Materials & lighting;2024-10-03T10:00:00;;system;;true;1543
+3217;Sequencer cinematics;2024-10-03T10:00:00;;system;;true;1543
+3218;Performance profiling;2024-10-03T10:00:00;;system;;true;1543
+3219;Shipping build;2024-10-03T10:00:00;;system;;true;1543
+3220;Concept & pillars;2024-10-03T10:00:00;;system;;true;1544
+3221;Core/meta loop;2024-10-03T10:00:00;;system;;true;1544
+3222;Economy & progression;2024-10-03T10:00:00;;system;;true;1544
+3223;UX flows;2024-10-03T10:00:00;;system;;true;1544
+3224;Milestone roadmap;2024-10-03T10:00:00;;system;;true;1544
+3225;Icon/HUD pack;2024-10-03T10:00:00;;system;;true;1545
+3226;2D/3D assets;2024-10-03T10:00:00;;system;;true;1545
+3227;Menu & overlay UI;2024-10-03T10:00:00;;system;;true;1545
+3228;VFX/SFX integration;2024-10-03T10:00:00;;system;;true;1545
+3229;Style guide;2024-10-03T10:00:00;;system;;true;1545
+3230;Dedicated server;2024-10-03T10:00:00;;system;;true;1546
+3231;Matchmaking;2024-10-03T10:00:00;;system;;true;1546
+3232;Lobby & chat;2024-10-03T10:00:00;;system;;true;1546
+3233;Anti‑cheat basics;2024-10-03T10:00:00;;system;;true;1546
+3234;Analytics hooks;2024-10-03T10:00:00;;system;;true;1546
+3235;ARKit/ARCore scene;2024-10-03T10:00:00;;system;;true;1547
+3236;Oculus/SteamVR build;2024-10-03T10:00:00;;system;;true;1547
+3237;Interaction toolkit;2024-10-03T10:00:00;;system;;true;1547
+3238;Performance tuning;2024-10-03T10:00:00;;system;;true;1547
+3239;Store packaging;2024-10-03T10:00:00;;system;;true;1547
+3240;ERC‑20 token;2024-10-03T10:00:00;;system;;true;1548
+3241;ERC‑721 NFT;2024-10-03T10:00:00;;system;;true;1548
+3242;Upgradeable proxy;2024-10-03T10:00:00;;system;;true;1548
+3243;Unit tests & scripts;2024-10-03T10:00:00;;system;;true;1548
+3244;Audit checklist;2024-10-03T10:00:00;;system;;true;1548
+3245;WalletConnect;2024-10-03T10:00:00;;system;;true;1549
+3246;Contract frontend;2024-10-03T10:00:00;;system;;true;1549
+3247;State/indexing;2024-10-03T10:00:00;;system;;true;1549
+3248;Tx queue UX;2024-10-03T10:00:00;;system;;true;1549
+3249;Mainnet launch plan;2024-10-03T10:00:00;;system;;true;1549
+3250;Minting site;2024-10-03T10:00:00;;system;;true;1550
+3251;Metadata pipeline;2024-10-03T10:00:00;;system;;true;1550
+3252;Royalties & marketplace;2024-10-03T10:00:00;;system;;true;1550
+3253;Drop page;2024-10-03T10:00:00;;system;;true;1550
+3254;Allowlist & claims;2024-10-03T10:00:00;;system;;true;1550
+3255;Threat modeling;2024-10-03T10:00:00;;system;;true;1551
+3256;Source review;2024-10-03T10:00:00;;system;;true;1551
+3257;Pen test coordination;2024-10-03T10:00:00;;system;;true;1551
+3258;Fix validation;2024-10-03T10:00:00;;system;;true;1551
+3259;Final report;2024-10-03T10:00:00;;system;;true;1551
+3260;Arbitrum/Optimism deploy;2024-10-03T10:00:00;;system;;true;1552
+3261;Bridging & messaging;2024-10-03T10:00:00;;system;;true;1552
+3262;Gas optimization;2024-10-03T10:00:00;;system;;true;1552
+3263;Rollup config;2024-10-03T10:00:00;;system;;true;1552
+3264;Monitoring hooks;2024-10-03T10:00:00;;system;;true;1552
+3265;Liquidity pool;2024-10-03T10:00:00;;system;;true;1553
+3266;Staking rewards;2024-10-03T10:00:00;;system;;true;1553
+3267;Oracle integration;2024-10-03T10:00:00;;system;;true;1553
+3268;Tokenomics sheet;2024-10-03T10:00:00;;system;;true;1553
+3269;Risk controls;2024-10-03T10:00:00;;system;;true;1553
+3270;Scope & assets;2024-10-03T10:00:00;;system;;true;1554
+3271;Automated scans;2024-10-03T10:00:00;;system;;true;1554
+3272;Manual verification;2024-10-03T10:00:00;;system;;true;1554
+3273;Risk register;2024-10-03T10:00:00;;system;;true;1554
+3274;Exec summary;2024-10-03T10:00:00;;system;;true;1554
+3275;Network scans;2024-10-03T10:00:00;;system;;true;1555
+3276;Web app scans;2024-10-03T10:00:00;;system;;true;1555
+3277;False‑positive triage;2024-10-03T10:00:00;;system;;true;1555
+3278;Remediation mapping;2024-10-03T10:00:00;;system;;true;1555
+3279;Retest session;2024-10-03T10:00:00;;system;;true;1555
+3280;Gap assessment;2024-10-03T10:00:00;;system;;true;1556
+3281;Policy authoring;2024-10-03T10:00:00;;system;;true;1556
+3282;Control mapping;2024-10-03T10:00:00;;system;;true;1556
+3283;Evidence collection;2024-10-03T10:00:00;;system;;true;1556
+3284;Audit readiness;2024-10-03T10:00:00;;system;;true;1556
+3285;Runbooks;2024-10-03T10:00:00;;system;;true;1557
+3286;Tabletop exercise;2024-10-03T10:00:00;;system;;true;1557
+3287;Forensics support;2024-10-03T10:00:00;;system;;true;1557
+3288;Comms templates;2024-10-03T10:00:00;;system;;true;1557
+3289;Post‑mortem;2024-10-03T10:00:00;;system;;true;1557
+3290;External test;2024-10-03T10:00:00;;system;;true;1558
+3291;Internal test;2024-10-03T10:00:00;;system;;true;1558
+3292;Web app test;2024-10-03T10:00:00;;system;;true;1558
+3293;API test;2024-10-03T10:00:00;;system;;true;1558
+3294;Report & fixes;2024-10-03T10:00:00;;system;;true;1558
+3295;Phishing simulation;2024-10-03T10:00:00;;system;;true;1559
+3296;Security training;2024-10-03T10:00:00;;system;;true;1559
+3297;Playbooks & SOPs;2024-10-03T10:00:00;;system;;true;1559
+3298;Password/SSO rollout;2024-10-03T10:00:00;;system;;true;1559
+3299;Metrics dashboard;2024-10-03T10:00:00;;system;;true;1559
+3300;Brand discovery;2024-10-03T10:00:00;;system;;true;1560
+3301;Logo concepts;2024-10-03T10:00:00;;system;;true;1560
+3302;Refinement & variants;2024-10-03T10:00:00;;system;;true;1560
+3303;Brand guidelines;2024-10-03T10:00:00;;system;;true;1560
+3304;Asset delivery;2024-10-03T10:00:00;;system;;true;1560
+3305;User flows;2024-10-03T10:00:00;;system;;true;1561
+3306;Wireframes;2024-10-03T10:00:00;;system;;true;1561
+3307;High‑fidelity screens;2024-10-03T10:00:00;;system;;true;1561
+3308;Prototype & handoff;2024-10-03T10:00:00;;system;;true;1561
+3309;Design QA;2024-10-03T10:00:00;;system;;true;1561
+3310;Design tokens;2024-10-03T10:00:00;;system;;true;1562
+3311;Component library;2024-10-03T10:00:00;;system;;true;1562
+3312;Accessibility rules;2024-10-03T10:00:00;;system;;true;1562
+3313;Docs site;2024-10-03T10:00:00;;system;;true;1562
+3314;Governance;2024-10-03T10:00:00;;system;;true;1562
+3315;Narrative outline;2024-10-03T10:00:00;;system;;true;1563
+3316;Slide design;2024-10-03T10:00:00;;system;;true;1563
+3317;Charts & graphics;2024-10-03T10:00:00;;system;;true;1563
+3318;Speaker notes;2024-10-03T10:00:00;;system;;true;1563
+3319;Investor version;2024-10-03T10:00:00;;system;;true;1563
+3320;Character set;2024-10-03T10:00:00;;system;;true;1564
+3321;Icon pack;2024-10-03T10:00:00;;system;;true;1564
+3322;Editorial illustration;2024-10-03T10:00:00;;system;;true;1564
+3323;Spot graphics;2024-10-03T10:00:00;;system;;true;1564
+3324;Infographic;2024-10-03T10:00:00;;system;;true;1564
+3325;Heuristic review;2024-10-03T10:00:00;;system;;true;1565
+3326;UX flows analysis;2024-10-03T10:00:00;;system;;true;1565
+3327;UI consistency pass;2024-10-03T10:00:00;;system;;true;1565
+3328;Accessibility check;2024-10-03T10:00:00;;system;;true;1565
+3329;Prioritized roadmap;2024-10-03T10:00:00;;system;;true;1565
+3330;Rough cut;2024-10-03T10:00:00;;system;;true;1566
+3331;Fine cut & color;2024-10-03T10:00:00;;system;;true;1566
+3332;Titles & graphics;2024-10-03T10:00:00;;system;;true;1566
+3333;Sound mix;2024-10-03T10:00:00;;system;;true;1566
+3334;Deliverables prep;2024-10-03T10:00:00;;system;;true;1566
+3335;Storyboard;2024-10-03T10:00:00;;system;;true;1567
+3336;Asset creation;2024-10-03T10:00:00;;system;;true;1567
+3337;Animation pass;2024-10-03T10:00:00;;system;;true;1567
+3338;Compositing;2024-10-03T10:00:00;;system;;true;1567
+3339;Render & QC;2024-10-03T10:00:00;;system;;true;1567
+3340;Model & rig;2024-10-03T10:00:00;;system;;true;1568
+3341;Layout & blocking;2024-10-03T10:00:00;;system;;true;1568
+3342;Lighting & render;2024-10-03T10:00:00;;system;;true;1568
+3343;Animation polish;2024-10-03T10:00:00;;system;;true;1568
+3344;Edit & sound;2024-10-03T10:00:00;;system;;true;1568
+3345;Hook concepts;2024-10-03T10:00:00;;system;;true;1569
+3346;Fast edit;2024-10-03T10:00:00;;system;;true;1569
+3347;Captions & SFX;2024-10-03T10:00:00;;system;;true;1569
+3348;Formats & ratios;2024-10-03T10:00:00;;system;;true;1569
+3349;Batch export;2024-10-03T10:00:00;;system;;true;1569
+3350;Script & storyboard;2024-10-03T10:00:00;;system;;true;1570
+3351;Styleframes;2024-10-03T10:00:00;;system;;true;1570
+3352;Animation/filming;2024-10-03T10:00:00;;system;;true;1570
+3353;Voiceover & sound;2024-10-03T10:00:00;;system;;true;1570
+3354;Master exports;2024-10-03T10:00:00;;system;;true;1570
+3355;Transcript;2024-10-03T10:00:00;;system;;true;1571
+3356;Timed captions;2024-10-03T10:00:00;;system;;true;1571
+3357;Multi‑language set;2024-10-03T10:00:00;;system;;true;1571
+3358;Burn‑in exports;2024-10-03T10:00:00;;system;;true;1571
+3359;QC review;2024-10-03T10:00:00;;system;;true;1571
+3360;Songwriting session;2024-10-03T10:00:00;;system;;true;1572
+3361;Arrangement build;2024-10-03T10:00:00;;system;;true;1572
+3362;Studio recording;2024-10-03T10:00:00;;system;;true;1572
+3363;Editing & tuning;2024-10-03T10:00:00;;system;;true;1572
+3364;Mix prep;2024-10-03T10:00:00;;system;;true;1572
+3365;Mix session;2024-10-03T10:00:00;;system;;true;1573
+3366;Revisions;2024-10-03T10:00:00;;system;;true;1573
+3367;Master chain;2024-10-03T10:00:00;;system;;true;1573
+3368;Streaming specs;2024-10-03T10:00:00;;system;;true;1573
+3369;Stems delivery;2024-10-03T10:00:00;;system;;true;1573
+3370;SFX library;2024-10-03T10:00:00;;system;;true;1574
+3371;UI/UX sounds;2024-10-03T10:00:00;;system;;true;1574
+3372;Foley & ambience;2024-10-03T10:00:00;;system;;true;1574
+3373;Layering & mix;2024-10-03T10:00:00;;system;;true;1574
+3374;Deliverables;2024-10-03T10:00:00;;system;;true;1574
+3375;Script review;2024-10-03T10:00:00;;system;;true;1575
+3376;Recording session;2024-10-03T10:00:00;;system;;true;1575
+3377;Editing & cleanup;2024-10-03T10:00:00;;system;;true;1575
+3378;Sync to picture;2024-10-03T10:00:00;;system;;true;1575
+3379;Final masters;2024-10-03T10:00:00;;system;;true;1575
+3380;Noise cleanup;2024-10-03T10:00:00;;system;;true;1576
+3381;Cut & tighten;2024-10-03T10:00:00;;system;;true;1576
+3382;Intro/outro;2024-10-03T10:00:00;;system;;true;1576
+3383;Leveling & LUFS;2024-10-03T10:00:00;;system;;true;1576
+3384;Export package;2024-10-03T10:00:00;;system;;true;1576
+3385;De‑noise & de‑hum;2024-10-03T10:00:00;;system;;true;1577
+3386;Clicks & pops;2024-10-03T10:00:00;;system;;true;1577
+3387;Spectral repair;2024-10-03T10:00:00;;system;;true;1577
+3388;Dialogue salvage;2024-10-03T10:00:00;;system;;true;1577
+3389;Master pass;2024-10-03T10:00:00;;system;;true;1577
+3390;Creative brief;2024-10-03T10:00:00;;system;;true;1578
+3391;Lighting plan;2024-10-03T10:00:00;;system;;true;1578
+3392;Capture session;2024-10-03T10:00:00;;system;;true;1578
+3393;Retouching;2024-10-03T10:00:00;;system;;true;1578
+3394;Export & delivery;2024-10-03T10:00:00;;system;;true;1578
+3395;Look planning;2024-10-03T10:00:00;;system;;true;1579
+3396;Studio/location shoot;2024-10-03T10:00:00;;system;;true;1579
+3397;Culling & retouch;2024-10-03T10:00:00;;system;;true;1579
+3398;Color/grain style;2024-10-03T10:00:00;;system;;true;1579
+3399;Album/prints;2024-10-03T10:00:00;;system;;true;1579
+3400;Coverage plan;2024-10-03T10:00:00;;system;;true;1580
+3401;On‑site capture;2024-10-03T10:00:00;;system;;true;1580
+3402;Highlight set;2024-10-03T10:00:00;;system;;true;1580
+3403;Full gallery;2024-10-03T10:00:00;;system;;true;1580
+3404;Next‑day teaser;2024-10-03T10:00:00;;system;;true;1580
+3405;Skin & color work;2024-10-03T10:00:00;;system;;true;1581
+3406;Object removal;2024-10-03T10:00:00;;system;;true;1581
+3407;Composite/manipulation;2024-10-03T10:00:00;;system;;true;1581
+3408;Consistent grading;2024-10-03T10:00:00;;system;;true;1581
+3409;Export presets;2024-10-03T10:00:00;;system;;true;1581
+3410;Property shoot;2024-10-03T10:00:00;;system;;true;1582
+3411;HDR/flash blend;2024-10-03T10:00:00;;system;;true;1582
+3412;Aerial/drone add‑on;2024-10-03T10:00:00;;system;;true;1582
+3413;Floorplan/measure;2024-10-03T10:00:00;;system;;true;1582
+3414;MLS export;2024-10-03T10:00:00;;system;;true;1582
+3415;Shotlist & props;2024-10-03T10:00:00;;system;;true;1583
+3416;Lighting & styling;2024-10-03T10:00:00;;system;;true;1583
+3417;Capture session;2024-10-03T10:00:00;;system;;true;1583
+3418;Color correction;2024-10-03T10:00:00;;system;;true;1583
+3419;Delivery set;2024-10-03T10:00:00;;system;;true;1583
+3420;Needs assessment;2024-10-03T10:00:00;;system;;true;1584
+3421;Concept layouts;2024-10-03T10:00:00;;system;;true;1584
+3422;Fixture plan;2024-10-03T10:00:00;;system;;true;1584
+3423;Circulation review;2024-10-03T10:00:00;;system;;true;1584
+3424;Final set;2024-10-03T10:00:00;;system;;true;1584
+3425;Model conversion;2024-10-03T10:00:00;;system;;true;1585
+3426;Materials setup;2024-10-03T10:00:00;;system;;true;1585
+3427;Lighting pass;2024-10-03T10:00:00;;system;;true;1585
+3428;Camera shots;2024-10-03T10:00:00;;system;;true;1585
+3429;Render output;2024-10-03T10:00:00;;system;;true;1585
+3430;Mood & palette;2024-10-03T10:00:00;;system;;true;1586
+3431;Furniture selection;2024-10-03T10:00:00;;system;;true;1586
+3432;Textiles & decor;2024-10-03T10:00:00;;system;;true;1586
+3433;Staging guide;2024-10-03T10:00:00;;system;;true;1586
+3434;Sourcing list;2024-10-03T10:00:00;;system;;true;1586
+3435;Site survey;2024-10-03T10:00:00;;system;;true;1587
+3436;Planting plan;2024-10-03T10:00:00;;system;;true;1587
+3437;Hardscape design;2024-10-03T10:00:00;;system;;true;1587
+3438;Irrigation layout;2024-10-03T10:00:00;;system;;true;1587
+3439;Visualization;2024-10-03T10:00:00;;system;;true;1587
+3440;As‑built set;2024-10-03T10:00:00;;system;;true;1588
+3441;Concept drawings;2024-10-03T10:00:00;;system;;true;1588
+3442;Permit package;2024-10-03T10:00:00;;system;;true;1588
+3443;Contractor set;2024-10-03T10:00:00;;system;;true;1588
+3444;Finish schedule;2024-10-03T10:00:00;;system;;true;1588
+3445;Lighting plan;2024-10-03T10:00:00;;system;;true;1589
+3446;Fixture schedule;2024-10-03T10:00:00;;system;;true;1589
+3447;Controls layout;2024-10-03T10:00:00;;system;;true;1589
+3448;Lux calculations;2024-10-03T10:00:00;;system;;true;1589
+3449;Render views;2024-10-03T10:00:00;;system;;true;1589
+3450;Requirements brief;2024-10-03T10:00:00;;system;;true;1590
+3451;Concept sketches;2024-10-03T10:00:00;;system;;true;1590
+3452;Form exploration;2024-10-03T10:00:00;;system;;true;1590
+3453;Ergonomics study;2024-10-03T10:00:00;;system;;true;1590
+3454;Design refinement;2024-10-03T10:00:00;;system;;true;1590
+3455;Solid/surface model;2024-10-03T10:00:00;;system;;true;1591
+3456;Assembly build;2024-10-03T10:00:00;;system;;true;1591
+3457;Detail features;2024-10-03T10:00:00;;system;;true;1591
+3458;Parametric setup;2024-10-03T10:00:00;;system;;true;1591
+3459;Export & BoM;2024-10-03T10:00:00;;system;;true;1591
+3460;Prototype plan;2024-10-03T10:00:00;;system;;true;1592
+3461;Rapid fabrication;2024-10-03T10:00:00;;system;;true;1592
+3462;Fit/finish iteration;2024-10-03T10:00:00;;system;;true;1592
+3463;Bench tests;2024-10-03T10:00:00;;system;;true;1592
+3464;Demo unit;2024-10-03T10:00:00;;system;;true;1592
+3465;Part consolidation;2024-10-03T10:00:00;;system;;true;1593
+3466;Tolerance scheme;2024-10-03T10:00:00;;system;;true;1593
+3467;Material/finish spec;2024-10-03T10:00:00;;system;;true;1593
+3468;DFM/DFA review;2024-10-03T10:00:00;;system;;true;1593
+3469;Supplier packet;2024-10-03T10:00:00;;system;;true;1593
+3470;Load cases;2024-10-03T10:00:00;;system;;true;1594
+3471;Mesh & solve;2024-10-03T10:00:00;;system;;true;1594
+3472;Results review;2024-10-03T10:00:00;;system;;true;1594
+3473;Design iterations;2024-10-03T10:00:00;;system;;true;1594
+3474;Report pack;2024-10-03T10:00:00;;system;;true;1594
+3475;Drawing template;2024-10-03T10:00:00;;system;;true;1595
+3476;Dimensioning;2024-10-03T10:00:00;;system;;true;1595
+3477;Notes & callouts;2024-10-03T10:00:00;;system;;true;1595
+3478;Revision scheme;2024-10-03T10:00:00;;system;;true;1595
+3479;Release package;2024-10-03T10:00:00;;system;;true;1595
+3480;Schematic capture;2024-10-03T10:00:00;;system;;true;1596
+3481;Footprints & stackup;2024-10-03T10:00:00;;system;;true;1596
+3482;Layout & routing;2024-10-03T10:00:00;;system;;true;1596
+3483;DRC/DFM review;2024-10-03T10:00:00;;system;;true;1596
+3484;Gerbers & fab files;2024-10-03T10:00:00;;system;;true;1596
+3485;Topology selection;2024-10-03T10:00:00;;system;;true;1597
+3486;Magnetics spec;2024-10-03T10:00:00;;system;;true;1597
+3487;Thermal analysis;2024-10-03T10:00:00;;system;;true;1597
+3488;Protection strategy;2024-10-03T10:00:00;;system;;true;1597
+3489;Validation tests;2024-10-03T10:00:00;;system;;true;1597
+3490;Board bring‑up;2024-10-03T10:00:00;;system;;true;1598
+3491;Drivers & HAL;2024-10-03T10:00:00;;system;;true;1598
+3492;RTOS/tasks;2024-10-03T10:00:00;;system;;true;1598
+3493;Peripherals & IO;2024-10-03T10:00:00;;system;;true;1598
+3494;Integration tests;2024-10-03T10:00:00;;system;;true;1598
+3495;Emission scan;2024-10-03T10:00:00;;system;;true;1599
+3496;Immunity review;2024-10-03T10:00:00;;system;;true;1599
+3497;Grounding strategy;2024-10-03T10:00:00;;system;;true;1599
+3498;Filter selection;2024-10-03T10:00:00;;system;;true;1599
+3499;Mitigation report;2024-10-03T10:00:00;;system;;true;1599
+3500;Requirements & spec;2024-10-03T10:00:00;;system;;true;1600
+3501;Module design;2024-10-03T10:00:00;;system;;true;1600
+3502;Simulation & timing;2024-10-03T10:00:00;;system;;true;1600
+3503;Synthesis & P&R;2024-10-03T10:00:00;;system;;true;1600
+3504;Bitstream tests;2024-10-03T10:00:00;;system;;true;1600
+3505;Cell modeling;2024-10-03T10:00:00;;system;;true;1601
+3506;BMS design;2024-10-03T10:00:00;;system;;true;1601
+3507;Protections & fusing;2024-10-03T10:00:00;;system;;true;1601
+3508;Thermal plan;2024-10-03T10:00:00;;system;;true;1601
+3509;Diagnostics hooks;2024-10-03T10:00:00;;system;;true;1601
+3510;Part modeling;2024-10-03T10:00:00;;system;;true;1602
+3511;Assembly constraints;2024-10-03T10:00:00;;system;;true;1602
+3512;Mechanism design;2024-10-03T10:00:00;;system;;true;1602
+3513;Exploded views;2024-10-03T10:00:00;;system;;true;1602
+3514;Detail drawings;2024-10-03T10:00:00;;system;;true;1602
+3515;Boundary conditions;2024-10-03T10:00:00;;system;;true;1603
+3516;Mesh strategy;2024-10-03T10:00:00;;system;;true;1603
+3517;Solve & review;2024-10-03T10:00:00;;system;;true;1603
+3518;Design iteration;2024-10-03T10:00:00;;system;;true;1603
+3519;Summary report;2024-10-03T10:00:00;;system;;true;1603
+3520;Material down‑select;2024-10-03T10:00:00;;system;;true;1604
+3521;GD&T planning;2024-10-03T10:00:00;;system;;true;1604
+3522;Tolerance stack‑up;2024-10-03T10:00:00;;system;;true;1604
+3523;Surface spec;2024-10-03T10:00:00;;system;;true;1604
+3524;Verification plan;2024-10-03T10:00:00;;system;;true;1604
+3525;Template & title block;2024-10-03T10:00:00;;system;;true;1605
+3526;Dimensioning;2024-10-03T10:00:00;;system;;true;1605
+3527;Notes & callouts;2024-10-03T10:00:00;;system;;true;1605
+3528;Revision scheme;2024-10-03T10:00:00;;system;;true;1605
+3529;Release package;2024-10-03T10:00:00;;system;;true;1605
+3530;Motion components;2024-10-03T10:00:00;;system;;true;1606
+3531;Sensor/actuator wiring;2024-10-03T10:00:00;;system;;true;1606
+3532;Control loop design;2024-10-03T10:00:00;;system;;true;1606
+3533;Safety interlocks;2024-10-03T10:00:00;;system;;true;1606
+3534;Integration tests;2024-10-03T10:00:00;;system;;true;1606
+3535;Heat sink sizing;2024-10-03T10:00:00;;system;;true;1607
+3536;CFD estimate;2024-10-03T10:00:00;;system;;true;1607
+3537;Material choice;2024-10-03T10:00:00;;system;;true;1607
+3538;Mounting & airflow;2024-10-03T10:00:00;;system;;true;1607
+3539;Validation;2024-10-03T10:00:00;;system;;true;1607
+3540;Theme & structure;2024-10-03T10:00:00;;system;;true;1608
+3541;Payments & shipping;2024-10-03T10:00:00;;system;;true;1608
+3542;Tax & legal;2024-10-03T10:00:00;;system;;true;1608
+3543;Apps/plugins;2024-10-03T10:00:00;;system;;true;1608
+3544;Go‑live checklist;2024-10-03T10:00:00;;system;;true;1608
+3545;Data model/import;2024-10-03T10:00:00;;system;;true;1609
+3546;Image/SEO fields;2024-10-03T10:00:00;;system;;true;1609
+3547;Google/META feeds;2024-10-03T10:00:00;;system;;true;1609
+3548;Variant logic;2024-10-03T10:00:00;;system;;true;1609
+3549;QA & sync;2024-10-03T10:00:00;;system;;true;1609
+3550;Gateway integration;2024-10-03T10:00:00;;system;;true;1610
+3551;Fraud/3DS;2024-10-03T10:00:00;;system;;true;1610
+3552;Checkout UX;2024-10-03T10:00:00;;system;;true;1610
+3553;Order webhooks;2024-10-03T10:00:00;;system;;true;1610
+3554;Test scenarios;2024-10-03T10:00:00;;system;;true;1610
+3555;Funnel audit;2024-10-03T10:00:00;;system;;true;1611
+3556;Heatmap insights;2024-10-03T10:00:00;;system;;true;1611
+3557;A/B backlog;2024-10-03T10:00:00;;system;;true;1611
+3558;Fix implementation;2024-10-03T10:00:00;;system;;true;1611
+3559;Impact report;2024-10-03T10:00:00;;system;;true;1611
+3560;Subscription plan;2024-10-03T10:00:00;;system;;true;1612
+3561;Lifecycle emails;2024-10-03T10:00:00;;system;;true;1612
+3562;Churn playbook;2024-10-03T10:00:00;;system;;true;1612
+3563;CRM segments;2024-10-03T10:00:00;;system;;true;1612
+3564;Analytics hooks;2024-10-03T10:00:00;;system;;true;1612
+3565;Amazon/eBay connect;2024-10-03T10:00:00;;system;;true;1613
+3566;Product mapping;2024-10-03T10:00:00;;system;;true;1613
+3567;Order sync;2024-10-03T10:00:00;;system;;true;1613
+3568;Inventory updates;2024-10-03T10:00:00;;system;;true;1613
+3569;Returns/RMA;2024-10-03T10:00:00;;system;;true;1613
+3570;Crawl review;2024-10-03T10:00:00;;system;;true;1614
+3571;Issues backlog;2024-10-03T10:00:00;;system;;true;1614
+3572;Fix plan;2024-10-03T10:00:00;;system;;true;1614
+3573;QA & deploy;2024-10-03T10:00:00;;system;;true;1614
+3574;Follow‑up report;2024-10-03T10:00:00;;system;;true;1614
+3575;Seed expansion;2024-10-03T10:00:00;;system;;true;1615
+3576;Cluster mapping;2024-10-03T10:00:00;;system;;true;1615
+3577;SERP analysis;2024-10-03T10:00:00;;system;;true;1615
+3578;Content briefs;2024-10-03T10:00:00;;system;;true;1615
+3579;Tracking setup;2024-10-03T10:00:00;;system;;true;1615
+3580;Template optimization;2024-10-03T10:00:00;;system;;true;1616
+3581;Internal linking;2024-10-03T10:00:00;;system;;true;1616
+3582;Schema markup;2024-10-03T10:00:00;;system;;true;1616
+3583;Media optimization;2024-10-03T10:00:00;;system;;true;1616
+3584;Publishing SOP;2024-10-03T10:00:00;;system;;true;1616
+3585;Sitemaps & robots;2024-10-03T10:00:00;;system;;true;1617
+3586;Core Web Vitals;2024-10-03T10:00:00;;system;;true;1617
+3587;Logfile insights;2024-10-03T10:00:00;;system;;true;1617
+3588;Indexation fixes;2024-10-03T10:00:00;;system;;true;1617
+3589;Monitoring rules;2024-10-03T10:00:00;;system;;true;1617
+3590;Prospect list;2024-10-03T10:00:00;;system;;true;1618
+3591;Outreach emails;2024-10-03T10:00:00;;system;;true;1618
+3592;Guest post content;2024-10-03T10:00:00;;system;;true;1618
+3593;Placement tracking;2024-10-03T10:00:00;;system;;true;1618
+3594;Reporting;2024-10-03T10:00:00;;system;;true;1618
+3595;GBP setup;2024-10-03T10:00:00;;system;;true;1619
+3596;Citations;2024-10-03T10:00:00;;system;;true;1619
+3597;Local landing pages;2024-10-03T10:00:00;;system;;true;1619
+3598;Review strategy;2024-10-03T10:00:00;;system;;true;1619
+3599;Map pack tracking;2024-10-03T10:00:00;;system;;true;1619
+3600;Themes & cadence;2024-10-03T10:00:00;;system;;true;1620
+3601;Asset planning;2024-10-03T10:00:00;;system;;true;1620
+3602;Approval workflow;2024-10-03T10:00:00;;system;;true;1620
+3603;Schedule by channel;2024-10-03T10:00:00;;system;;true;1620
+3604;Performance review;2024-10-03T10:00:00;;system;;true;1620
+3605;Moderation rules;2024-10-03T10:00:00;;system;;true;1621
+3606;Reply playbook;2024-10-03T10:00:00;;system;;true;1621
+3607;Escalation paths;2024-10-03T10:00:00;;system;;true;1621
+3608;Weekly reports;2024-10-03T10:00:00;;system;;true;1621
+3609;Sentiment review;2024-10-03T10:00:00;;system;;true;1621
+3610;Concept boards;2024-10-03T10:00:00;;system;;true;1622
+3611;Copy variations;2024-10-03T10:00:00;;system;;true;1622
+3612;Design production;2024-10-03T10:00:00;;system;;true;1622
+3613;Format adaptations;2024-10-03T10:00:00;;system;;true;1622
+3614;QA & specs;2024-10-03T10:00:00;;system;;true;1622
+3615;Prospect list;2024-10-03T10:00:00;;system;;true;1623
+3616;Pitch & terms;2024-10-03T10:00:00;;system;;true;1623
+3617;Tracking sheet;2024-10-03T10:00:00;;system;;true;1623
+3618;Content review;2024-10-03T10:00:00;;system;;true;1623
+3619;Results summary;2024-10-03T10:00:00;;system;;true;1623
+3620;Keyword setup;2024-10-03T10:00:00;;system;;true;1624
+3621;Dashboards;2024-10-03T10:00:00;;system;;true;1624
+3622;Alerts & mentions;2024-10-03T10:00:00;;system;;true;1624
+3623;Insights pack;2024-10-03T10:00:00;;system;;true;1624
+3624;Quarterly debrief;2024-10-03T10:00:00;;system;;true;1624
+3625;Briefs & guidelines;2024-10-03T10:00:00;;system;;true;1625
+3626;Creator recruiting;2024-10-03T10:00:00;;system;;true;1625
+3627;Rights & approvals;2024-10-03T10:00:00;;system;;true;1625
+3628;Publishing plan;2024-10-03T10:00:00;;system;;true;1625
+3629;Performance recap;2024-10-03T10:00:00;;system;;true;1625
+3630;Email rules;2024-10-03T10:00:00;;system;;true;1626
+3631;Calendar blocks;2024-10-03T10:00:00;;system;;true;1626
+3632;Meeting handling;2024-10-03T10:00:00;;system;;true;1626
+3633;Templates/canned;2024-10-03T10:00:00;;system;;true;1626
+3634;Weekly summary;2024-10-03T10:00:00;;system;;true;1626
+3635;Web research;2024-10-03T10:00:00;;system;;true;1627
+3636;Spreadsheet models;2024-10-03T10:00:00;;system;;true;1627
+3637;Enrichment;2024-10-03T10:00:00;;system;;true;1627
+3638;Quality checks;2024-10-03T10:00:00;;system;;true;1627
+3639;SOP write‑up;2024-10-03T10:00:00;;system;;true;1627
+3640;Fields & pipelines;2024-10-03T10:00:00;;system;;true;1628
+3641;Import/de‑dup;2024-10-03T10:00:00;;system;;true;1628
+3642;Automation rules;2024-10-03T10:00:00;;system;;true;1628
+3643;Reporting views;2024-10-03T10:00:00;;system;;true;1628
+3644;User onboarding;2024-10-03T10:00:00;;system;;true;1628
+3645;Agenda prep;2024-10-03T10:00:00;;system;;true;1629
+3646;Live notes;2024-10-03T10:00:00;;system;;true;1629
+3647;Action tracker;2024-10-03T10:00:00;;system;;true;1629
+3648;Summary write‑up;2024-10-03T10:00:00;;system;;true;1629
+3649;Distribution pack;2024-10-03T10:00:00;;system;;true;1629
+3650;Itinerary build;2024-10-03T10:00:00;;system;;true;1630
+3651;Visa/hotel options;2024-10-03T10:00:00;;system;;true;1630
+3652;Bookings & holds;2024-10-03T10:00:00;;system;;true;1630
+3653;Expense report;2024-10-03T10:00:00;;system;;true;1630
+3654;Trip brief;2024-10-03T10:00:00;;system;;true;1630
+3655;Invoice entry;2024-10-03T10:00:00;;system;;true;1631
+3656;Receipt capture;2024-10-03T10:00:00;;system;;true;1631
+3657;Reconciliation assist;2024-10-03T10:00:00;;system;;true;1631
+3658;Aging follow‑up;2024-10-03T10:00:00;;system;;true;1631
+3659;Monthly pack;2024-10-03T10:00:00;;system;;true;1631
+3660;Diagnostic test;2024-10-03T10:00:00;;system;;true;1632
+3661;Lesson roadmap;2024-10-03T10:00:00;;system;;true;1632
+3662;Problem sets;2024-10-03T10:00:00;;system;;true;1632
+3663;Step‑by‑step review;2024-10-03T10:00:00;;system;;true;1632
+3664;Progress updates;2024-10-03T10:00:00;;system;;true;1632
+3665;Language basics;2024-10-03T10:00:00;;system;;true;1633
+3666;Project exercises;2024-10-03T10:00:00;;system;;true;1633
+3667;Debugging sessions;2024-10-03T10:00:00;;system;;true;1633
+3668;Code review;2024-10-03T10:00:00;;system;;true;1633
+3669;Exam practice;2024-10-03T10:00:00;;system;;true;1633
+3670;Conversation drills;2024-10-03T10:00:00;;system;;true;1634
+3671;Grammar workshop;2024-10-03T10:00:00;;system;;true;1634
+3672;Vocabulary builder;2024-10-03T10:00:00;;system;;true;1634
+3673;Writing practice;2024-10-03T10:00:00;;system;;true;1634
+3674;Exam skills;2024-10-03T10:00:00;;system;;true;1634
+3675;Baseline assessment;2024-10-03T10:00:00;;system;;true;1635
+3676;Study plan;2024-10-03T10:00:00;;system;;true;1635
+3677;Practice exams;2024-10-03T10:00:00;;system;;true;1635
+3678;Error review;2024-10-03T10:00:00;;system;;true;1635
+3679;Exam strategy;2024-10-03T10:00:00;;system;;true;1635
+3680;Topic selection;2024-10-03T10:00:00;;system;;true;1636
+3681;Outline & sources;2024-10-03T10:00:00;;system;;true;1636
+3682;Draft review;2024-10-03T10:00:00;;system;;true;1636
+3683;Citation & style;2024-10-03T10:00:00;;system;;true;1636
+3684;Final polish;2024-10-03T10:00:00;;system;;true;1636
+3685;Time management;2024-10-03T10:00:00;;system;;true;1637
+3686;Note techniques;2024-10-03T10:00:00;;system;;true;1637
+3687;Active recall;2024-10-03T10:00:00;;system;;true;1637
+3688;Exam tactics;2024-10-03T10:00:00;;system;;true;1637
+3689;Accountability;2024-10-03T10:00:00;;system;;true;1637
+3690;Goals & target roles;2024-10-03T10:00:00;;system;;true;1638
+3691;Skill gap plan;2024-10-03T10:00:00;;system;;true;1638
+3692;Networking map;2024-10-03T10:00:00;;system;;true;1638
+3693;30/60/90 plan;2024-10-03T10:00:00;;system;;true;1638
+3694;Progress review;2024-10-03T10:00:00;;system;;true;1638
+3695;Resume rewrite;2024-10-03T10:00:00;;system;;true;1639
+3696;LinkedIn overhaul;2024-10-03T10:00:00;;system;;true;1639
+3697;Cover letters;2024-10-03T10:00:00;;system;;true;1639
+3698;ATS optimization;2024-10-03T10:00:00;;system;;true;1639
+3699;Portfolio tweaks;2024-10-03T10:00:00;;system;;true;1639
+3700;Mock interview;2024-10-03T10:00:00;;system;;true;1640
+3701;Behavioral stories;2024-10-03T10:00:00;;system;;true;1640
+3702;Technical drills;2024-10-03T10:00:00;;system;;true;1640
+3703;Feedback notes;2024-10-03T10:00:00;;system;;true;1640
+3704;Offer negotiation;2024-10-03T10:00:00;;system;;true;1640
+3705;Systems audit;2024-10-03T10:00:00;;system;;true;1641
+3706;Daily routines;2024-10-03T10:00:00;;system;;true;1641
+3707;Time blocking;2024-10-03T10:00:00;;system;;true;1641
+3708;Tooling setup;2024-10-03T10:00:00;;system;;true;1641
+3709;Weekly review;2024-10-03T10:00:00;;system;;true;1641
+3710;360 intake;2024-10-03T10:00:00;;system;;true;1642
+3711;Strengths plan;2024-10-03T10:00:00;;system;;true;1642
+3712;Exec presence;2024-10-03T10:00:00;;system;;true;1642
+3713;Stakeholder map;2024-10-03T10:00:00;;system;;true;1642
+3714;Coaching sessions;2024-10-03T10:00:00;;system;;true;1642
+3715;Values & vision;2024-10-03T10:00:00;;system;;true;1643
+3716;Goal setting;2024-10-03T10:00:00;;system;;true;1643
+3717;Action roadmap;2024-10-03T10:00:00;;system;;true;1643
+3718;Check‑ins;2024-10-03T10:00:00;;system;;true;1643
+3719;Reflection session;2024-10-03T10:00:00;;system;;true;1643
+3720;Assessment & goals;2024-10-03T10:00:00;;system;;true;1644
+3721;Program block;2024-10-03T10:00:00;;system;;true;1644
+3722;Technique coaching;2024-10-03T10:00:00;;system;;true;1644
+3723;Nutrition basics;2024-10-03T10:00:00;;system;;true;1644
+3724;Check‑ins;2024-10-03T10:00:00;;system;;true;1644
+3725;Calorie/macro plan;2024-10-03T10:00:00;;system;;true;1645
+3726;Meal prep guide;2024-10-03T10:00:00;;system;;true;1645
+3727;Grocery planner;2024-10-03T10:00:00;;system;;true;1645
+3728;Supplement advice;2024-10-03T10:00:00;;system;;true;1645
+3729;Follow‑ups;2024-10-03T10:00:00;;system;;true;1645
+3730;Breath & posture;2024-10-03T10:00:00;;system;;true;1646
+3731;Vinyasa flow;2024-10-03T10:00:00;;system;;true;1646
+3732;Mobility session;2024-10-03T10:00:00;;system;;true;1646
+3733;Meditation coaching;2024-10-03T10:00:00;;system;;true;1646
+3734;Home practice plan;2024-10-03T10:00:00;;system;;true;1646
+3735;Skills assessment;2024-10-03T10:00:00;;system;;true;1647
+3736;Drills library;2024-10-03T10:00:00;;system;;true;1647
+3737;Game strategy;2024-10-03T10:00:00;;system;;true;1647
+3738;Conditioning plan;2024-10-03T10:00:00;;system;;true;1647
+3739;Review session;2024-10-03T10:00:00;;system;;true;1647
+3740;Movement screen;2024-10-03T10:00:00;;system;;true;1648
+3741;Mobility drills;2024-10-03T10:00:00;;system;;true;1648
+3742;Stretch plan;2024-10-03T10:00:00;;system;;true;1648
+3743;Desk setup tips;2024-10-03T10:00:00;;system;;true;1648
+3744;Progress tracking;2024-10-03T10:00:00;;system;;true;1648
+3745;Habit audit;2024-10-03T10:00:00;;system;;true;1649
+3746;Cue/routine plan;2024-10-03T10:00:00;;system;;true;1649
+3747;Accountability system;2024-10-03T10:00:00;;system;;true;1649
+3748;Weekly check‑ins;2024-10-03T10:00:00;;system;;true;1649
+3749;Review & adjust;2024-10-03T10:00:00;;system;;true;1649
+3750;Sketch concepts;2024-10-03T10:00:00;;system;;true;1650
+3751;Digital renderings;2024-10-03T10:00:00;;system;;true;1650
+3752;Colorways;2024-10-03T10:00:00;;system;;true;1650
+3753;Fabric notations;2024-10-03T10:00:00;;system;;true;1650
+3754;Presentation board;2024-10-03T10:00:00;;system;;true;1650
+3755;Spec sheets;2024-10-03T10:00:00;;system;;true;1651
+3756;Measurement tables;2024-10-03T10:00:00;;system;;true;1651
+3757;Construction notes;2024-10-03T10:00:00;;system;;true;1651
+3758;Trims & labels;2024-10-03T10:00:00;;system;;true;1651
+3759;Factory handoff;2024-10-03T10:00:00;;system;;true;1651
+3760;Style profile;2024-10-03T10:00:00;;system;;true;1652
+3761;Outfit capsules;2024-10-03T10:00:00;;system;;true;1652
+3762;Look assembly;2024-10-03T10:00:00;;system;;true;1652
+3763;Shopping list;2024-10-03T10:00:00;;system;;true;1652
+3764;Fit session;2024-10-03T10:00:00;;system;;true;1652
+3765;Layout plan;2024-10-03T10:00:00;;system;;true;1653
+3766;Art direction;2024-10-03T10:00:00;;system;;true;1653
+3767;Photo selection;2024-10-03T10:00:00;;system;;true;1653
+3768;Typography & grids;2024-10-03T10:00:00;;system;;true;1653
+3769;Export prep;2024-10-03T10:00:00;;system;;true;1653
+3770;Block pattern;2024-10-03T10:00:00;;system;;true;1654
+3771;Grading;2024-10-03T10:00:00;;system;;true;1654
+3772;Fit corrections;2024-10-03T10:00:00;;system;;true;1654
+3773;Marker/lay plan;2024-10-03T10:00:00;;system;;true;1654
+3774;Production file;2024-10-03T10:00:00;;system;;true;1654
+3775;Seasonal scan;2024-10-03T10:00:00;;system;;true;1655
+3776;Runway report;2024-10-03T10:00:00;;system;;true;1655
+3777;Retail audit;2024-10-03T10:00:00;;system;;true;1655
+3778;Mood boards;2024-10-03T10:00:00;;system;;true;1655
+3779;Line direction;2024-10-03T10:00:00;;system;;true;1655
+3780;Design drafts;2024-10-03T10:00:00;;system;;true;1656
+3781;Material picks;2024-10-03T10:00:00;;system;;true;1656
+3782;Handcraft session;2024-10-03T10:00:00;;system;;true;1656
+3783;Finish & polish;2024-10-03T10:00:00;;system;;true;1656
+3784;Packaging;2024-10-03T10:00:00;;system;;true;1656
+3785;Joinery plan;2024-10-03T10:00:00;;system;;true;1657
+3786;Pattern cutting;2024-10-03T10:00:00;;system;;true;1657
+3787;Assembly build;2024-10-03T10:00:00;;system;;true;1657
+3788;Finishing oils/dyes;2024-10-03T10:00:00;;system;;true;1657
+3789;Care guide;2024-10-03T10:00:00;;system;;true;1657
+3790;Pattern selection;2024-10-03T10:00:00;;system;;true;1658
+3791;Yarn plan;2024-10-03T10:00:00;;system;;true;1658
+3792;Swatch & gauge;2024-10-03T10:00:00;;system;;true;1658
+3793;Construction steps;2024-10-03T10:00:00;;system;;true;1658
+3794;Blocking & finish;2024-10-03T10:00:00;;system;;true;1658
+3795;Mold selection;2024-10-03T10:00:00;;system;;true;1659
+3796;Pigments & inlays;2024-10-03T10:00:00;;system;;true;1659
+3797;Casting process;2024-10-03T10:00:00;;system;;true;1659
+3798;Sanding & polish;2024-10-03T10:00:00;;system;;true;1659
+3799;Coaster/tray set;2024-10-03T10:00:00;;system;;true;1659
+3800;Card designs;2024-10-03T10:00:00;;system;;true;1660
+3801;Papercut art;2024-10-03T10:00:00;;system;;true;1660
+3802;Quilling set;2024-10-03T10:00:00;;system;;true;1660
+3803;Assembly tutorial;2024-10-03T10:00:00;;system;;true;1660
+3804;Gift set;2024-10-03T10:00:00;;system;;true;1660
+3805;Clay prep;2024-10-03T10:00:00;;system;;true;1661
+3806;Wheel/hand build;2024-10-03T10:00:00;;system;;true;1661
+3807;Bisque fire;2024-10-03T10:00:00;;system;;true;1661
+3808;Glaze & fire;2024-10-03T10:00:00;;system;;true;1661
+3809;Finishing & care;2024-10-03T10:00:00;;system;;true;1661
+3810;Brand read;2024-10-03T10:00:00;;system;;true;1662
+3811;Retail spot;2024-10-03T10:00:00;;system;;true;1662
+3812;Corporate narration;2024-10-03T10:00:00;;system;;true;1662
+3813;Announcer style;2024-10-03T10:00:00;;system;;true;1662
+3814;Directed session;2024-10-03T10:00:00;;system;;true;1662
+3815;Script polish;2024-10-03T10:00:00;;system;;true;1663
+3816;VO recording;2024-10-03T10:00:00;;system;;true;1663
+3817;Section edits;2024-10-03T10:00:00;;system;;true;1663
+3818;Timing to slides;2024-10-03T10:00:00;;system;;true;1663
+3819;Final export;2024-10-03T10:00:00;;system;;true;1663
+3820;Prompt set;2024-10-03T10:00:00;;system;;true;1664
+3821;Clean & level;2024-10-03T10:00:00;;system;;true;1664
+3822;On‑hold messages;2024-10-03T10:00:00;;system;;true;1664
+3823;Multi‑language;2024-10-03T10:00:00;;system;;true;1664
+3824;Delivery package;2024-10-03T10:00:00;;system;;true;1664
+3825;Character voices;2024-10-03T10:00:00;;system;;true;1665
+3826;Acting takes;2024-10-03T10:00:00;;system;;true;1665
+3827;Breaths & timing;2024-10-03T10:00:00;;system;;true;1665
+3828;Lip‑sync;2024-10-03T10:00:00;;system;;true;1665
+3829;FX & layers;2024-10-03T10:00:00;;system;;true;1665
+3830;Audition sample;2024-10-03T10:00:00;;system;;true;1666
+3831;Chapter recording;2024-10-03T10:00:00;;system;;true;1666
+3832;Editing & proofing;2024-10-03T10:00:00;;system;;true;1666
+3833;Mastering;2024-10-03T10:00:00;;system;;true;1666
+3834;ACX delivery;2024-10-03T10:00:00;;system;;true;1666
+3835;Script adaptation;2024-10-03T10:00:00;;system;;true;1667
+3836;Cueing session;2024-10-03T10:00:00;;system;;true;1667
+3837;Studio record;2024-10-03T10:00:00;;system;;true;1667
+3838;Sync & mix;2024-10-03T10:00:00;;system;;true;1667
+3839;Final stems;2024-10-03T10:00:00;;system;;true;1667
+3840;Piece selection;2024-10-03T10:00:00;;system;;true;1668
+3841;Direction notes;2024-10-03T10:00:00;;system;;true;1668
+3842;Performance reps;2024-10-03T10:00:00;;system;;true;1668
+3843;Camera setup;2024-10-03T10:00:00;;system;;true;1668
+3844;Feedback debrief;2024-10-03T10:00:00;;system;;true;1668
+3845;Text analysis;2024-10-03T10:00:00;;system;;true;1669
+3846;Beat work;2024-10-03T10:00:00;;system;;true;1669
+3847;Vocal/diction;2024-10-03T10:00:00;;system;;true;1669
+3848;Blocking choices;2024-10-03T10:00:00;;system;;true;1669
+3849;Performance notes;2024-10-03T10:00:00;;system;;true;1669
+3850;Warm‑ups;2024-10-03T10:00:00;;system;;true;1670
+3851;Spatial awareness;2024-10-03T10:00:00;;system;;true;1670
+3852;Choreography;2024-10-03T10:00:00;;system;;true;1670
+3853;Partnering;2024-10-03T10:00:00;;system;;true;1670
+3854;Safety & lifts;2024-10-03T10:00:00;;system;;true;1670
+3855;Clip selection;2024-10-03T10:00:00;;system;;true;1671
+3856;Assembly edit;2024-10-03T10:00:00;;system;;true;1671
+3857;Color & sound;2024-10-03T10:00:00;;system;;true;1671
+3858;Titles/lower thirds;2024-10-03T10:00:00;;system;;true;1671
+3859;Master export;2024-10-03T10:00:00;;system;;true;1671
+3860;Script breakdown;2024-10-03T10:00:00;;system;;true;1672
+3861;Choices & objectives;2024-10-03T10:00:00;;system;;true;1672
+3862;Rehearsal plan;2024-10-03T10:00:00;;system;;true;1672
+3863;Coach feedback;2024-10-03T10:00:00;;system;;true;1672
+3864;Self‑tape review;2024-10-03T10:00:00;;system;;true;1672
+3865;Breath support;2024-10-03T10:00:00;;system;;true;1673
+3866;Resonance;2024-10-03T10:00:00;;system;;true;1673
+3867;Diction drills;2024-10-03T10:00:00;;system;;true;1673
+3868;Accent reduction;2024-10-03T10:00:00;;system;;true;1673
+3869;Performance polish;2024-10-03T10:00:00;;system;;true;1673
+3870;Document intake;2024-10-03T10:00:00;;system;;true;1674
+3871;Issue list;2024-10-03T10:00:00;;system;;true;1674
+3872;Redlines;2024-10-03T10:00:00;;system;;true;1674
+3873;Negotiation notes;2024-10-03T10:00:00;;system;;true;1674
+3874;Final summary;2024-10-03T10:00:00;;system;;true;1674
+3875;Policy drafts;2024-10-03T10:00:00;;system;;true;1675
+3876;Privacy/Terms;2024-10-03T10:00:00;;system;;true;1675
+3877;Review cycle;2024-10-03T10:00:00;;system;;true;1675
+3878;Stakeholder sign‑off;2024-10-03T10:00:00;;system;;true;1675
+3879;Version control;2024-10-03T10:00:00;;system;;true;1675
+3880;Search & clearance;2024-10-03T10:00:00;;system;;true;1676
+3881;Specimen prep;2024-10-03T10:00:00;;system;;true;1676
+3882;Filing support;2024-10-03T10:00:00;;system;;true;1676
+3883;Office actions;2024-10-03T10:00:00;;system;;true;1676
+3884;Portfolio plan;2024-10-03T10:00:00;;system;;true;1676
+3885;Data inventory;2024-10-03T10:00:00;;system;;true;1677
+3886;DPIA templates;2024-10-03T10:00:00;;system;;true;1677
+3887;Consent/notice;2024-10-03T10:00:00;;system;;true;1677
+3888;Processor contracts;2024-10-03T10:00:00;;system;;true;1677
+3889;Audit checklist;2024-10-03T10:00:00;;system;;true;1677
+3890;Offer & NDA;2024-10-03T10:00:00;;system;;true;1678
+3891;Policy handbook;2024-10-03T10:00:00;;system;;true;1678
+3892;Disciplinary letters;2024-10-03T10:00:00;;system;;true;1678
+3893;Severance docs;2024-10-03T10:00:00;;system;;true;1678
+3894;Compliance review;2024-10-03T10:00:00;;system;;true;1678
+3895;Founders agreement;2024-10-03T10:00:00;;system;;true;1679
+3896;Cap table basics;2024-10-03T10:00:00;;system;;true;1679
+3897;Bylaws & resolutions;2024-10-03T10:00:00;;system;;true;1679
+3898;SAFEs/Notes review;2024-10-03T10:00:00;;system;;true;1679
+3899;Board consents;2024-10-03T10:00:00;;system;;true;1679
+3900;Chart setup;2024-10-03T10:00:00;;system;;true;1680
+3901;Bank feeds;2024-10-03T10:00:00;;system;;true;1680
+3902;Month‑end close;2024-10-03T10:00:00;;system;;true;1680
+3903;Reconciliations;2024-10-03T10:00:00;;system;;true;1680
+3904;Reports pack;2024-10-03T10:00:00;;system;;true;1680
+3905;P&L/Balance sheet;2024-10-03T10:00:00;;system;;true;1681
+3906;Cash flow build;2024-10-03T10:00:00;;system;;true;1681
+3907;Notes & schedules;2024-10-03T10:00:00;;system;;true;1681
+3908;Variance analysis;2024-10-03T10:00:00;;system;;true;1681
+3909;Board deck;2024-10-03T10:00:00;;system;;true;1681
+3910;Docs intake;2024-10-03T10:00:00;;system;;true;1682
+3911;Return draft;2024-10-03T10:00:00;;system;;true;1682
+3912;Credits/deductions;2024-10-03T10:00:00;;system;;true;1682
+3913;Filing & payment;2024-10-03T10:00:00;;system;;true;1682
+3914;Year‑end advice;2024-10-03T10:00:00;;system;;true;1682
+3915;Assumptions sheet;2024-10-03T10:00:00;;system;;true;1683
+3916;3‑statement link;2024-10-03T10:00:00;;system;;true;1683
+3917;Scenario cases;2024-10-03T10:00:00;;system;;true;1683
+3918;Sensitivity table;2024-10-03T10:00:00;;system;;true;1683
+3919;Output charts;2024-10-03T10:00:00;;system;;true;1683
+3920;Payroll setup;2024-10-03T10:00:00;;system;;true;1684
+3921;Payslip run;2024-10-03T10:00:00;;system;;true;1684
+3922;Invoice prep;2024-10-03T10:00:00;;system;;true;1684
+3923;Aging follow‑up;2024-10-03T10:00:00;;system;;true;1684
+3924;Reporting;2024-10-03T10:00:00;;system;;true;1684
+3925;Budget model;2024-10-03T10:00:00;;system;;true;1685
+3926;Department inputs;2024-10-03T10:00:00;;system;;true;1685
+3927;Rolling forecast;2024-10-03T10:00:00;;system;;true;1685
+3928;Variance review;2024-10-03T10:00:00;;system;;true;1685
+3929;CFO pack;2024-10-03T10:00:00;;system;;true;1685
+3930;Tool selection;2024-10-03T10:00:00;;system;;true;1686
+3931;Routing rules;2024-10-03T10:00:00;;system;;true;1686
+3932;SLAs & escalation;2024-10-03T10:00:00;;system;;true;1686
+3933;Macros & templates;2024-10-03T10:00:00;;system;;true;1686
+3934;Reporting view;2024-10-03T10:00:00;;system;;true;1686
+3935;Info architecture;2024-10-03T10:00:00;;system;;true;1687
+3936;Article templates;2024-10-03T10:00:00;;system;;true;1687
+3937;Seed articles;2024-10-03T10:00:00;;system;;true;1687
+3938;Review workflow;2024-10-03T10:00:00;;system;;true;1687
+3939;Publish & measure;2024-10-03T10:00:00;;system;;true;1687
+3940;Widget setup;2024-10-03T10:00:00;;system;;true;1688
+3941;Playbooks;2024-10-03T10:00:00;;system;;true;1688
+3942;Handoffs;2024-10-03T10:00:00;;system;;true;1688
+3943;Hours & coverage;2024-10-03T10:00:00;;system;;true;1688
+3944;CSAT review;2024-10-03T10:00:00;;system;;true;1688
+3945;Survey design;2024-10-03T10:00:00;;system;;true;1689
+3946;Distribution plan;2024-10-03T10:00:00;;system;;true;1689
+3947;Response dashboard;2024-10-03T10:00:00;;system;;true;1689
+3948;Close‑the‑loop;2024-10-03T10:00:00;;system;;true;1689
+3949;Insights summary;2024-10-03T10:00:00;;system;;true;1689
+3950;SOP drafts;2024-10-03T10:00:00;;system;;true;1690
+3951;Quality rubrics;2024-10-03T10:00:00;;system;;true;1690
+3952;Scorecards;2024-10-03T10:00:00;;system;;true;1690
+3953;Calibration sessions;2024-10-03T10:00:00;;system;;true;1690
+3954;Coach notes;2024-10-03T10:00:00;;system;;true;1690
+3955;Tagging scheme;2024-10-03T10:00:00;;system;;true;1691
+3956;Dashboards;2024-10-03T10:00:00;;system;;true;1691
+3957;SLA metrics;2024-10-03T10:00:00;;system;;true;1691
+3958;Backlog insights;2024-10-03T10:00:00;;system;;true;1691
+3959;Quarterly report;2024-10-03T10:00:00;;system;;true;1691

@@ -1,15 +1,14 @@
 package com.freelance.app.service.mapper;
 
+import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.Tag;
+import com.freelance.app.service.dto.FavoriteOfferDTO;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.TagDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 /**
  * Mapper for the entity {@link Tag} and its DTO {@link TagDTO}.
@@ -19,8 +18,7 @@ public interface TagMapper extends EntityMapper<TagDTO, Tag> {
     @Mapping(target = "offers", source = "offers", qualifiedByName = "offerNameSet")
     TagDTO toDto(Tag s);
 
-    @Mapping(target = "offers", ignore = true)
-    @Mapping(target = "removeOffer", ignore = true)
+    @BeanMapping(ignoreByDefault = true)
     Tag toEntity(TagDTO tagDTO);
 
     @Named("offerName")
@@ -33,4 +31,7 @@ public interface TagMapper extends EntityMapper<TagDTO, Tag> {
     default Set<OfferDTO> toDtoOfferNameSet(Set<Offer> offer) {
         return offer.stream().map(this::toDtoOfferName).collect(Collectors.toSet());
     }
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget Tag entity, TagDTO dto);
 }
