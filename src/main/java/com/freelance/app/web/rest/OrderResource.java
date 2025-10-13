@@ -56,24 +56,23 @@ public class OrderResource {
      *
      * @param orderDTO the orderDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new orderDTO, or with status {@code 400 (Bad Request)} if the order has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<OrderDTO>> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
+    public Mono<ResponseEntity<OrderDTO>> createOrder(@Valid @RequestBody OrderDTO orderDTO) throws URISyntaxException {
         LOG.debug("REST request to save Order : {}", orderDTO);
         if (orderDTO.getId() != null) {
-            return Mono.error(new BadRequestAlertException("A new order cannot already have an ID", ENTITY_NAME, "idexists"));
+            throw new BadRequestAlertException("A new order cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return orderService
             .save(orderDTO)
-            .handle((result, sink) -> {
+            .map(result -> {
                 try {
-                    sink.next(
-                        ResponseEntity.created(new URI("/api/orders/" + result.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
+                    return ResponseEntity.created(new URI("/api/orders/" + result.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                        .body(result);
                 } catch (URISyntaxException e) {
-                    sink.error(new RuntimeException(e));
+                    throw new RuntimeException(e);
                 }
             });
     }
@@ -86,18 +85,19 @@ public class OrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated orderDTO,
      * or with status {@code 400 (Bad Request)} if the orderDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the orderDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<OrderDTO>> updateOrder(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody OrderDTO orderDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to update Order : {}, {}", id, orderDTO);
         if (orderDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, orderDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return orderRepository
@@ -127,18 +127,19 @@ public class OrderResource {
      * or with status {@code 400 (Bad Request)} if the orderDTO is not valid,
      * or with status {@code 404 (Not Found)} if the orderDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the orderDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<OrderDTO>> partialUpdateOrder(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody OrderDTO orderDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to partial update Order partially : {}, {}", id, orderDTO);
         if (orderDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, orderDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return orderRepository

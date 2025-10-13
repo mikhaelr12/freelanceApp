@@ -1,7 +1,7 @@
 package com.freelance.app.service.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import com.freelance.app.domain.enumeration.ProfileType;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -37,6 +37,8 @@ public class ProfileDTO implements Serializable {
 
     @Size(max = 50)
     private String lastModifiedBy;
+
+    private ProfileType profileType;
 
     private UserDTO user;
 
@@ -108,6 +110,14 @@ public class ProfileDTO implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    public ProfileType getProfileType() {
+        return profileType;
+    }
+
+    public void setProfileType(ProfileType profileType) {
+        this.profileType = profileType;
+    }
+
     public UserDTO getUser() {
         return user;
     }
@@ -165,6 +175,7 @@ public class ProfileDTO implements Serializable {
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
+            ", profileType='" + getProfileType() + "'" +
             ", user=" + getUser() +
             ", profilePicture=" + getProfilePicture() +
             ", skills=" + getSkills() +

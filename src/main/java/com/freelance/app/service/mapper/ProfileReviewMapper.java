@@ -1,13 +1,12 @@
 package com.freelance.app.service.mapper;
 
+import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.ProfileReview;
+import com.freelance.app.service.dto.FavoriteOfferDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileReviewDTO;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 /**
  * Mapper for the entity {@link ProfileReview} and its DTO {@link ProfileReviewDTO}.
@@ -22,4 +21,10 @@ public interface ProfileReviewMapper extends EntityMapper<ProfileReviewDTO, Prof
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     ProfileDTO toDtoProfileId(Profile profile);
+
+    @BeanMapping(ignoreByDefault = true)
+    ProfileReview toEntity(ProfileReviewDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget ProfileReview entity, ProfileReviewDTO dto);
 }

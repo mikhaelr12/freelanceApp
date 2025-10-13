@@ -12,6 +12,7 @@ import com.freelance.app.IntegrationTest;
 import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.User;
+import com.freelance.app.domain.enumeration.ProfileType;
 import com.freelance.app.repository.EntityManager;
 import com.freelance.app.repository.FileObjectRepository;
 import com.freelance.app.repository.ProfileRepository;
@@ -67,6 +68,9 @@ class ProfileResourceIT {
     private static final String DEFAULT_LAST_MODIFIED_BY = "AAAAAAAAAA";
     private static final String UPDATED_LAST_MODIFIED_BY = "BBBBBBBBBB";
 
+    private static final ProfileType DEFAULT_PROFILE_TYPE = ProfileType.CLIENT;
+    private static final ProfileType UPDATED_PROFILE_TYPE = ProfileType.FREELANCER;
+
     private static final String ENTITY_API_URL = "/api/profiles";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -118,7 +122,8 @@ class ProfileResourceIT {
             .createdDate(DEFAULT_CREATED_DATE)
             .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE)
             .createdBy(DEFAULT_CREATED_BY)
-            .lastModifiedBy(DEFAULT_LAST_MODIFIED_BY);
+            .lastModifiedBy(DEFAULT_LAST_MODIFIED_BY)
+            .profileType(DEFAULT_PROFILE_TYPE);
     }
 
     /**
@@ -135,7 +140,8 @@ class ProfileResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
             .createdBy(UPDATED_CREATED_BY)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY);
+            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
+            .profileType(UPDATED_PROFILE_TYPE);
     }
 
     public static void deleteEntities(EntityManager em) {
@@ -304,7 +310,9 @@ class ProfileResourceIT {
             .jsonPath("$.[*].createdBy")
             .value(hasItem(DEFAULT_CREATED_BY))
             .jsonPath("$.[*].lastModifiedBy")
-            .value(hasItem(DEFAULT_LAST_MODIFIED_BY));
+            .value(hasItem(DEFAULT_LAST_MODIFIED_BY))
+            .jsonPath("$.[*].profileType")
+            .value(hasItem(DEFAULT_PROFILE_TYPE.toString()));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -355,7 +363,9 @@ class ProfileResourceIT {
             .jsonPath("$.createdBy")
             .value(is(DEFAULT_CREATED_BY))
             .jsonPath("$.lastModifiedBy")
-            .value(is(DEFAULT_LAST_MODIFIED_BY));
+            .value(is(DEFAULT_LAST_MODIFIED_BY))
+            .jsonPath("$.profileType")
+            .value(is(DEFAULT_PROFILE_TYPE.toString()));
     }
 
     @Test
@@ -673,6 +683,36 @@ class ProfileResourceIT {
     }
 
     @Test
+    void getAllProfilesByProfileTypeIsEqualToSomething() {
+        // Initialize the database
+        insertedProfile = profileRepository.save(profile).block();
+
+        // Get all the profileList where profileType equals to
+        defaultProfileFiltering("profileType.equals=" + DEFAULT_PROFILE_TYPE, "profileType.equals=" + UPDATED_PROFILE_TYPE);
+    }
+
+    @Test
+    void getAllProfilesByProfileTypeIsInShouldWork() {
+        // Initialize the database
+        insertedProfile = profileRepository.save(profile).block();
+
+        // Get all the profileList where profileType in
+        defaultProfileFiltering(
+            "profileType.in=" + DEFAULT_PROFILE_TYPE + "," + UPDATED_PROFILE_TYPE,
+            "profileType.in=" + UPDATED_PROFILE_TYPE
+        );
+    }
+
+    @Test
+    void getAllProfilesByProfileTypeIsNullOrNotNull() {
+        // Initialize the database
+        insertedProfile = profileRepository.save(profile).block();
+
+        // Get all the profileList where profileType is not null
+        defaultProfileFiltering("profileType.specified=true", "profileType.specified=false");
+    }
+
+    @Test
     void getAllProfilesByUserIsEqualToSomething() {
         User user = UserResourceIT.createEntity();
         userRepository.save(user).block();
@@ -734,7 +774,9 @@ class ProfileResourceIT {
             .jsonPath("$.[*].createdBy")
             .value(hasItem(DEFAULT_CREATED_BY))
             .jsonPath("$.[*].lastModifiedBy")
-            .value(hasItem(DEFAULT_LAST_MODIFIED_BY));
+            .value(hasItem(DEFAULT_LAST_MODIFIED_BY))
+            .jsonPath("$.[*].profileType")
+            .value(hasItem(DEFAULT_PROFILE_TYPE.toString()));
 
         // Check, that the count call also returns 1
         webTestClient
@@ -813,7 +855,8 @@ class ProfileResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
             .createdBy(UPDATED_CREATED_BY)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY);
+            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
+            .profileType(UPDATED_PROFILE_TYPE);
         ProfileDTO profileDTO = profileMapper.toDto(updatedProfile);
 
         webTestClient
@@ -911,7 +954,8 @@ class ProfileResourceIT {
             .lastName(UPDATED_LAST_NAME)
             .description(UPDATED_DESCRIPTION)
             .createdDate(UPDATED_CREATED_DATE)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
+            .profileType(UPDATED_PROFILE_TYPE);
 
         webTestClient
             .patch()
@@ -946,7 +990,8 @@ class ProfileResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE)
             .createdBy(UPDATED_CREATED_BY)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY);
+            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
+            .profileType(UPDATED_PROFILE_TYPE);
 
         webTestClient
             .patch()

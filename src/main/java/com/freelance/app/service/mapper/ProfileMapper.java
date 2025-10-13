@@ -1,19 +1,10 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.FileObject;
-import com.freelance.app.domain.Profile;
-import com.freelance.app.domain.Skill;
-import com.freelance.app.domain.User;
-import com.freelance.app.service.dto.FileObjectDTO;
-import com.freelance.app.service.dto.ProfileDTO;
-import com.freelance.app.service.dto.SkillDTO;
-import com.freelance.app.service.dto.UserDTO;
+import com.freelance.app.domain.*;
+import com.freelance.app.service.dto.*;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 /**
  * Mapper for the entity {@link Profile} and its DTO {@link ProfileDTO}.
@@ -49,4 +40,7 @@ public interface ProfileMapper extends EntityMapper<ProfileDTO, Profile> {
     default Set<SkillDTO> toDtoSkillIdSet(Set<Skill> skill) {
         return skill.stream().map(this::toDtoSkillId).collect(Collectors.toSet());
     }
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, ignoreByDefault = true)
+    void partialUpdate(@MappingTarget Profile entity, ProfileDTO dto);
 }

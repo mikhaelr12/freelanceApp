@@ -9,7 +9,6 @@ import com.freelance.app.repository.rowmapper.OfferTypeRowMapper;
 import com.freelance.app.repository.rowmapper.ProfileRowMapper;
 import com.freelance.app.repository.sqlhelper.OfferSqlHelper;
 import com.freelance.app.repository.sqlhelper.OfferTypeSqlHelper;
-import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;

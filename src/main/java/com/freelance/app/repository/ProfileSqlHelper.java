@@ -1,4 +1,4 @@
-package com.freelance.app.repository.sqlhelper;
+package com.freelance.app.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ public class ProfileSqlHelper {
         columns.add(Column.aliased("last_modified_date", table, columnPrefix + "_last_modified_date"));
         columns.add(Column.aliased("created_by", table, columnPrefix + "_created_by"));
         columns.add(Column.aliased("last_modified_by", table, columnPrefix + "_last_modified_by"));
+        columns.add(Column.aliased("profile_type", table, columnPrefix + "_profile_type"));
 
         columns.add(Column.aliased("user_id", table, columnPrefix + "_user_id"));
         columns.add(Column.aliased("profile_picture_id", table, columnPrefix + "_profile_picture_id"));

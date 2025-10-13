@@ -56,24 +56,23 @@ public class MessageResource {
      *
      * @param messageDTO the messageDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new messageDTO, or with status {@code 400 (Bad Request)} if the message has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<MessageDTO>> createMessage(@Valid @RequestBody MessageDTO messageDTO) {
+    public Mono<ResponseEntity<MessageDTO>> createMessage(@Valid @RequestBody MessageDTO messageDTO) throws URISyntaxException {
         LOG.debug("REST request to save Message : {}", messageDTO);
         if (messageDTO.getId() != null) {
-            return Mono.error(new BadRequestAlertException("A new message cannot already have an ID", ENTITY_NAME, "idexists"));
+            throw new BadRequestAlertException("A new message cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return messageService
             .save(messageDTO)
-            .handle((result, sink) -> {
+            .map(result -> {
                 try {
-                    sink.next(
-                        ResponseEntity.created(new URI("/api/messages/" + result.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
+                    return ResponseEntity.created(new URI("/api/messages/" + result.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                        .body(result);
                 } catch (URISyntaxException e) {
-                    sink.error(new RuntimeException(e));
+                    throw new RuntimeException(e);
                 }
             });
     }
@@ -92,13 +91,13 @@ public class MessageResource {
     public Mono<ResponseEntity<MessageDTO>> updateMessage(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody MessageDTO messageDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to update Message : {}, {}", id, messageDTO);
         if (messageDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, messageDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return messageRepository
@@ -134,13 +133,13 @@ public class MessageResource {
     public Mono<ResponseEntity<MessageDTO>> partialUpdateMessage(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody MessageDTO messageDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to partial update Message partially : {}, {}", id, messageDTO);
         if (messageDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, messageDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return messageRepository

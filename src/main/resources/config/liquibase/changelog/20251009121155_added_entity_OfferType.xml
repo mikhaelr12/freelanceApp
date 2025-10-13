@@ -15,7 +15,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="ux_offer_type__name" />
+                <constraints nullable="false" />
             </column>
             <column name="created_date" type="${datetimeType}">
                 <constraints nullable="false" />
@@ -43,28 +43,16 @@
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
-    <!--
-        Load sample data generated with Faker.js
-        - This data can be easily edited using a CSV editor (or even MS Excel) and
-          is located in the 'src/main/resources/config/liquibase/fake-data' directory
-        - By default this data is applied when running with the JHipster 'dev' profile.
-          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
-          Spring Boot configuration key.
-    -->
-    <changeSet id="20251009121155-1-data" author="jhipster" context="faker">
-        <loadData
-                  file="config/liquibase/fake-data/offer_type.csv"
-                  separator=";"
-                  tableName="offer_type"
-                  usePreparedStatements="true">
-            <column name="id" type="numeric"/>
-            <column name="name" type="string"/>
-            <column name="created_date" type="date"/>
-            <column name="last_modified_date" type="date"/>
-            <column name="created_by" type="string"/>
-            <column name="last_modified_by" type="string"/>
-            <column name="active" type="boolean"/>
-            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
-        </loadData>
-    </changeSet>
+  <changeSet id="20251010165912-2-insert" author="mihairusu (generated)">
+    <loadData tableName="offer_type"
+              file="/config/liquibase/data/offertype.csv"
+              separator=";"
+              usePreparedStatements="true"/>
+  </changeSet>
+
+  <changeSet id="20251010170015-3-seq" author="mihairusu (generated)">
+    <sql>
+      SELECT setval('offer_type_id_seq', COALESCE((SELECT MAX(id) FROM offer_type), 1));
+    </sql>
+  </changeSet>
 </databaseChangeLog>

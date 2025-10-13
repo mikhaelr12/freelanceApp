@@ -1,14 +1,12 @@
 package com.freelance.app.domain.criteria;
 
+import com.freelance.app.domain.enumeration.ProfileType;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import org.springdoc.core.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.Filter;
-import tech.jhipster.service.filter.InstantFilter;
-import tech.jhipster.service.filter.LongFilter;
-import tech.jhipster.service.filter.StringFilter;
+import tech.jhipster.service.filter.*;
 
 /**
  * Criteria class for the {@link com.freelance.app.domain.Profile} entity. This class is used
@@ -22,6 +20,23 @@ import tech.jhipster.service.filter.StringFilter;
 @ParameterObject
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class ProfileCriteria implements Serializable, Criteria {
+
+    /**
+     * Class for filtering ProfileType
+     */
+    public static class ProfileTypeFilter extends Filter<ProfileType> {
+
+        public ProfileTypeFilter() {}
+
+        public ProfileTypeFilter(ProfileTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public ProfileTypeFilter copy() {
+            return new ProfileTypeFilter(this);
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -41,6 +56,8 @@ public class ProfileCriteria implements Serializable, Criteria {
 
     private StringFilter lastModifiedBy;
 
+    private ProfileTypeFilter profileType;
+
     private LongFilter userId;
 
     private LongFilter profilePictureId;
@@ -58,6 +75,7 @@ public class ProfileCriteria implements Serializable, Criteria {
         this.lastModifiedDate = other.optionalLastModifiedDate().map(InstantFilter::copy).orElse(null);
         this.createdBy = other.optionalCreatedBy().map(StringFilter::copy).orElse(null);
         this.lastModifiedBy = other.optionalLastModifiedBy().map(StringFilter::copy).orElse(null);
+        this.profileType = other.optionalProfileType().map(ProfileTypeFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.profilePictureId = other.optionalProfilePictureId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
@@ -220,6 +238,25 @@ public class ProfileCriteria implements Serializable, Criteria {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    public ProfileTypeFilter getProfileType() {
+        return profileType;
+    }
+
+    public Optional<ProfileTypeFilter> optionalProfileType() {
+        return Optional.ofNullable(profileType);
+    }
+
+    public ProfileTypeFilter profileType() {
+        if (profileType == null) {
+            setProfileType(new ProfileTypeFilter());
+        }
+        return profileType;
+    }
+
+    public void setProfileType(ProfileTypeFilter profileType) {
+        this.profileType = profileType;
+    }
+
     public LongFilter getUserId() {
         return userId;
     }
@@ -295,6 +332,7 @@ public class ProfileCriteria implements Serializable, Criteria {
             Objects.equals(lastModifiedDate, that.lastModifiedDate) &&
             Objects.equals(createdBy, that.createdBy) &&
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
+            Objects.equals(profileType, that.profileType) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(profilePictureId, that.profilePictureId) &&
             Objects.equals(distinct, that.distinct)
@@ -312,6 +350,7 @@ public class ProfileCriteria implements Serializable, Criteria {
             lastModifiedDate,
             createdBy,
             lastModifiedBy,
+            profileType,
             userId,
             profilePictureId,
             distinct
@@ -330,6 +369,7 @@ public class ProfileCriteria implements Serializable, Criteria {
             optionalLastModifiedDate().map(f -> "lastModifiedDate=" + f + ", ").orElse("") +
             optionalCreatedBy().map(f -> "createdBy=" + f + ", ").orElse("") +
             optionalLastModifiedBy().map(f -> "lastModifiedBy=" + f + ", ").orElse("") +
+            optionalProfileType().map(f -> "profileType=" + f + ", ").orElse("") +
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalProfilePictureId().map(f -> "profilePictureId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +

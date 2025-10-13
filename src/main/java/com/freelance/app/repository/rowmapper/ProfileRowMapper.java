@@ -1,6 +1,7 @@
 package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Profile;
+import com.freelance.app.domain.enumeration.ProfileType;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -33,6 +34,7 @@ public class ProfileRowMapper implements BiFunction<Row, String, Profile> {
         entity.setLastModifiedDate(converter.fromRow(row, prefix + "_last_modified_date", Instant.class));
         entity.setCreatedBy(converter.fromRow(row, prefix + "_created_by", String.class));
         entity.setLastModifiedBy(converter.fromRow(row, prefix + "_last_modified_by", String.class));
+        entity.setProfileType(converter.fromRow(row, prefix + "_profile_type", ProfileType.class));
         entity.setUserId(converter.fromRow(row, prefix + "_user_id", Long.class));
         entity.setProfilePictureId(converter.fromRow(row, prefix + "_profile_picture_id", Long.class));
         return entity;

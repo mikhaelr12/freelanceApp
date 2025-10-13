@@ -59,22 +59,21 @@ public class SubcategoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<SubcategoryDTO>> createSubcategory(@Valid @RequestBody SubcategoryDTO subcategoryDTO) {
+    public Mono<ResponseEntity<SubcategoryDTO>> createSubcategory(@Valid @RequestBody SubcategoryDTO subcategoryDTO)
+        throws URISyntaxException {
         LOG.debug("REST request to save Subcategory : {}", subcategoryDTO);
         if (subcategoryDTO.getId() != null) {
-            return Mono.error(new BadRequestAlertException("A new subcategory cannot already have an ID", ENTITY_NAME, "idexists"));
+            throw new BadRequestAlertException("A new subcategory cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return subcategoryService
             .save(subcategoryDTO)
-            .handle((result, sink) -> {
+            .map(result -> {
                 try {
-                    sink.next(
-                        ResponseEntity.created(new URI("/api/subcategories/" + result.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
+                    return ResponseEntity.created(new URI("/api/subcategories/" + result.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                        .body(result);
                 } catch (URISyntaxException e) {
-                    sink.error(new RuntimeException(e));
+                    throw new RuntimeException(e);
                 }
             });
     }
@@ -93,13 +92,13 @@ public class SubcategoryResource {
     public Mono<ResponseEntity<SubcategoryDTO>> updateSubcategory(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody SubcategoryDTO subcategoryDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to update Subcategory : {}, {}", id, subcategoryDTO);
         if (subcategoryDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, subcategoryDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return subcategoryRepository
@@ -129,18 +128,19 @@ public class SubcategoryResource {
      * or with status {@code 400 (Bad Request)} if the subcategoryDTO is not valid,
      * or with status {@code 404 (Not Found)} if the subcategoryDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the subcategoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<SubcategoryDTO>> partialUpdateSubcategory(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody SubcategoryDTO subcategoryDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to partial update Subcategory partially : {}, {}", id, subcategoryDTO);
         if (subcategoryDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, subcategoryDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return subcategoryRepository

@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntities as getFileObjects } from 'app/entities/file-object/file-object.reducer';
 import { getEntities as getSkills } from 'app/entities/skill/skill.reducer';
+import { ProfileType } from 'app/shared/model/enumerations/profile-type.model';
 import { createEntity, getEntity, reset, updateEntity } from './profile.reducer';
 
 export const ProfileUpdate = () => {
@@ -28,6 +29,7 @@ export const ProfileUpdate = () => {
   const loading = useAppSelector(state => state.profile.loading);
   const updating = useAppSelector(state => state.profile.updating);
   const updateSuccess = useAppSelector(state => state.profile.updateSuccess);
+  const profileTypeValues = Object.keys(ProfileType);
 
   const handleClose = () => {
     navigate(`/profile${location.search}`);
@@ -80,6 +82,7 @@ export const ProfileUpdate = () => {
           lastModifiedDate: displayDefaultDateTime(),
         }
       : {
+          profileType: 'CLIENT',
           ...profileEntity,
           createdDate: convertDateTimeFromServer(profileEntity.createdDate),
           lastModifiedDate: convertDateTimeFromServer(profileEntity.lastModifiedDate),
@@ -175,6 +178,13 @@ export const ProfileUpdate = () => {
                   maxLength: { value: 50, message: 'This field cannot be longer than 50 characters.' },
                 }}
               />
+              <ValidatedField label="Profile Type" id="profile-profileType" name="profileType" data-cy="profileType" type="select">
+                {profileTypeValues.map(profileType => (
+                  <option value={profileType} key={profileType}>
+                    {profileType}
+                  </option>
+                ))}
+              </ValidatedField>
               <ValidatedField id="profile-user" name="user" data-cy="user" label="User" type="select">
                 <option value="" key="0" />
                 {users

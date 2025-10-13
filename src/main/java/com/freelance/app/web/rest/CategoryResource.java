@@ -56,24 +56,23 @@ public class CategoryResource {
      *
      * @param categoryDTO the categoryDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new categoryDTO, or with status {@code 400 (Bad Request)} if the category has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<CategoryDTO>> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+    public Mono<ResponseEntity<CategoryDTO>> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) throws URISyntaxException {
         LOG.debug("REST request to save Category : {}", categoryDTO);
         if (categoryDTO.getId() != null) {
-            return Mono.error(new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists"));
+            throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return categoryService
             .save(categoryDTO)
-            .handle((result, sink) -> {
+            .map(result -> {
                 try {
-                    sink.next(
-                        ResponseEntity.created(new URI("/api/categories/" + result.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
+                    return ResponseEntity.created(new URI("/api/categories/" + result.getId()))
+                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                        .body(result);
                 } catch (URISyntaxException e) {
-                    sink.error(new RuntimeException(e));
+                    throw new RuntimeException(e);
                 }
             });
     }
@@ -86,18 +85,19 @@ public class CategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated categoryDTO,
      * or with status {@code 400 (Bad Request)} if the categoryDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the categoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<CategoryDTO>> updateCategory(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody CategoryDTO categoryDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to update Category : {}, {}", id, categoryDTO);
         if (categoryDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, categoryDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return categoryRepository
@@ -127,18 +127,19 @@ public class CategoryResource {
      * or with status {@code 400 (Bad Request)} if the categoryDTO is not valid,
      * or with status {@code 404 (Not Found)} if the categoryDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the categoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<CategoryDTO>> partialUpdateCategory(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody CategoryDTO categoryDTO
-    ) {
+    ) throws URISyntaxException {
         LOG.debug("REST request to partial update Category partially : {}, {}", id, categoryDTO);
         if (categoryDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, categoryDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         return categoryRepository

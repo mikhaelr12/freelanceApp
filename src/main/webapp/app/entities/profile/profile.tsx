@@ -132,6 +132,9 @@ export const Profile = () => {
                 <th className="hand" onClick={sort('lastModifiedBy')}>
                   Last Modified By <FontAwesomeIcon icon={getSortIconByFieldName('lastModifiedBy')} />
                 </th>
+                <th className="hand" onClick={sort('profileType')}>
+                  Profile Type <FontAwesomeIcon icon={getSortIconByFieldName('profileType')} />
+                </th>
                 <th>
                   User <FontAwesomeIcon icon="sort" />
                 </th>
@@ -158,6 +161,7 @@ export const Profile = () => {
                   </td>
                   <td>{profile.createdBy}</td>
                   <td>{profile.lastModifiedBy}</td>
+                  <td>{profile.profileType}</td>
                   <td>{profile.user ? profile.user.login : ''}</td>
                   <td>
                     {profile.profilePicture ? (
