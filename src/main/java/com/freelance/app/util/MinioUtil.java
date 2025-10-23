@@ -1,0 +1,53 @@
+package com.freelance.app.util;
+
+import io.minio.*;
+import io.minio.errors.*;
+import io.minio.http.Method;
+import java.io.InputStream;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MinioUtil {
+
+    private static final int PART_SIZE = 10 * 1024 * 1024;
+    private final MinioClient minio;
+
+    public MinioUtil(MinioClient minio) {
+        this.minio = minio;
+    }
+
+    public void createBucketIfMissing(String bucket) throws Exception {
+        if (!minio.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
+            minio.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
+        }
+    }
+
+    public ObjectWriteResponse uploadStream(String bucket, String object, InputStream in, String contentType) throws Exception {
+        return minio.putObject(
+            PutObjectArgs.builder()
+                .bucket(bucket)
+                .object(object)
+                .contentType(contentType != null ? contentType : "application/octet-stream")
+                .stream(in, -1, PART_SIZE)
+                .build()
+        );
+    }
+
+    public InputStream download(String bucket, String object) throws Exception {
+        return minio.getObject(GetObjectArgs.builder().bucket(bucket).object(object).build());
+    }
+
+    public void delete(String bucket, String object) throws Exception {
+        minio.removeObject(RemoveObjectArgs.builder().bucket(bucket).object(object).build());
+    }
+
+    public StatObjectResponse stat(String bucket, String object) throws Exception {
+        return minio.statObject(StatObjectArgs.builder().bucket(bucket).object(object).build());
+    }
+
+    public String presignedGet(String bucket, String object, int seconds) throws Exception {
+        return minio.getPresignedObjectUrl(
+            GetPresignedObjectUrlArgs.builder().method(Method.GET).bucket(bucket).object(object).expiry(seconds).build()
+        );
+    }
+}

@@ -4,6 +4,7 @@ import com.freelance.app.domain.criteria.FileObjectCriteria;
 import com.freelance.app.repository.FileObjectRepository;
 import com.freelance.app.service.dto.FileObjectDTO;
 import com.freelance.app.service.mapper.FileObjectMapper;
+import com.freelance.app.util.MinioUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +26,12 @@ public class FileObjectService {
 
     private final FileObjectMapper fileObjectMapper;
 
-    public FileObjectService(FileObjectRepository fileObjectRepository, FileObjectMapper fileObjectMapper) {
+    private final MinioUtil minioUtil;
+
+    public FileObjectService(FileObjectRepository fileObjectRepository, FileObjectMapper fileObjectMapper, MinioUtil minioUtil) {
         this.fileObjectRepository = fileObjectRepository;
         this.fileObjectMapper = fileObjectMapper;
+        this.minioUtil = minioUtil;
     }
 
     /**
