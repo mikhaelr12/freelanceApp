@@ -287,6 +287,11 @@
             <artifactId>testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+      <groupId>io.minio</groupId>
+      <artifactId>minio</artifactId>
+      <version>8.5.8</version>
+    </dependency>
     </dependencies>
 
     <build>
