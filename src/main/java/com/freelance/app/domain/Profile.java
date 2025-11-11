@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -71,6 +72,9 @@ public class Profile implements Serializable {
 
     @Column("profile_picture_id")
     private Long profilePictureId;
+
+    @Column("verified")
+    private Boolean verified;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -256,6 +260,14 @@ public class Profile implements Serializable {
 
     public void setProfilePictureId(Long fileObject) {
         this.profilePictureId = fileObject;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

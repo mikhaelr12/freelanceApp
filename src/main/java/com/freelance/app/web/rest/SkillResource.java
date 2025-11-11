@@ -56,23 +56,24 @@ public class SkillResource {
      *
      * @param skillDTO the skillDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new skillDTO, or with status {@code 400 (Bad Request)} if the skill has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<SkillDTO>> createSkill(@Valid @RequestBody SkillDTO skillDTO) throws URISyntaxException {
+    public Mono<ResponseEntity<SkillDTO>> createSkill(@Valid @RequestBody SkillDTO skillDTO) {
         LOG.debug("REST request to save Skill : {}", skillDTO);
         if (skillDTO.getId() != null) {
             throw new BadRequestAlertException("A new skill cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return skillService
             .save(skillDTO)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/skills/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/skills/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }

@@ -21,7 +21,7 @@ public interface SkillMapper extends EntityMapper<SkillDTO, Skill> {
     @Mapping(target = "profiles", source = "profiles", qualifiedByName = "profileIdSet")
     SkillDTO toDto(Skill s);
 
-    @BeanMapping(ignoreByDefault = true)
+    //    @BeanMapping(ignoreByDefault = true)
     Skill toEntity(SkillDTO skillDTO);
 
     @Named("categoryName")
