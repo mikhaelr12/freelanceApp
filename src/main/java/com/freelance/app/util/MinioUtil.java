@@ -22,14 +22,9 @@ public class MinioUtil {
         }
     }
 
-    public ObjectWriteResponse uploadStream(String bucket, String object, InputStream in, String contentType) throws Exception {
+    public ObjectWriteResponse uploadStream(String bucket, String object, InputStream in) throws Exception {
         return minio.putObject(
-            PutObjectArgs.builder()
-                .bucket(bucket)
-                .object(object)
-                .contentType(contentType != null ? contentType : "application/octet-stream")
-                .stream(in, -1, PART_SIZE)
-                .build()
+            PutObjectArgs.builder().bucket(bucket).object(object).contentType("application/octet-stream").stream(in, -1, PART_SIZE).build()
         );
     }
 

@@ -1,9 +1,12 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.criteria.ProfileCriteria;
 import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.service.ProfileService;
+import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
+import com.freelance.app.service.dto.ProfileEditDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.ForwardedHeaderUtils;
@@ -56,27 +61,14 @@ public class ProfileResource {
      *
      * @param profileDTO the profileDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileDTO, or with status {@code 400 (Bad Request)} if the profile has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("")
-    public Mono<ResponseEntity<ProfileDTO>> createProfile(@Valid @RequestBody ProfileDTO profileDTO) throws URISyntaxException {
+    @PostMapping(value = "")
+    public Mono<ResponseEntity<Profile>> createProfile(@RequestBody ProfileCreationDTO profileDTO) {
         LOG.debug("REST request to save Profile : {}", profileDTO);
-        if (profileDTO.getId() != null) {
-            throw new BadRequestAlertException("A new profile cannot already have an ID", ENTITY_NAME, "idexists");
-        }
         return profileService
-            .save(profileDTO)
-            .handle((result, sink) -> {
-                try {
-                    sink.next(
-                        ResponseEntity.created(new URI("/api/profiles/" + result.getId()))
-                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
-                } catch (URISyntaxException e) {
-                    sink.error(new RuntimeException(e));
-                }
-            });
+            .createProfile(profileDTO)
+            .map(ResponseEntity::ok)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile could not be created")));
     }
 
     /**
@@ -87,37 +79,14 @@ public class ProfileResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileDTO,
      * or with status {@code 400 (Bad Request)} if the profileDTO is not valid,
      * or with status {@code 500 (Internal Server Error)} if the profileDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<ProfileDTO>> updateProfile(
+    public Mono<ResponseEntity<Void>> updateProfile(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody ProfileDTO profileDTO
-    ) throws URISyntaxException {
+        @Valid @RequestBody ProfileEditDTO profileDTO
+    ) {
         LOG.debug("REST request to update Profile : {}, {}", id, profileDTO);
-        if (profileDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, profileDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        return profileRepository
-            .existsById(id)
-            .flatMap(exists -> {
-                if (!exists) {
-                    return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
-                }
-
-                return profileService
-                    .update(profileDTO)
-                    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                    .map(result ->
-                        ResponseEntity.ok()
-                            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
-            });
+        return profileService.update(profileDTO, id).then(Mono.just(ResponseEntity.ok().build()));
     }
 
     /**
@@ -129,19 +98,18 @@ public class ProfileResource {
      * or with status {@code 400 (Bad Request)} if the profileDTO is not valid,
      * or with status {@code 404 (Not Found)} if the profileDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the profileDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<ProfileDTO>> partialUpdateProfile(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody ProfileDTO profileDTO
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Profile partially : {}, {}", id, profileDTO);
         if (profileDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, profileDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
         return profileRepository
@@ -237,4 +205,7 @@ public class ProfileResource {
                 )
             );
     }
+
+    @PostMapping(value = "/request-verification", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<Void>> requestVerification(@RequestPart FilePart verificationPhoto) {}
 }
