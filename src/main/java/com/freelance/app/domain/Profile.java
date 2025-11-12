@@ -270,6 +270,11 @@ public class Profile implements Serializable {
         this.verified = verified;
     }
 
+    public Profile verified(Boolean verified) {
+        this.setVerified(verified);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override

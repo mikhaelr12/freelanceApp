@@ -3,7 +3,10 @@ package com.freelance.app.util;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,14 +25,10 @@ public class MinioUtil {
         }
     }
 
-    public ObjectWriteResponse uploadStream(String bucket, String object, InputStream in, String contentType) throws Exception {
+    public ObjectWriteResponse uploadFile(String bucketName, String objectName, InputStream inputStream)
+        throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         return minio.putObject(
-            PutObjectArgs.builder()
-                .bucket(bucket)
-                .object(object)
-                .contentType(contentType != null ? contentType : "application/octet-stream")
-                .stream(in, -1, PART_SIZE)
-                .build()
+            PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(inputStream, inputStream.available(), -1).build()
         );
     }
 
