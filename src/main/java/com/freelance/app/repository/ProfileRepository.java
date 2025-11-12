@@ -54,6 +54,8 @@ public interface ProfileRepository extends ReactiveCrudRepository<Profile, Long>
 
     @Override
     Mono<Void> deleteById(Long id);
+
+    Mono<Profile> findByUserId(Long id);
 }
 
 interface ProfileRepositoryInternal {

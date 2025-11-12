@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.ForwardedHeaderUtils;
@@ -74,7 +75,7 @@ public class ProfileResource {
     /**
      * {@code PUT  /profiles/:id} : Updates an existing profile.
      *
-     * @param id the id of the profileDTO to save.
+     * @param id         the id of the profileDTO to save.
      * @param profileDTO the profileDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileDTO,
      * or with status {@code 400 (Bad Request)} if the profileDTO is not valid,
@@ -92,14 +93,14 @@ public class ProfileResource {
     /**
      * {@code PATCH  /profiles/:id} : Partial updates given fields of an existing profile, field will ignore if it is null
      *
-     * @param id the id of the profileDTO to save.
+     * @param id         the id of the profileDTO to save.
      * @param profileDTO the profileDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileDTO,
      * or with status {@code 400 (Bad Request)} if the profileDTO is not valid,
      * or with status {@code 404 (Not Found)} if the profileDTO is not found,
      * or with status {@code 500 (Internal Server Error)} if the profileDTO couldn't be updated.
      */
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    // @PatchMapping(value = "/{id}", consumes = {"application/json", "application/merge-patch+json"})
     public Mono<ResponseEntity<ProfileDTO>> partialUpdateProfile(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody ProfileDTO profileDTO
@@ -135,7 +136,7 @@ public class ProfileResource {
      * {@code GET  /profiles} : get all the profiles.
      *
      * @param pageable the pagination information.
-     * @param request a {@link ServerHttpRequest} request.
+     * @param request  a {@link ServerHttpRequest} request.
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
      */
@@ -207,5 +208,13 @@ public class ProfileResource {
     }
 
     @PostMapping(value = "/request-verification", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> requestVerification(@RequestPart FilePart verificationPhoto) {}
+    public Mono<ResponseEntity<Void>> requestVerification(@RequestPart("verification-photo") FilePart verificationPhoto) {
+        return profileService.requestVerification(verificationPhoto).then(Mono.just(ResponseEntity.ok().build()));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/verify-profile/{id}")
+    public Mono<ResponseEntity<Void>> verifyProfile(@PathVariable(value = "id") final Long id) {
+        return profileService.verifyProfile(id).then(Mono.just(ResponseEntity.ok().build()));
+    }
 }

@@ -66,3 +66,4 @@ application:
     url:
     access-key:
     secret-key:
+    bucket-name:

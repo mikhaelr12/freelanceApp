@@ -28,10 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -215,8 +218,10 @@ public class ProfileService {
      * @return a Mono to signal the deletion
      */
     public Mono<Void> delete(Long id) {
-        LOG.debug("Request to delete Profile : {}", id);
-        return profileRepository.deleteById(id);
+        return profileRepository
+            .findById(id)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
+            .then(profileRepository.deleteById(id));
     }
 
     @Transactional
@@ -256,15 +261,24 @@ public class ProfileService {
 
     public Mono<Void> requestVerification(FilePart verificationPhoto) {
         return SecurityUtils.getCurrentUserLogin()
+            .switchIfEmpty(Mono.error(new IllegalStateException("No authenticated user")))
             .flatMap(login ->
                 userRepository
                     .findOneByLogin(login)
+                    .switchIfEmpty(Mono.error(new IllegalStateException("User not found: " + login)))
                     .flatMap(user ->
                         profileRepository
-                            .findById(user.getId())
+                            .findByUserId(user.getId())
                             .flatMap(profile -> {
-                                if (profile.getVerified()) return Mono.error(new IllegalStateException("User already verified: " + login));
-                                return processVerificationPicture(verificationPhoto, login);
+                                if (Boolean.TRUE.equals(profile.getVerified())) {
+                                    return Mono.error(new IllegalStateException("User already verified: " + login));
+                                }
+                                return processVerificationPicture(verificationPhoto, login)
+                                    .flatMap(file -> {
+                                        profile.setLastModifiedDate(Instant.now());
+                                        return profileRepository.save(profile);
+                                    })
+                                    .then();
                             })
                     )
             )
@@ -301,47 +315,44 @@ public class ProfileService {
     //    }
     //
     //
-    private Mono<Void> processVerificationPicture(FilePart profilePicture, String userLogin) {
+    private Mono<FileObject> processVerificationPicture(FilePart verificationPicture, String userLogin) {
         final String bucket = applicationProperties.getMinio().getBucketName();
-        final String original = profilePicture.filename();
+        final String original = Optional.of(verificationPicture.filename()).orElse("file.bin");
         final String ext = original.contains(".") ? original.substring(original.lastIndexOf('.') + 1) : "bin";
-        final String contentType = Optional.ofNullable(profilePicture.headers().getContentType())
+        final String contentType = Optional.ofNullable(verificationPicture.headers().getContentType())
             .map(MediaType::toString)
             .orElse("application/octet-stream");
-        // users/{login}/avatar/{uuid}.{ext}
         final String objectKey = "users/%s/verification/%s.%s".formatted(userLogin, UUID.randomUUID(), ext);
 
-        return DataBufferUtils.join(profilePicture.content())
-            .flatMap(buf -> {
-                byte[] bytes = new byte[buf.readableByteCount()];
-                buf.read(bytes);
-                DataBufferUtils.release(buf);
+        return DataBufferUtils.join(verificationPicture.content()).flatMap(buf -> {
+            byte[] bytes = new byte[buf.readableByteCount()];
+            buf.read(bytes);
+            DataBufferUtils.release(buf);
 
-                String checksum = sha256(bytes);
-                long size = bytes.length;
+            String checksum = sha256(bytes);
+            long size = bytes.length;
 
-                Mono<Void> uploadMono = Mono.fromCallable(() -> {
-                    minioUtil.createBucketIfMissing(bucket);
-                    try (InputStream in = new ByteArrayInputStream(bytes)) {
-                        minioUtil.uploadStream(bucket, objectKey, in);
-                    }
-                    return (Void) null;
-                }).subscribeOn(Schedulers.boundedElastic());
+            Mono<Void> uploadMono = Mono.fromCallable(() -> {
+                minioUtil.createBucketIfMissing(bucket);
+                try (InputStream in = new ByteArrayInputStream(bytes)) {
+                    minioUtil.uploadFile(bucket, objectKey, in);
+                }
+                return (Void) null;
+            }).subscribeOn(Schedulers.boundedElastic());
 
-                return uploadMono.then(
-                    fileObjectRepository.save(
-                        new FileObject()
-                            .bucket(bucket)
-                            .objectKey(objectKey)
-                            .contentType(contentType)
-                            .fileSize(size)
-                            .checksum(checksum)
-                            .durationSeconds(0)
-                            .createdDate(Instant.now())
-                    )
-                );
-            })
-            .then();
+            return uploadMono.then(
+                fileObjectRepository.save(
+                    new FileObject()
+                        .bucket(bucket)
+                        .objectKey(objectKey)
+                        .contentType(contentType)
+                        .fileSize(size)
+                        .checksum(checksum)
+                        .durationSeconds(0)
+                        .createdDate(Instant.now())
+                )
+            );
+        });
     }
 
     private static String sha256(byte[] data) {
@@ -352,5 +363,15 @@ public class ProfileService {
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public Mono<Void> verifyProfile(Long id) {
+        return profileRepository
+            .findById(id)
+            .flatMap(profile -> {
+                profile.setVerified(true);
+                return profileRepository.save(profile);
+            })
+            .then();
     }
 }
