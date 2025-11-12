@@ -50,11 +50,8 @@ public class ProfileResource {
 
     private final ProfileService profileService;
 
-    private final ProfileRepository profileRepository;
-
-    public ProfileResource(ProfileService profileService, ProfileRepository profileRepository) {
+    public ProfileResource(ProfileService profileService) {
         this.profileService = profileService;
-        this.profileRepository = profileRepository;
     }
 
     /**
@@ -88,48 +85,6 @@ public class ProfileResource {
     ) {
         LOG.debug("REST request to update Profile : {}, {}", id, profileDTO);
         return profileService.update(profileDTO, id).then(Mono.just(ResponseEntity.ok().build()));
-    }
-
-    /**
-     * {@code PATCH  /profiles/:id} : Partial updates given fields of an existing profile, field will ignore if it is null
-     *
-     * @param id         the id of the profileDTO to save.
-     * @param profileDTO the profileDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileDTO,
-     * or with status {@code 400 (Bad Request)} if the profileDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the profileDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the profileDTO couldn't be updated.
-     */
-    // @PatchMapping(value = "/{id}", consumes = {"application/json", "application/merge-patch+json"})
-    public Mono<ResponseEntity<ProfileDTO>> partialUpdateProfile(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody ProfileDTO profileDTO
-    ) {
-        LOG.debug("REST request to partial update Profile partially : {}, {}", id, profileDTO);
-        if (profileDTO.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
-        }
-        if (!Objects.equals(id, profileDTO.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
-        }
-
-        return profileRepository
-            .existsById(id)
-            .flatMap(exists -> {
-                if (!exists) {
-                    return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
-                }
-
-                Mono<ProfileDTO> result = profileService.partialUpdate(profileDTO);
-
-                return result
-                    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                    .map(res ->
-                        ResponseEntity.ok()
-                            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, res.getId().toString()))
-                            .body(res)
-                    );
-            });
     }
 
     /**
@@ -206,15 +161,10 @@ public class ProfileResource {
                 )
             );
     }
-
-    @PostMapping(value = "/request-verification", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> requestVerification(@RequestPart("verification-photo") FilePart verificationPhoto) {
-        return profileService.requestVerification(verificationPhoto).then(Mono.just(ResponseEntity.ok().build()));
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/verify-profile/{id}")
-    public Mono<ResponseEntity<Void>> verifyProfile(@PathVariable(value = "id") final Long id) {
-        return profileService.verifyProfile(id).then(Mono.just(ResponseEntity.ok().build()));
-    }
+    //    @PreAuthorize("hasRole('ADMIN')")
+    //    @PatchMapping("/decline-verification/{id}")
+    //    public Mono<ResponseEntity<Void>> declineVerification(@PathVariable("id") final Long id,
+    //                                                          @RequestBody String message) {
+    //        return profileService.declineVerification(id).then(Mono.just(ResponseEntity.ok().build()));
+    //    }
 }

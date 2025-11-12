@@ -78,17 +78,6 @@ public class ProfileService {
     }
 
     /**
-     * Save a profile.
-     *
-     * @param profileDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<ProfileDTO> save(ProfileDTO profileDTO) {
-        LOG.debug("Request to save Profile : {}", profileDTO);
-        return profileRepository.save(profileMapper.toEntity(profileDTO)).map(profileMapper::toDto);
-    }
-
-    /**
      * Update a profile.
      *
      * @param dto the entity to update.
@@ -115,48 +104,6 @@ public class ProfileService {
             .then();
     }
 
-    private Mono<Set<Skill>> updateSkills(Set<Long> skillIds, Profile profile) {
-        Set<Long> ids = (skillIds == null) ? Set.of() : skillIds;
-        Set<Skill> existing = profile.getSkills() == null ? Set.of() : profile.getSkills();
-
-        return skillRepository
-            .findAllById(ids)
-            .collect(Collectors.toSet())
-            .map(found -> {
-                Set<Skill> toAdd = new HashSet<>(found);
-                toAdd.removeAll(existing);
-                Set<Skill> toRemove = new HashSet<>(existing);
-                toRemove.removeAll(found);
-
-                Set<Skill> newSkills = new HashSet<>(existing);
-                newSkills.removeAll(toRemove);
-                newSkills.addAll(toAdd);
-
-                profile.setSkills(newSkills);
-                return newSkills;
-            });
-    }
-
-    /**
-     * Partially update a profile.
-     *
-     * @param profileDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Mono<ProfileDTO> partialUpdate(ProfileDTO profileDTO) {
-        LOG.debug("Request to partially update Profile : {}", profileDTO);
-
-        return profileRepository
-            .findById(profileDTO.getId())
-            .map(existingProfile -> {
-                profileMapper.partialUpdate(existingProfile, profileDTO);
-
-                return existingProfile;
-            })
-            .flatMap(profileRepository::save)
-            .map(profileMapper::toDto);
-    }
-
     /**
      * Find profiles by Criteria.
      *
@@ -178,25 +125,6 @@ public class ProfileService {
     public Mono<Long> countByCriteria(ProfileCriteria criteria) {
         LOG.debug("Request to get the count of all Profiles by Criteria");
         return profileRepository.countByCriteria(criteria);
-    }
-
-    /**
-     * Get all the profiles with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<ProfileDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return profileRepository.findAllWithEagerRelationships(pageable).map(profileMapper::toDto);
-    }
-
-    /**
-     * Returns the number of profiles available.
-     *
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return profileRepository.count();
     }
 
     /**
@@ -259,119 +187,28 @@ public class ProfileService {
             );
     }
 
-    public Mono<Void> requestVerification(FilePart verificationPhoto) {
-        return SecurityUtils.getCurrentUserLogin()
-            .switchIfEmpty(Mono.error(new IllegalStateException("No authenticated user")))
-            .flatMap(login ->
-                userRepository
-                    .findOneByLogin(login)
-                    .switchIfEmpty(Mono.error(new IllegalStateException("User not found: " + login)))
-                    .flatMap(user ->
-                        profileRepository
-                            .findByUserId(user.getId())
-                            .flatMap(profile -> {
-                                if (Boolean.TRUE.equals(profile.getVerified())) {
-                                    return Mono.error(new IllegalStateException("User already verified: " + login));
-                                }
-                                return processVerificationPicture(verificationPhoto, login)
-                                    .flatMap(file -> {
-                                        profile.setLastModifiedDate(Instant.now());
-                                        return profileRepository.save(profile);
-                                    })
-                                    .then();
-                            })
-                    )
-            )
-            .then();
-    }
+    private Mono<Set<Skill>> updateSkills(Set<Long> skillIds, Profile profile) {
+        Set<Long> ids = (skillIds == null) ? Set.of() : skillIds;
+        Set<Skill> existing = profile.getSkills() == null ? Set.of() : profile.getSkills();
 
-    //    @Transactional
-    //    public Mono<Profile> createProfile(ProfileCreationDTO dto, @Nullable FilePart profilePicture) {
-    //        return SecurityUtils.getCurrentUserLogin()
-    //            .switchIfEmpty(Mono.error(new IllegalStateException("No authenticated user")))
-    //            .flatMap(login ->
-    //                userRepository.findOneByLogin(login)
-    //                    .switchIfEmpty(Mono.error(new IllegalStateException("User not found: " + login)))
-    //                    .flatMap(user -> {
-    //                        Mono<FileObject> avatarMono = profilePicture != null
-    //                            ? processProfilePicture(profilePicture, login)
-    //                            : Mono.empty();
+        return skillRepository
+            .findAllById(ids)
+            .collect(Collectors.toSet())
+            .map(found -> {
+                Set<Skill> toAdd = new HashSet<>(found);
+                toAdd.removeAll(existing);
+                Set<Skill> toRemove = new HashSet<>(existing);
+                toRemove.removeAll(found);
+
+                Set<Skill> newSkills = new HashSet<>(existing);
+                newSkills.removeAll(toRemove);
+                newSkills.addAll(toAdd);
+
+                profile.setSkills(newSkills);
+                return newSkills;
+            });
+    }
+    //    public Mono<Void> declineVerification(Long id) {
     //
-    //                        return avatarMono.defaultIfEmpty(null)
-    //                            .flatMap(avatar -> {
-    //                                Profile p = new Profile()
-    //                                    .firstName(dto.firstName())
-    //                                    .lastName(dto.lastName())
-    //                                    .createdDate(Instant.now())
-    //                                    .createdBy(login)
-    //                                    .verified(false);
-    //                                if (dto.description() != null) p.setDescription(dto.description());
-    //                                p.setUser(user);
-    //                                p.setProfilePicture(avatar);
-    //                                return profileRepository.save(p);
-    //                            });
-    //                    })
-    //            );
     //    }
-    //
-    //
-    private Mono<FileObject> processVerificationPicture(FilePart verificationPicture, String userLogin) {
-        final String bucket = applicationProperties.getMinio().getBucketName();
-        final String original = Optional.of(verificationPicture.filename()).orElse("file.bin");
-        final String ext = original.contains(".") ? original.substring(original.lastIndexOf('.') + 1) : "bin";
-        final String contentType = Optional.ofNullable(verificationPicture.headers().getContentType())
-            .map(MediaType::toString)
-            .orElse("application/octet-stream");
-        final String objectKey = "users/%s/verification/%s.%s".formatted(userLogin, UUID.randomUUID(), ext);
-
-        return DataBufferUtils.join(verificationPicture.content()).flatMap(buf -> {
-            byte[] bytes = new byte[buf.readableByteCount()];
-            buf.read(bytes);
-            DataBufferUtils.release(buf);
-
-            String checksum = sha256(bytes);
-            long size = bytes.length;
-
-            Mono<Void> uploadMono = Mono.fromCallable(() -> {
-                minioUtil.createBucketIfMissing(bucket);
-                try (InputStream in = new ByteArrayInputStream(bytes)) {
-                    minioUtil.uploadFile(bucket, objectKey, in);
-                }
-                return (Void) null;
-            }).subscribeOn(Schedulers.boundedElastic());
-
-            return uploadMono.then(
-                fileObjectRepository.save(
-                    new FileObject()
-                        .bucket(bucket)
-                        .objectKey(objectKey)
-                        .contentType(contentType)
-                        .fileSize(size)
-                        .checksum(checksum)
-                        .durationSeconds(0)
-                        .createdDate(Instant.now())
-                )
-            );
-        });
-    }
-
-    private static String sha256(byte[] data) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(data);
-            return HexFormat.of().formatHex(md.digest());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public Mono<Void> verifyProfile(Long id) {
-        return profileRepository
-            .findById(id)
-            .flatMap(profile -> {
-                profile.setVerified(true);
-                return profileRepository.save(profile);
-            })
-            .then();
-    }
 }

@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "changelogDate": "20251112112923"
+  },
+  "dto": "no",
+  "fields": [],
+  "jpaMetamodelFiltering": true,
+  "name": "VerificationRequest",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "profile",
+      "relationshipName": "profile",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "id": false,
+      "otherEntityField": "id",
+      "otherEntityName": "fileObject",
+      "otherEntityRelationshipName": "verificationRequest",
+      "relationshipName": "fileObject",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}
