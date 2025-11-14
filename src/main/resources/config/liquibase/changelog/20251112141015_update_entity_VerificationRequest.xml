@@ -26,4 +26,10 @@
       <column name="status" type="varchar(255)"/>
     </addColumn>
   </changeSet>
+
+  <changeSet id="20251113144821-3-add-message-column" author="mihairusu">
+    <addColumn tableName="verification_request">
+      <column name="message" type="varchar(255)"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

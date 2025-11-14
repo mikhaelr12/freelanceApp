@@ -37,23 +37,11 @@ public class VerificationRequest extends AbstractAuditingEntity<Long> implements
     @Column("file_object_id")
     private Long fileObjectId;
 
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
-
     @Column("status")
     private VerificationRequestStatus status;
+
+    @Column("message")
+    private String message;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -122,44 +110,12 @@ public class VerificationRequest extends AbstractAuditingEntity<Long> implements
         this.status = status;
     }
 
-    @Override
-    public Instant getCreatedDate() {
-        return createdDate;
+    public String getMessage() {
+        return message;
     }
 
-    @Override
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    @Override
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    @Override
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    @Override
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    @Override
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Override
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    @Override
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public VerificationRequest createdBy(String createdBy) {
@@ -184,6 +140,11 @@ public class VerificationRequest extends AbstractAuditingEntity<Long> implements
 
     public VerificationRequest status(VerificationRequestStatus status) {
         this.setStatus(status);
+        return this;
+    }
+
+    public VerificationRequest message(String message) {
+        this.setMessage(message);
         return this;
     }
 
