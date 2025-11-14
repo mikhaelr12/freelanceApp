@@ -38,6 +38,7 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import tech.jhipster.service.filter.LongFilter;
 
 /**
  * Service Implementation for managing {@link com.freelance.app.domain.VerificationRequest}.
@@ -78,7 +79,19 @@ public class VerificationRequestService {
      * @param criteria criteria to search by
      * */
     public Mono<List<VerificationRequestDTO>> getAllVerificationRequests(Pageable pageable, VerificationRequestCriteria criteria) {
-        return verificationRequestRepository.findByCriteriaDTO(criteria, pageable).collectList();
+        return SecurityUtils.getCurrentUserLogin()
+            .flatMap(login ->
+                userRepository
+                    .findOneByLogin(login)
+                    .flatMap(user ->
+                        profileRepository
+                            .findByUserId(user.getId())
+                            .flatMap(profile -> {
+                                criteria.setProfileId(new LongFilter(criteria.getProfileId()));
+                                return verificationRequestRepository.findByCriteriaDTO(criteria, pageable).collectList();
+                            })
+                    )
+            );
     }
 
     /**

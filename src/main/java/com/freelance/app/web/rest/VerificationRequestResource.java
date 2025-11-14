@@ -67,5 +67,13 @@ public class VerificationRequestResource {
     }
 
     @GetMapping("/my")
-    public Mono<ResponseEntity<List<VerificationRequestDTO>>> getMyVerificationRequests(Pageable pageable) {}
+    public Mono<ResponseEntity<List<VerificationRequestDTO>>> getMyVerificationRequests(
+        Pageable pageable,
+        VerificationRequestCriteria criteria
+    ) {
+        return verificationRequestService
+            .getAllVerificationRequests(pageable, criteria)
+            .map(ResponseEntity::ok)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
+    }
 }
