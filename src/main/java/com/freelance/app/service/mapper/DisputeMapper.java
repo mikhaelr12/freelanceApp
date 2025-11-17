@@ -1,9 +1,7 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.Order;
-import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.DisputeDTO;
 import com.freelance.app.service.dto.OrderDTO;
 import org.mapstruct.*;

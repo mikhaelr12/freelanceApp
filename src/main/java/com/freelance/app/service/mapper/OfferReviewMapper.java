@@ -1,10 +1,8 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.OfferReview;
 import com.freelance.app.domain.Profile;
-import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferReviewDTO;
 import com.freelance.app.service.dto.ProfileDTO;

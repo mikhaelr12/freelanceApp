@@ -2,11 +2,9 @@ package com.freelance.app.service.mapper;
 
 import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.Offer;
-import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.service.dto.FavoriteOfferDTO;
 import com.freelance.app.service.dto.OfferDTO;
-import com.freelance.app.service.dto.OfferMediaDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import org.mapstruct.*;
 

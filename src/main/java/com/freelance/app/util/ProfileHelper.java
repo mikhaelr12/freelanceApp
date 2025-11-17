@@ -1,7 +1,6 @@
 package com.freelance.app.util;
 
 import com.freelance.app.domain.Profile;
-import com.freelance.app.domain.VerificationRequest;
 import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.repository.UserRepository;
 import com.freelance.app.security.SecurityUtils;

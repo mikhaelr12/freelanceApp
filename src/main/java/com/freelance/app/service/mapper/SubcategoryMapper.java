@@ -1,10 +1,8 @@
 package com.freelance.app.service.mapper;
 
 import com.freelance.app.domain.Category;
-import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.service.dto.CategoryDTO;
-import com.freelance.app.service.dto.OfferMediaDTO;
 import com.freelance.app.service.dto.SubcategoryDTO;
 import org.mapstruct.*;
 

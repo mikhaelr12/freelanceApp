@@ -1,10 +1,8 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.OfferPackage;
 import com.freelance.app.domain.Order;
 import com.freelance.app.domain.User;
-import com.freelance.app.service.dto.FavoriteOfferDTO;
 import com.freelance.app.service.dto.OfferPackageDTO;
 import com.freelance.app.service.dto.OrderDTO;
 import com.freelance.app.service.dto.UserDTO;

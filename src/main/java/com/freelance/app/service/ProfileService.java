@@ -1,9 +1,6 @@
 package com.freelance.app.service;
 
-import static org.springframework.util.Assert.notNull;
-
 import com.freelance.app.config.ApplicationProperties;
-import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.ProfileCriteria;
@@ -17,27 +14,21 @@ import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
 import com.freelance.app.service.mapper.ProfileMapper;
 import com.freelance.app.util.MinioUtil;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Service Implementation for managing {@link com.freelance.app.domain.Profile}.

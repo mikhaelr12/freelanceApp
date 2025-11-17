@@ -1,9 +1,7 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.Tag;
-import com.freelance.app.service.dto.FavoriteOfferDTO;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.TagDTO;
 import java.util.Set;

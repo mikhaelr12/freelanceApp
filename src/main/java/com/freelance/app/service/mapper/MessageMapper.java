@@ -6,7 +6,10 @@ import com.freelance.app.domain.User;
 import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.MessageDTO;
 import com.freelance.app.service.dto.UserDTO;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 /**
  * Mapper for the entity {@link Message} and its DTO {@link MessageDTO}.

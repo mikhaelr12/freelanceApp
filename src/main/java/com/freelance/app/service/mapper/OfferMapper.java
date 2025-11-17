@@ -1,7 +1,13 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.*;
-import com.freelance.app.service.dto.*;
+import com.freelance.app.domain.Offer;
+import com.freelance.app.domain.OfferType;
+import com.freelance.app.domain.Profile;
+import com.freelance.app.domain.Tag;
+import com.freelance.app.service.dto.OfferDTO;
+import com.freelance.app.service.dto.OfferTypeDTO;
+import com.freelance.app.service.dto.ProfileDTO;
+import com.freelance.app.service.dto.TagDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.*;

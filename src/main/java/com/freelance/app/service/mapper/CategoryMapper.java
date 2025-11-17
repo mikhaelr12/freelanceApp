@@ -1,10 +1,11 @@
 package com.freelance.app.service.mapper;
 
 import com.freelance.app.domain.Category;
-import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.service.dto.CategoryDTO;
-import com.freelance.app.service.dto.OfferMediaDTO;
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 /**
  * Mapper for the entity {@link Category} and its DTO {@link CategoryDTO}.

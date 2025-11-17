@@ -4,7 +4,6 @@ import com.freelance.app.domain.VerificationRequest;
 import com.freelance.app.domain.criteria.VerificationRequestCriteria;
 import com.freelance.app.service.dto.VerificationRequestDTO;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;

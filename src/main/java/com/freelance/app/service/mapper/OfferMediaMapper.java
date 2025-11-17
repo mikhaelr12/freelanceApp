@@ -1,10 +1,8 @@
 package com.freelance.app.service.mapper;
 
-import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.OfferMedia;
-import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.service.dto.FileObjectDTO;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferMediaDTO;
