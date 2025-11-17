@@ -33,12 +33,13 @@
       "Delivery",
       "Dispute",
       "Conversation",
-      "Message"
+      "Message",
+      "VerificationRequest"
     ],
     "feignClient": null,
     "jhipsterVersion": "8.11.0",
     "jwtSecretKey": "Nzg3MjY3YmI4OGIyN2FkZDhmMWIwM2Y5NDY4YmZjOWNlNzc4MmQ0NWU4MTQxMmY1ZDQ5YzYxZTYyNzhjNjQwODk3NDEyMmYxMmQyYWIyODRjMDM5YmVhZDg1N2Q0ZjNhYTVlOTY4NjE1NDFiNTZjZWFmMWE0NjFiZGI2MDg0Mzg=",
-    "lastLiquibaseTimestamp": 1760011932000,
+    "lastLiquibaseTimestamp": 1762946963000,
     "microfrontend": null,
     "microfrontends": [],
     "nativeLanguage": "en",
