@@ -52,10 +52,10 @@ public class VerificationRequestResource {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/update-status/{id}")
+    @PatchMapping("/update-status/{id}/{status}")
     public Mono<ResponseEntity<Void>> updateStatus(
         @PathVariable("id") final Long id,
-        @RequestBody VerificationRequestStatus status,
+        @PathVariable VerificationRequestStatus status,
         @RequestBody(required = false) String message
     ) {
         return verificationRequestService.updateRequestStatus(id, status, message).then(Mono.just(ResponseEntity.ok().build()));
@@ -68,11 +68,11 @@ public class VerificationRequestResource {
 
     @GetMapping("/my")
     public Mono<ResponseEntity<List<VerificationRequestDTO>>> getMyVerificationRequests(
-        Pageable pageable,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         VerificationRequestCriteria criteria
     ) {
         return verificationRequestService
-            .getAllVerificationRequests(pageable, criteria)
+            .getMyVerificationRequests(pageable, criteria)
             .map(ResponseEntity::ok)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }

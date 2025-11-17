@@ -2,6 +2,7 @@ package com.freelance.app.service;
 
 import com.freelance.app.config.ApplicationProperties;
 import com.freelance.app.domain.FileObject;
+import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.VerificationRequest;
 import com.freelance.app.domain.criteria.VerificationRequestCriteria;
 import com.freelance.app.domain.enumeration.VerificationRequestStatus;
@@ -12,6 +13,7 @@ import com.freelance.app.repository.VerificationRequestRepository;
 import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.VerificationRequestDTO;
 import com.freelance.app.util.MinioUtil;
+import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.ByteArrayInputStream;
@@ -50,26 +52,26 @@ public class VerificationRequestService {
     private static final Logger LOG = LoggerFactory.getLogger(VerificationRequestService.class);
 
     private final VerificationRequestRepository verificationRequestRepository;
-    private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
     private final ApplicationProperties applicationProperties;
     private final MinioUtil minioUtil;
     private final FileObjectRepository fileObjectRepository;
+    private final ProfileHelper profileHelper;
+    private final ProfileRepository profileRepository;
 
     public VerificationRequestService(
         VerificationRequestRepository verificationRequestRepository,
-        UserRepository userRepository,
-        ProfileRepository profileRepository,
         ApplicationProperties applicationProperties,
         MinioUtil minioUtil,
-        FileObjectRepository fileObjectRepository
+        FileObjectRepository fileObjectRepository,
+        ProfileHelper profileHelper,
+        ProfileRepository profileRepository
     ) {
         this.verificationRequestRepository = verificationRequestRepository;
-        this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
         this.applicationProperties = applicationProperties;
         this.minioUtil = minioUtil;
         this.fileObjectRepository = fileObjectRepository;
+        this.profileHelper = profileHelper;
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -77,70 +79,65 @@ public class VerificationRequestService {
      *
      * @param pageable pagination information
      * @param criteria criteria to search by
-     * */
+     */
+    @Transactional(readOnly = true)
     public Mono<List<VerificationRequestDTO>> getAllVerificationRequests(Pageable pageable, VerificationRequestCriteria criteria) {
-        return SecurityUtils.getCurrentUserLogin()
-            .flatMap(login ->
-                userRepository
-                    .findOneByLogin(login)
-                    .flatMap(user ->
-                        profileRepository
-                            .findByUserId(user.getId())
-                            .flatMap(profile -> {
-                                criteria.setProfileId(new LongFilter(criteria.getProfileId()));
-                                return verificationRequestRepository.findByCriteriaDTO(criteria, pageable).collectList();
-                            })
-                    )
-            );
+        return verificationRequestRepository.findByCriteriaDTO(criteria, pageable).collectList();
+    }
+
+    /**
+     * Get my verification requests
+     *
+     * @param pageable pagination information
+     * @param criteria criteria to search by
+     */
+    @Transactional(readOnly = true)
+    public Mono<List<VerificationRequestDTO>> getMyVerificationRequests(Pageable pageable, VerificationRequestCriteria criteria) {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile -> {
+                criteria.setProfileId(new LongFilter());
+                return verificationRequestRepository.findByCriteriaDTO(criteria, pageable).collectList();
+            });
     }
 
     /**
      * Create a request for profile verification
      *
-     * @param verificationPhoto the picture of the user send for verification
-     * */
+     * @param verificationPhoto the picture of the user sent for verification
+     */
     @Transactional
     public Mono<Void> requestVerification(FilePart verificationPhoto) {
         LOG.debug("Requesting verification");
-        return SecurityUtils.getCurrentUserLogin()
-            .flatMap(login ->
-                userRepository
-                    .findOneByLogin(login)
-                    .switchIfEmpty(Mono.error(new BadRequestAlertException("User not found: ", login, "userNotFound")))
-                    .flatMap(user ->
-                        profileRepository
-                            .findByUserId(user.getId())
-                            .switchIfEmpty(
-                                Mono.error(new BadRequestAlertException("Profile not found ", user.getId().toString(), "profileNotFound"))
-                            )
-                            .flatMap(profile -> {
-                                if (Boolean.TRUE.equals(profile.getVerified())) {
-                                    return Mono.error(new BadRequestAlertException("User already verified ", login, "userAlreadyVerified"));
-                                }
-                                return processVerificationPicture(verificationPhoto, login)
-                                    .flatMap(file ->
-                                        verificationRequestRepository.save(
-                                            new VerificationRequest()
-                                                .profile(profile)
-                                                .fileObject(file)
-                                                .status(VerificationRequestStatus.PENDING)
-                                                .createdBy(login)
-                                        )
-                                    )
-                                    .then();
-                            })
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile -> {
+                if (Boolean.TRUE.equals(profile.getVerified())) {
+                    return Mono.error(
+                        new BadRequestAlertException("User already verified ", profile.getUser().getLogin(), "userAlreadyVerified")
+                    );
+                }
+                return processVerificationPicture(verificationPhoto, profile.getUser().getLogin()).flatMap(file ->
+                    verificationRequestRepository.save(
+                        new VerificationRequest()
+                            .profile(profile)
+                            .fileObject(file)
+                            .status(VerificationRequestStatus.PENDING)
+                            .createdBy(profile.getUser().getLogin())
                     )
-            )
+                );
+            })
             .then();
     }
 
     /**
      * Update status of a verification request
      *
-     * @param id id of the request
-     * @param status new status for the request
+     * @param id      id of the request
+     * @param status  new status for the request
      * @param message reason if the request is rejected
-     * */
+     */
+    @Transactional
     public Mono<Void> updateRequestStatus(Long id, VerificationRequestStatus status, String message) {
         LOG.debug("Request to update request status with id {}", id);
         return SecurityUtils.getCurrentUserLogin()
@@ -151,15 +148,26 @@ public class VerificationRequestService {
                         Mono.error(new BadRequestAlertException("Request not found ", id.toString(), "verificationRequestNotFound"))
                     )
                     .flatMap(verificationRequest -> {
-                        if (status.equals(VerificationRequestStatus.REJECTED)) {
+                        if (status == VerificationRequestStatus.REJECTED) {
                             verificationRequest.setStatus(VerificationRequestStatus.REJECTED);
                             verificationRequest.setMessage(message);
+                        } else if (status == VerificationRequestStatus.COMPLETED) {
+                            verificationRequest.setStatus(VerificationRequestStatus.COMPLETED);
+                            verificationRequest.setMessage(null);
                         } else {
                             verificationRequest.setStatus(status);
                         }
                         verificationRequest.lastModifiedDate(Instant.now());
                         verificationRequest.lastModifiedBy(login);
-                        return verificationRequestRepository.save(verificationRequest);
+
+                        return verificationRequestRepository
+                            .save(verificationRequest)
+                            .flatMap(saved -> {
+                                if (status == VerificationRequestStatus.COMPLETED) {
+                                    return verifyProfile(saved).thenReturn(saved);
+                                }
+                                return Mono.just(saved);
+                            });
                     })
             )
             .then();
@@ -169,32 +177,26 @@ public class VerificationRequestService {
      * Cancel a verification request
      *
      * @param id id of the request to be canceled
-     * */
+     */
+    @Transactional
     public Mono<Void> cancelRequest(Long id) {
         LOG.debug("Request to cancel request with id {}", id);
-        return SecurityUtils.getCurrentUserLogin()
-            .flatMap(login ->
-                userRepository
-                    .findOneByLogin(login)
-                    .flatMap(user ->
-                        profileRepository
-                            .findByUserId(user.getId())
-                            .flatMap(profile ->
-                                verificationRequestRepository
-                                    .findById(id)
-                                    .flatMap(request -> {
-                                        if (!request.getProfileId().equals(profile.getId())) {
-                                            return Mono.error(
-                                                new BadRequestAlertException("Request does not belong to ", login, "requestNotFound")
-                                            );
-                                        }
-                                        request.setStatus(VerificationRequestStatus.CANCELED);
-                                        return verificationRequestRepository.save(request);
-                                    })
-                            )
-                    )
-                    .then()
-            );
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile ->
+                verificationRequestRepository
+                    .findById(id)
+                    .flatMap(request -> {
+                        if (!request.getProfileId().equals(profile.getId())) {
+                            return Mono.error(
+                                new BadRequestAlertException("Request does not belong to ", profile.getUser().getLogin(), "requestNotFound")
+                            );
+                        }
+                        request.setStatus(VerificationRequestStatus.CANCELED);
+                        return verificationRequestRepository.save(request);
+                    })
+            )
+            .then();
     }
 
     private Mono<FileObject> processVerificationPicture(FilePart verificationPicture, String userLogin) {
@@ -245,5 +247,15 @@ public class VerificationRequestService {
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Mono<Void> verifyProfile(VerificationRequest verificationRequest) {
+        return profileRepository
+            .findById(verificationRequest.getProfileId())
+            .flatMap(profile -> {
+                profile.setVerified(true);
+                return profileRepository.save(profile);
+            })
+            .then();
     }
 }

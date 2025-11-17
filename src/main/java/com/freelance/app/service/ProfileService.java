@@ -208,7 +208,4 @@ public class ProfileService {
                 return newSkills;
             });
     }
-    //    public Mono<Void> declineVerification(Long id) {
-    //
-    //    }
 }
