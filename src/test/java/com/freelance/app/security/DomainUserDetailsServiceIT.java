@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import com.freelance.app.IntegrationTest;
 import com.freelance.app.config.Constants;
 import com.freelance.app.domain.User;
+import com.freelance.app.exception.UserNotActivatedException;
 import com.freelance.app.repository.UserRepository;
 import com.freelance.app.service.UserService;
 import java.util.Locale;

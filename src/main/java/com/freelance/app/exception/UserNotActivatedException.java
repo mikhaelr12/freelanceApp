@@ -1,4 +1,4 @@
-package com.freelance.app.security;
+package com.freelance.app.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

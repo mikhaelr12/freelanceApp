@@ -2,6 +2,7 @@ package com.freelance.app.web.rest.errors;
 
 import static org.springframework.core.annotation.AnnotatedElementUtils.findMergedAnnotation;
 
+import com.freelance.app.exception.UsernameAlreadyUsedException;
 import java.net.URI;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -90,14 +91,13 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
     }
 
     private ProblemDetailWithCause getProblemDetailWithCause(Throwable ex) {
+        if (ex instanceof UsernameAlreadyUsedException) return (ProblemDetailWithCause) new LoginAlreadyUsedException().getBody();
         if (
-            ex instanceof com.freelance.app.service.UsernameAlreadyUsedException
-        ) return (ProblemDetailWithCause) new LoginAlreadyUsedException().getBody();
-        if (
-            ex instanceof com.freelance.app.service.EmailAlreadyUsedException
+            ex instanceof com.freelance.app.exception.EmailAlreadyUsedException
         ) return (ProblemDetailWithCause) new EmailAlreadyUsedException().getBody();
-        if (ex instanceof com.freelance.app.service.InvalidPasswordException) return (ProblemDetailWithCause) new InvalidPasswordException()
-            .getBody();
+        if (
+            ex instanceof com.freelance.app.exception.InvalidPasswordException
+        ) return (ProblemDetailWithCause) new InvalidPasswordException().getBody();
 
         if (ex instanceof AuthenticationException) {
             // Ensure no information about existing users is revealed via failed authentication attempts

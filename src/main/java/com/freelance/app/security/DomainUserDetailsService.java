@@ -2,6 +2,7 @@ package com.freelance.app.security;
 
 import com.freelance.app.domain.Authority;
 import com.freelance.app.domain.User;
+import com.freelance.app.exception.UserNotActivatedException;
 import com.freelance.app.repository.UserRepository;
 import java.util.Collection;
 import java.util.Locale;
