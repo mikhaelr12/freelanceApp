@@ -1,7 +1,5 @@
 package com.freelance.app.service;
 
-import com.freelance.app.config.ApplicationProperties;
-import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.ProfileCriteria;
@@ -13,19 +11,15 @@ import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
+import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.MinioUtil;
 import com.freelance.app.util.ProfileHelper;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * Service Implementation for managing {@link com.freelance.app.domain.Profile}.
@@ -47,31 +40,29 @@ public class ProfileService {
     private static final Logger LOG = LoggerFactory.getLogger(ProfileService.class);
 
     private final ProfileRepository profileRepository;
-
     private final UserRepository userRepository;
-
     private final SkillRepository skillRepository;
     private final MinioUtil minioUtil;
-    private final ApplicationProperties applicationProperties;
     private final FileObjectRepository fileObjectRepository;
     private final ProfileHelper profileHelper;
+    private final FileProcessUtil fileProcessUtil;
 
     public ProfileService(
         ProfileRepository profileRepository,
         UserRepository userRepository,
         SkillRepository skillRepository,
         MinioUtil minioUtil,
-        ApplicationProperties applicationProperties,
         FileObjectRepository fileObjectRepository,
-        ProfileHelper profileHelper
+        ProfileHelper profileHelper,
+        FileProcessUtil fileProcessUtil
     ) {
         this.profileRepository = profileRepository;
         this.userRepository = userRepository;
         this.skillRepository = skillRepository;
         this.minioUtil = minioUtil;
-        this.applicationProperties = applicationProperties;
         this.fileObjectRepository = fileObjectRepository;
         this.profileHelper = profileHelper;
+        this.fileProcessUtil = fileProcessUtil;
     }
 
     /**
@@ -197,16 +188,30 @@ public class ProfileService {
             );
     }
 
-    public Mono<Void> uploadProfilePicture(FilePart file) {
+    public Mono<Void> uploadProfilePicture(FilePart profilePicture) {
         return profileHelper
             .getCurrentProfile()
             .flatMap(profile -> {
-                return processProfilePicture(file, profile)
-                    .flatMap(fileObjectRepository::save)
-                    .flatMap(fileObject -> {
-                        profile.setProfilePictureId(fileObject.getId());
-                        return profileRepository.save(profile);
-                    });
+                if (
+                    Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_JPEG) &&
+                    Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_PNG)
+                ) {
+                    return fileProcessUtil
+                        .processFile(profilePicture, profile.getUser().getLogin(), "profile-pictures")
+                        .flatMap(fileObjectRepository::save)
+                        .flatMap(fileObject -> {
+                            profile.setProfilePictureId(fileObject.getId());
+                            return profileRepository.save(profile);
+                        });
+                } else {
+                    return Mono.error(
+                        new BadRequestAlertException(
+                            "Wrong file extension",
+                            Objects.requireNonNull(profilePicture.headers().getContentType()).toString(),
+                            "fileExtension"
+                        )
+                    );
+                }
             })
             .then();
     }
@@ -231,55 +236,5 @@ public class ProfileService {
                 profile.setSkills(newSkills);
                 return newSkills;
             });
-    }
-
-    private Mono<FileObject> processProfilePicture(FilePart profilePicture, Profile profile) {
-        final String bucket = applicationProperties.getMinio().getBucketName();
-        final String original = Optional.of(profilePicture.filename()).orElse("file.bin");
-        final String ext = original.contains(".") ? original.substring(original.lastIndexOf('.') + 1) : "bin";
-        final String contentType = Optional.ofNullable(profilePicture.headers().getContentType())
-            .map(MediaType::toString)
-            .orElse("application/octet-stream");
-        final String objectKey = "users/%s/profile-pictures/%s.%s".formatted(profile.getUser().getLogin(), UUID.randomUUID(), ext);
-
-        return DataBufferUtils.join(profilePicture.content()).flatMap(buf -> {
-            byte[] bytes = new byte[buf.readableByteCount()];
-            buf.read(bytes);
-            DataBufferUtils.release(buf);
-
-            String checksum = sha256(bytes);
-            long size = bytes.length;
-
-            Mono<Void> uploadMono = Mono.fromCallable(() -> {
-                minioUtil.createBucketIfMissing(bucket);
-                try (InputStream in = new ByteArrayInputStream(bytes)) {
-                    minioUtil.uploadFile(bucket, objectKey, in);
-                }
-                return (Void) null;
-            }).subscribeOn(Schedulers.boundedElastic());
-
-            return uploadMono.then(
-                fileObjectRepository.save(
-                    new FileObject()
-                        .bucket(bucket)
-                        .objectKey(objectKey)
-                        .contentType(contentType)
-                        .fileSize(size)
-                        .checksum(checksum)
-                        .durationSeconds(0)
-                        .createdDate(Instant.now())
-                )
-            );
-        });
-    }
-
-    private static String sha256(byte[] data) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(data);
-            return HexFormat.of().formatHex(md.digest());
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
     }
 }
