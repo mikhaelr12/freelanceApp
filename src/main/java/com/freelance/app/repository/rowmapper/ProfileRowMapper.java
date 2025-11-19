@@ -2,6 +2,7 @@ package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.enumeration.ProfileType;
+import com.freelance.app.service.dto.ProfileDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -21,6 +22,7 @@ public class ProfileRowMapper implements BiFunction<Row, String, Profile> {
 
     /**
      * Take a {@link Row} and a column prefix, and extract all the fields.
+     *
      * @return the {@link Profile} stored in the database.
      */
     @Override
@@ -36,6 +38,19 @@ public class ProfileRowMapper implements BiFunction<Row, String, Profile> {
         entity.setLastModifiedBy(converter.fromRow(row, prefix + "_last_modified_by", String.class));
         entity.setProfileType(converter.fromRow(row, prefix + "_profile_type", ProfileType.class));
         entity.setUserId(converter.fromRow(row, prefix + "_user_id", Long.class));
+        entity.setProfilePictureId(converter.fromRow(row, prefix + "_profile_picture_id", Long.class));
+        return entity;
+    }
+
+    public ProfileDTO applyDTO(Row row, String prefix) {
+        ProfileDTO entity = new ProfileDTO();
+        entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
+        entity.setFirstName(converter.fromRow(row, prefix + "_first_name", String.class));
+        entity.setLastName(converter.fromRow(row, prefix + "_last_name", String.class));
+        entity.setDescription(converter.fromRow(row, prefix + "_description", String.class));
+        entity.setCreatedDate(converter.fromRow(row, prefix + "_created_date", Instant.class));
+        entity.setProfileType(converter.fromRow(row, prefix + "_profile_type", ProfileType.class));
+        entity.setVerified(converter.fromRow(row, prefix + "_verified", Boolean.class));
         entity.setProfilePictureId(converter.fromRow(row, prefix + "_profile_picture_id", Long.class));
         return entity;
     }

@@ -3,17 +3,19 @@ package com.freelance.app.repository;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.ProfileCriteria;
-import com.freelance.app.repository.rowmapper.ColumnConverter;
-import com.freelance.app.repository.rowmapper.FileObjectRowMapper;
-import com.freelance.app.repository.rowmapper.ProfileRowMapper;
-import com.freelance.app.repository.rowmapper.UserRowMapper;
+import com.freelance.app.repository.rowmapper.*;
 import com.freelance.app.repository.sqlhelper.FileObjectSqlHelper;
 import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
+import com.freelance.app.repository.sqlhelper.SkillSqlHelper;
 import com.freelance.app.repository.sqlhelper.UserSqlHelper;
+import com.freelance.app.service.dto.ProfileDTO;
+import com.freelance.app.service.dto.SkillShortDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
@@ -42,10 +44,12 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
     private final FileObjectRowMapper fileobjectMapper;
     private final ProfileRowMapper profileMapper;
     private final ColumnConverter columnConverter;
+    private final SkillRowMapper skillMapper;
 
     private static final Table entityTable = Table.aliased("profile", EntityManager.ENTITY_ALIAS);
     private static final Table userTable = Table.aliased("jhi_user", "e_user");
     private static final Table profilePictureTable = Table.aliased("file_object", "profilePicture");
+    private static final Table skillTable = Table.aliased("skill", "skill");
 
     private static final EntityManager.LinkTable skillLink = new EntityManager.LinkTable("rel_profile__skill", "profile_id", "skill_id");
 
@@ -57,7 +61,8 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
         ProfileRowMapper profileMapper,
         R2dbcEntityOperations entityOperations,
         R2dbcConverter converter,
-        ColumnConverter columnConverter
+        ColumnConverter columnConverter,
+        SkillRowMapper skillMapper
     ) {
         super(
             new MappingRelationalEntityInformation(converter.getMappingContext().getRequiredPersistentEntity(Profile.class)),
@@ -71,6 +76,7 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
         this.fileobjectMapper = fileobjectMapper;
         this.profileMapper = profileMapper;
         this.columnConverter = columnConverter;
+        this.skillMapper = skillMapper;
     }
 
     @Override
@@ -141,6 +147,40 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
     @Override
     public Mono<Void> deleteById(Long entityId) {
         return deleteRelations(entityId).then(super.deleteById(entityId));
+    }
+
+    @Override
+    public Mono<ProfileDTO> findOne(Long id) {
+        return findByIdDTO(id).flatMap(this::fetchSkills);
+    }
+
+    private Mono<ProfileDTO> findByIdDTO(Long id) {
+        String columns = ProfileSqlHelper.getColumnsShortDTO(entityTable, EntityManager.ENTITY_ALIAS)
+            .stream()
+            .map(Expression::toString)
+            .collect(Collectors.joining(", "));
+
+        String sql = "SELECT " + columns + " " + "FROM profile e " + "WHERE e.id = :id";
+        return db.sql(sql).bind("id", id).map((row, rowMetadata) -> profileMapper.applyDTO(row, "e")).one();
+    }
+
+    private Mono<ProfileDTO> fetchSkills(ProfileDTO entity) {
+        String columns = SkillSqlHelper.getColumnsShort(skillTable, "skill")
+            .stream()
+            .map(Expression::toString)
+            .collect(Collectors.joining(", "));
+
+        String sql = "SELECT " + columns + " " + "FROM skill skill " + "JOIN rel_profile__skill sk ON sk.profile_id = :profileId";
+        return db
+            .sql(sql)
+            .bind("profileId", entity.getId())
+            .map((row, rowMetadata) -> skillMapper.applyShort(row, "skill"))
+            .all()
+            .collectList()
+            .map(skills -> {
+                entity.setSkills(new HashSet<>(skills));
+                return entity;
+            });
     }
 
     protected Mono<Void> deleteRelations(Long entityId) {

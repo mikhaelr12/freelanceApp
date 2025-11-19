@@ -1,51 +1,21 @@
 package com.freelance.app.service.dto;
 
 import com.freelance.app.domain.enumeration.ProfileType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-/**
- * A DTO for the {@link com.freelance.app.domain.Profile} entity.
- */
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class ProfileDTO implements Serializable {
+public class ProfileDTO {
 
     private Long id;
-
-    @NotNull(message = "must not be null")
-    @Size(max = 20)
     private String firstName;
-
-    @NotNull(message = "must not be null")
-    @Size(max = 20)
     private String lastName;
-
-    @Size(max = 2048)
     private String description;
-
-    @NotNull(message = "must not be null")
     private Instant createdDate;
-
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    private String createdBy;
-
-    @Size(max = 50)
-    private String lastModifiedBy;
-
     private ProfileType profileType;
-
-    private UserDTO user;
-
-    private FileObjectDTO profilePicture;
-
-    private Set<SkillDTO> skills = new HashSet<>();
+    private Boolean verified;
+    private Set<SkillShortDTO> skills;
+    private String imageBase64;
+    private Long profilePictureId;
 
     public Long getId() {
         return id;
@@ -87,30 +57,6 @@ public class ProfileDTO implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
     public ProfileType getProfileType() {
         return profileType;
     }
@@ -119,67 +65,35 @@ public class ProfileDTO implements Serializable {
         this.profileType = profileType;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public Boolean getVerified() {
+        return verified;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
-    public FileObjectDTO getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(FileObjectDTO profilePicture) {
-        this.profilePicture = profilePicture;
-    }
-
-    public Set<SkillDTO> getSkills() {
+    public Set<SkillShortDTO> getSkills() {
         return skills;
     }
 
-    public void setSkills(Set<SkillDTO> skills) {
+    public void setSkills(Set<SkillShortDTO> skills) {
         this.skills = skills;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ProfileDTO)) {
-            return false;
-        }
-
-        ProfileDTO profileDTO = (ProfileDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, profileDTO.id);
+    public String getImageBase64() {
+        return imageBase64;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "ProfileDTO{" +
-            "id=" + getId() +
-            ", firstName='" + getFirstName() + "'" +
-            ", lastName='" + getLastName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", createdDate='" + getCreatedDate() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", profileType='" + getProfileType() + "'" +
-            ", user=" + getUser() +
-            ", profilePicture=" + getProfilePicture() +
-            ", skills=" + getSkills() +
-            "}";
+    public Long getProfilePictureId() {
+        return profilePictureId;
+    }
+
+    public void setProfilePictureId(Long profilePictureId) {
+        this.profilePictureId = profilePictureId;
     }
 }

@@ -13,7 +13,6 @@ import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
-import com.freelance.app.service.mapper.ProfileMapper;
 import com.freelance.app.util.MinioUtil;
 import com.freelance.app.util.ProfileHelper;
 import java.io.ByteArrayInputStream;
@@ -49,8 +48,6 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
 
-    private final ProfileMapper profileMapper;
-
     private final UserRepository userRepository;
 
     private final SkillRepository skillRepository;
@@ -61,7 +58,6 @@ public class ProfileService {
 
     public ProfileService(
         ProfileRepository profileRepository,
-        ProfileMapper profileMapper,
         UserRepository userRepository,
         SkillRepository skillRepository,
         MinioUtil minioUtil,
@@ -70,7 +66,6 @@ public class ProfileService {
         ProfileHelper profileHelper
     ) {
         this.profileRepository = profileRepository;
-        this.profileMapper = profileMapper;
         this.userRepository = userRepository;
         this.skillRepository = skillRepository;
         this.minioUtil = minioUtil;
@@ -115,7 +110,7 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public Flux<ProfileDTO> findByCriteria(ProfileCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Profiles by Criteria");
-        return profileRepository.findByCriteria(criteria, pageable).map(profileMapper::toDto);
+        return null;
     }
 
     /**
@@ -138,7 +133,20 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public Mono<ProfileDTO> findOne(Long id) {
         LOG.debug("Request to get Profile : {}", id);
-        return profileRepository.findOneWithEagerRelationships(id).map(profileMapper::toDto);
+        return profileRepository
+            .findOne(id)
+            .flatMap(profile ->
+                fileObjectRepository
+                    .findById(profile.getProfilePictureId())
+                    .flatMap(fileObject -> {
+                        try {
+                            profile.setImageBase64(minioUtil.getImageAsBase64(fileObject.getBucket(), fileObject.getObjectKey()));
+                        } catch (Exception e) {
+                            return Mono.error(new RuntimeException(e));
+                        }
+                        return Mono.just(profile);
+                    })
+            );
     }
 
     /**

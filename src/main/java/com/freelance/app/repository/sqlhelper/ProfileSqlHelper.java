@@ -19,9 +19,22 @@ public class ProfileSqlHelper {
         columns.add(Column.aliased("created_by", table, columnPrefix + "_created_by"));
         columns.add(Column.aliased("last_modified_by", table, columnPrefix + "_last_modified_by"));
         columns.add(Column.aliased("profile_type", table, columnPrefix + "_profile_type"));
-
+        columns.add(Column.aliased("verified", table, columnPrefix + "_verified"));
         columns.add(Column.aliased("user_id", table, columnPrefix + "_user_id"));
         columns.add(Column.aliased("profile_picture_id", table, columnPrefix + "_profile_picture_id"));
         return columns;
+    }
+
+    public static List<Expression> getColumnsShortDTO(Table table, String columnPrefix) {
+        return List.of(
+            Column.aliased("id", table, columnPrefix + "_id"),
+            Column.aliased("first_name", table, columnPrefix + "_first_name"),
+            Column.aliased("last_name", table, columnPrefix + "_last_name"),
+            Column.aliased("description", table, columnPrefix + "_description"),
+            Column.aliased("created_date", table, columnPrefix + "_created_date"),
+            Column.aliased("verified", table, columnPrefix + "_verified"),
+            Column.aliased("profile_type", table, columnPrefix + "_profile_type"),
+            Column.aliased("profile_picture_id", table, columnPrefix + "_profile_picture_id")
+        );
     }
 }
