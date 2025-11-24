@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.CountryCriteria;
 import com.freelance.app.repository.CountryRepository;
 import com.freelance.app.service.dto.CountryDTO;
-import com.freelance.app.service.mapper.CountryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class CountryService {
 
     private final CountryRepository countryRepository;
 
-    private final CountryMapper countryMapper;
-
-    public CountryService(CountryRepository countryRepository, CountryMapper countryMapper) {
+    public CountryService(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
-        this.countryMapper = countryMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class CountryService {
      */
     public Mono<CountryDTO> save(CountryDTO countryDTO) {
         LOG.debug("Request to save Country : {}", countryDTO);
-        return countryRepository.save(countryMapper.toEntity(countryDTO)).map(countryMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class CountryService {
      */
     public Mono<CountryDTO> update(CountryDTO countryDTO) {
         LOG.debug("Request to update Country : {}", countryDTO);
-        return countryRepository.save(countryMapper.toEntity(countryDTO)).map(countryMapper::toDto);
+        return null;
     }
 
     /**
@@ -60,16 +56,7 @@ public class CountryService {
      */
     public Mono<CountryDTO> partialUpdate(CountryDTO countryDTO) {
         LOG.debug("Request to partially update Country : {}", countryDTO);
-
-        return countryRepository
-            .findById(countryDTO.getId())
-            .map(existingCountry -> {
-                countryMapper.partialUpdate(existingCountry, countryDTO);
-
-                return existingCountry;
-            })
-            .flatMap(countryRepository::save)
-            .map(countryMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +68,7 @@ public class CountryService {
     @Transactional(readOnly = true)
     public Flux<CountryDTO> findByCriteria(CountryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Countries by Criteria");
-        return countryRepository.findByCriteria(criteria, pageable).map(countryMapper::toDto);
+        return null;
     }
 
     /**
@@ -112,7 +99,7 @@ public class CountryService {
     @Transactional(readOnly = true)
     public Mono<CountryDTO> findOne(Long id) {
         LOG.debug("Request to get Country : {}", id);
-        return countryRepository.findById(id).map(countryMapper::toDto);
+        return null;
     }
 
     /**

@@ -25,4 +25,13 @@ public class OfferSqlHelper {
         columns.add(Column.aliased("offertype_id", table, columnPrefix + "_offertype_id"));
         return columns;
     }
+
+    public static List<Expression> getColumnShort(Table table, String columnPrefix) {
+        return List.of(
+            Column.aliased("id", table, columnPrefix + "_id"),
+            Column.aliased("name", table, columnPrefix + "_name"),
+            Column.aliased("rating", table, columnPrefix + "_rating"),
+            Column.aliased("owner_id", table, columnPrefix + "_owner_id")
+        );
+    }
 }

@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.MessageCriteria;
 import com.freelance.app.repository.MessageRepository;
 import com.freelance.app.service.dto.MessageDTO;
-import com.freelance.app.service.mapper.MessageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
 
-    private final MessageMapper messageMapper;
-
-    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
+    public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        this.messageMapper = messageMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class MessageService {
      */
     public Mono<MessageDTO> save(MessageDTO messageDTO) {
         LOG.debug("Request to save Message : {}", messageDTO);
-        return messageRepository.save(messageMapper.toEntity(messageDTO)).map(messageMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class MessageService {
      */
     public Mono<MessageDTO> update(MessageDTO messageDTO) {
         LOG.debug("Request to update Message : {}", messageDTO);
-        return messageRepository.save(messageMapper.toEntity(messageDTO)).map(messageMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class MessageService {
     public Mono<MessageDTO> partialUpdate(MessageDTO messageDTO) {
         LOG.debug("Request to partially update Message : {}", messageDTO);
 
-        return messageRepository
-            .findById(messageDTO.getId())
-            .map(existingMessage -> {
-                messageMapper.partialUpdate(existingMessage, messageDTO);
-
-                return existingMessage;
-            })
-            .flatMap(messageRepository::save)
-            .map(messageMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class MessageService {
     @Transactional(readOnly = true)
     public Flux<MessageDTO> findByCriteria(MessageCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Messages by Criteria");
-        return messageRepository.findByCriteria(criteria, pageable).map(messageMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +88,7 @@ public class MessageService {
      * @return the list of entities.
      */
     public Flux<MessageDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return messageRepository.findAllWithEagerRelationships(pageable).map(messageMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +109,7 @@ public class MessageService {
     @Transactional(readOnly = true)
     public Mono<MessageDTO> findOne(Long id) {
         LOG.debug("Request to get Message : {}", id);
-        return messageRepository.findOneWithEagerRelationships(id).map(messageMapper::toDto);
+        return null;
     }
 
     /**

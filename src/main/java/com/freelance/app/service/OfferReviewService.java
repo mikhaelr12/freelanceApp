@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.OfferReviewCriteria;
 import com.freelance.app.repository.OfferReviewRepository;
 import com.freelance.app.service.dto.OfferReviewDTO;
-import com.freelance.app.service.mapper.OfferReviewMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class OfferReviewService {
 
     private final OfferReviewRepository offerReviewRepository;
 
-    private final OfferReviewMapper offerReviewMapper;
-
-    public OfferReviewService(OfferReviewRepository offerReviewRepository, OfferReviewMapper offerReviewMapper) {
+    public OfferReviewService(OfferReviewRepository offerReviewRepository) {
         this.offerReviewRepository = offerReviewRepository;
-        this.offerReviewMapper = offerReviewMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class OfferReviewService {
      */
     public Mono<OfferReviewDTO> save(OfferReviewDTO offerReviewDTO) {
         LOG.debug("Request to save OfferReview : {}", offerReviewDTO);
-        return offerReviewRepository.save(offerReviewMapper.toEntity(offerReviewDTO)).map(offerReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class OfferReviewService {
      */
     public Mono<OfferReviewDTO> update(OfferReviewDTO offerReviewDTO) {
         LOG.debug("Request to update OfferReview : {}", offerReviewDTO);
-        return offerReviewRepository.save(offerReviewMapper.toEntity(offerReviewDTO)).map(offerReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class OfferReviewService {
     public Mono<OfferReviewDTO> partialUpdate(OfferReviewDTO offerReviewDTO) {
         LOG.debug("Request to partially update OfferReview : {}", offerReviewDTO);
 
-        return offerReviewRepository
-            .findById(offerReviewDTO.getId())
-            .map(existingOfferReview -> {
-                offerReviewMapper.partialUpdate(existingOfferReview, offerReviewDTO);
-
-                return existingOfferReview;
-            })
-            .flatMap(offerReviewRepository::save)
-            .map(offerReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class OfferReviewService {
     @Transactional(readOnly = true)
     public Flux<OfferReviewDTO> findByCriteria(OfferReviewCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferReviews by Criteria");
-        return offerReviewRepository.findByCriteria(criteria, pageable).map(offerReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +88,7 @@ public class OfferReviewService {
      * @return the list of entities.
      */
     public Flux<OfferReviewDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return offerReviewRepository.findAllWithEagerRelationships(pageable).map(offerReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +109,7 @@ public class OfferReviewService {
     @Transactional(readOnly = true)
     public Mono<OfferReviewDTO> findOne(Long id) {
         LOG.debug("Request to get OfferReview : {}", id);
-        return offerReviewRepository.findOneWithEagerRelationships(id).map(offerReviewMapper::toDto);
+        return null;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.enumeration.OfferStatus;
+import com.freelance.app.service.dto.OfferShortDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -38,6 +39,15 @@ public class OfferRowMapper implements BiFunction<Row, String, Offer> {
         entity.setLastModifiedBy(converter.fromRow(row, prefix + "_last_modified_by", String.class));
         entity.setOwnerId(converter.fromRow(row, prefix + "_owner_id", Long.class));
         entity.setOffertypeId(converter.fromRow(row, prefix + "_offertype_id", Long.class));
+        return entity;
+    }
+
+    public OfferShortDTO applyShort(Row row, String prefix) {
+        OfferShortDTO entity = new OfferShortDTO();
+        entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
+        entity.setName(converter.fromRow(row, prefix + "_name", String.class));
+        entity.setRating(converter.fromRow(row, prefix + "_rating", Double.class));
+
         return entity;
     }
 }

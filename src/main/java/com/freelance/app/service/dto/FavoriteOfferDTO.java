@@ -18,8 +18,6 @@ public class FavoriteOfferDTO implements Serializable {
 
     private ProfileDTO profile;
 
-    private OfferDTO offer;
-
     public Long getId() {
         return id;
     }
@@ -42,14 +40,6 @@ public class FavoriteOfferDTO implements Serializable {
 
     public void setProfile(ProfileDTO profile) {
         this.profile = profile;
-    }
-
-    public OfferDTO getOffer() {
-        return offer;
-    }
-
-    public void setOffer(OfferDTO offer) {
-        this.offer = offer;
     }
 
     @Override
@@ -80,7 +70,6 @@ public class FavoriteOfferDTO implements Serializable {
             "id=" + getId() +
             ", createdAt='" + getCreatedAt() + "'" +
             ", profile=" + getProfile() +
-            ", offer=" + getOffer() +
             "}";
     }
 }

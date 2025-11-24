@@ -35,8 +35,6 @@ public class OfferReviewDTO implements Serializable {
     @Size(max = 50)
     private String lastModifiedBy;
 
-    private OfferDTO offer;
-
     private ProfileDTO reviewer;
 
     public Long getId() {
@@ -95,14 +93,6 @@ public class OfferReviewDTO implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public OfferDTO getOffer() {
-        return offer;
-    }
-
-    public void setOffer(OfferDTO offer) {
-        this.offer = offer;
-    }
-
     public ProfileDTO getReviewer() {
         return reviewer;
     }
@@ -143,7 +133,6 @@ public class OfferReviewDTO implements Serializable {
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", offer=" + getOffer() +
             ", reviewer=" + getReviewer() +
             "}";
     }

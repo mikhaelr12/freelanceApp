@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.RequirementCriteria;
 import com.freelance.app.repository.RequirementRepository;
 import com.freelance.app.service.dto.RequirementDTO;
-import com.freelance.app.service.mapper.RequirementMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class RequirementService {
 
     private final RequirementRepository requirementRepository;
 
-    private final RequirementMapper requirementMapper;
-
-    public RequirementService(RequirementRepository requirementRepository, RequirementMapper requirementMapper) {
+    public RequirementService(RequirementRepository requirementRepository) {
         this.requirementRepository = requirementRepository;
-        this.requirementMapper = requirementMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class RequirementService {
      */
     public Mono<RequirementDTO> save(RequirementDTO requirementDTO) {
         LOG.debug("Request to save Requirement : {}", requirementDTO);
-        return requirementRepository.save(requirementMapper.toEntity(requirementDTO)).map(requirementMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class RequirementService {
      */
     public Mono<RequirementDTO> update(RequirementDTO requirementDTO) {
         LOG.debug("Request to update Requirement : {}", requirementDTO);
-        return requirementRepository.save(requirementMapper.toEntity(requirementDTO)).map(requirementMapper::toDto);
+        return null;
     }
 
     /**
@@ -60,16 +56,7 @@ public class RequirementService {
      */
     public Mono<RequirementDTO> partialUpdate(RequirementDTO requirementDTO) {
         LOG.debug("Request to partially update Requirement : {}", requirementDTO);
-
-        return requirementRepository
-            .findById(requirementDTO.getId())
-            .map(existingRequirement -> {
-                requirementMapper.partialUpdate(existingRequirement, requirementDTO);
-
-                return existingRequirement;
-            })
-            .flatMap(requirementRepository::save)
-            .map(requirementMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +68,7 @@ public class RequirementService {
     @Transactional(readOnly = true)
     public Flux<RequirementDTO> findByCriteria(RequirementCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Requirements by Criteria");
-        return requirementRepository.findByCriteria(criteria, pageable).map(requirementMapper::toDto);
+        return null;
     }
 
     /**
@@ -112,7 +99,7 @@ public class RequirementService {
     @Transactional(readOnly = true)
     public Mono<RequirementDTO> findOne(Long id) {
         LOG.debug("Request to get Requirement : {}", id);
-        return requirementRepository.findById(id).map(requirementMapper::toDto);
+        return null;
     }
 
     /**

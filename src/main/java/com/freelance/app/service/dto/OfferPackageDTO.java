@@ -53,8 +53,6 @@ public class OfferPackageDTO implements Serializable {
     @Size(max = 50)
     private String lastModifiedBy;
 
-    private OfferDTO offer;
-
     public Long getId() {
         return id;
     }
@@ -151,14 +149,6 @@ public class OfferPackageDTO implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public OfferDTO getOffer() {
-        return offer;
-    }
-
-    public void setOffer(OfferDTO offer) {
-        this.offer = offer;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -196,7 +186,6 @@ public class OfferPackageDTO implements Serializable {
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", offer=" + getOffer() +
             "}";
     }
 }

@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.OrderCriteria;
 import com.freelance.app.repository.OrderRepository;
 import com.freelance.app.service.dto.OrderDTO;
-import com.freelance.app.service.mapper.OrderMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final OrderMapper orderMapper;
-
-    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper) {
+    public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.orderMapper = orderMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class OrderService {
      */
     public Mono<OrderDTO> save(OrderDTO orderDTO) {
         LOG.debug("Request to save Order : {}", orderDTO);
-        return orderRepository.save(orderMapper.toEntity(orderDTO)).map(orderMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class OrderService {
      */
     public Mono<OrderDTO> update(OrderDTO orderDTO) {
         LOG.debug("Request to update Order : {}", orderDTO);
-        return orderRepository.save(orderMapper.toEntity(orderDTO)).map(orderMapper::toDto);
+        return null;
     }
 
     /**
@@ -60,16 +56,7 @@ public class OrderService {
      */
     public Mono<OrderDTO> partialUpdate(OrderDTO orderDTO) {
         LOG.debug("Request to partially update Order : {}", orderDTO);
-
-        return orderRepository
-            .findById(orderDTO.getId())
-            .map(existingOrder -> {
-                orderMapper.partialUpdate(existingOrder, orderDTO);
-
-                return existingOrder;
-            })
-            .flatMap(orderRepository::save)
-            .map(orderMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +68,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Flux<OrderDTO> findByCriteria(OrderCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Orders by Criteria");
-        return orderRepository.findByCriteria(criteria, pageable).map(orderMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +87,7 @@ public class OrderService {
      * @return the list of entities.
      */
     public Flux<OrderDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return orderRepository.findAllWithEagerRelationships(pageable).map(orderMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +108,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Mono<OrderDTO> findOne(Long id) {
         LOG.debug("Request to get Order : {}", id);
-        return orderRepository.findOneWithEagerRelationships(id).map(orderMapper::toDto);
+        return null;
     }
 
     /**

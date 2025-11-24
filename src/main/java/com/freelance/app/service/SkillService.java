@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.SkillCriteria;
 import com.freelance.app.repository.SkillRepository;
 import com.freelance.app.service.dto.SkillDTO;
-import com.freelance.app.service.mapper.SkillMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class SkillService {
 
     private final SkillRepository skillRepository;
 
-    private final SkillMapper skillMapper;
-
-    public SkillService(SkillRepository skillRepository, SkillMapper skillMapper) {
+    public SkillService(SkillRepository skillRepository) {
         this.skillRepository = skillRepository;
-        this.skillMapper = skillMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class SkillService {
      */
     public Mono<SkillDTO> save(SkillDTO skillDTO) {
         LOG.debug("Request to save Skill : {}", skillDTO);
-        return skillRepository.save(skillMapper.toEntity(skillDTO)).map(skillMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class SkillService {
      */
     public Mono<SkillDTO> update(SkillDTO skillDTO) {
         LOG.debug("Request to update Skill : {}", skillDTO);
-        return skillRepository.save(skillMapper.toEntity(skillDTO)).map(skillMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class SkillService {
     public Mono<SkillDTO> partialUpdate(SkillDTO skillDTO) {
         LOG.debug("Request to partially update Skill : {}", skillDTO);
 
-        return skillRepository
-            .findById(skillDTO.getId())
-            .map(existingSkill -> {
-                skillMapper.partialUpdate(existingSkill, skillDTO);
-
-                return existingSkill;
-            })
-            .flatMap(skillRepository::save)
-            .map(skillMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class SkillService {
     @Transactional(readOnly = true)
     public Flux<SkillDTO> findByCriteria(SkillCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Skills by Criteria");
-        return skillRepository.findByCriteria(criteria, pageable).map(skillMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +88,7 @@ public class SkillService {
      * @return the list of entities.
      */
     public Flux<SkillDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return skillRepository.findAllWithEagerRelationships(pageable).map(skillMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +109,7 @@ public class SkillService {
     @Transactional(readOnly = true)
     public Mono<SkillDTO> findOne(Long id) {
         LOG.debug("Request to get Skill : {}", id);
-        return skillRepository.findOneWithEagerRelationships(id).map(skillMapper::toDto);
+        return null;
     }
 
     /**

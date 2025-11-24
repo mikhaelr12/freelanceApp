@@ -31,8 +31,6 @@ public class TagDTO implements Serializable {
     @Size(max = 50)
     private String lastModifiedBy;
 
-    private Set<OfferDTO> offers = new HashSet<>();
-
     public Long getId() {
         return id;
     }
@@ -81,14 +79,6 @@ public class TagDTO implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public Set<OfferDTO> getOffers() {
-        return offers;
-    }
-
-    public void setOffers(Set<OfferDTO> offers) {
-        this.offers = offers;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -120,7 +110,6 @@ public class TagDTO implements Serializable {
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", offers=" + getOffers() +
             "}";
     }
 }
