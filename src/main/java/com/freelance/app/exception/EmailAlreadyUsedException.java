@@ -1,4 +1,4 @@
-package com.freelance.app.service;
+package com.freelance.app.exception;
 
 public class EmailAlreadyUsedException extends RuntimeException {
 

@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.ProfileReviewCriteria;
 import com.freelance.app.repository.ProfileReviewRepository;
 import com.freelance.app.service.dto.ProfileReviewDTO;
-import com.freelance.app.service.mapper.ProfileReviewMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class ProfileReviewService {
 
     private final ProfileReviewRepository profileReviewRepository;
 
-    private final ProfileReviewMapper profileReviewMapper;
-
-    public ProfileReviewService(ProfileReviewRepository profileReviewRepository, ProfileReviewMapper profileReviewMapper) {
+    public ProfileReviewService(ProfileReviewRepository profileReviewRepository) {
         this.profileReviewRepository = profileReviewRepository;
-        this.profileReviewMapper = profileReviewMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class ProfileReviewService {
      */
     public Mono<ProfileReviewDTO> save(ProfileReviewDTO profileReviewDTO) {
         LOG.debug("Request to save ProfileReview : {}", profileReviewDTO);
-        return profileReviewRepository.save(profileReviewMapper.toEntity(profileReviewDTO)).map(profileReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class ProfileReviewService {
      */
     public Mono<ProfileReviewDTO> update(ProfileReviewDTO profileReviewDTO) {
         LOG.debug("Request to update ProfileReview : {}", profileReviewDTO);
-        return profileReviewRepository.save(profileReviewMapper.toEntity(profileReviewDTO)).map(profileReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class ProfileReviewService {
     public Mono<ProfileReviewDTO> partialUpdate(ProfileReviewDTO profileReviewDTO) {
         LOG.debug("Request to partially update ProfileReview : {}", profileReviewDTO);
 
-        return profileReviewRepository
-            .findById(profileReviewDTO.getId())
-            .map(existingProfileReview -> {
-                profileReviewMapper.partialUpdate(existingProfileReview, profileReviewDTO);
-
-                return existingProfileReview;
-            })
-            .flatMap(profileReviewRepository::save)
-            .map(profileReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class ProfileReviewService {
     @Transactional(readOnly = true)
     public Flux<ProfileReviewDTO> findByCriteria(ProfileReviewCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all ProfileReviews by Criteria");
-        return profileReviewRepository.findByCriteria(criteria, pageable).map(profileReviewMapper::toDto);
+        return null;
     }
 
     /**
@@ -112,7 +100,7 @@ public class ProfileReviewService {
     @Transactional(readOnly = true)
     public Mono<ProfileReviewDTO> findOne(Long id) {
         LOG.debug("Request to get ProfileReview : {}", id);
-        return profileReviewRepository.findById(id).map(profileReviewMapper::toDto);
+        return null;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.criteria.ProfileCriteria;
+import com.freelance.app.service.dto.ProfileDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -54,4 +55,6 @@ interface ProfileRepositoryInternal {
     Flux<Profile> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
+
+    Mono<ProfileDTO> findOne(Long id);
 }

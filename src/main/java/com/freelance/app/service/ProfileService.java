@@ -1,6 +1,5 @@
 package com.freelance.app.service;
 
-import com.freelance.app.config.ApplicationProperties;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.ProfileCriteria;
@@ -12,18 +11,19 @@ import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
-import com.freelance.app.service.mapper.ProfileMapper;
+import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.MinioUtil;
+import com.freelance.app.util.ProfileHelper;
+import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,32 +40,29 @@ public class ProfileService {
     private static final Logger LOG = LoggerFactory.getLogger(ProfileService.class);
 
     private final ProfileRepository profileRepository;
-
-    private final ProfileMapper profileMapper;
-
     private final UserRepository userRepository;
-
     private final SkillRepository skillRepository;
     private final MinioUtil minioUtil;
-    private final ApplicationProperties applicationProperties;
     private final FileObjectRepository fileObjectRepository;
+    private final ProfileHelper profileHelper;
+    private final FileProcessUtil fileProcessUtil;
 
     public ProfileService(
         ProfileRepository profileRepository,
-        ProfileMapper profileMapper,
         UserRepository userRepository,
         SkillRepository skillRepository,
         MinioUtil minioUtil,
-        ApplicationProperties applicationProperties,
-        FileObjectRepository fileObjectRepository
+        FileObjectRepository fileObjectRepository,
+        ProfileHelper profileHelper,
+        FileProcessUtil fileProcessUtil
     ) {
         this.profileRepository = profileRepository;
-        this.profileMapper = profileMapper;
         this.userRepository = userRepository;
         this.skillRepository = skillRepository;
         this.minioUtil = minioUtil;
-        this.applicationProperties = applicationProperties;
         this.fileObjectRepository = fileObjectRepository;
+        this.profileHelper = profileHelper;
+        this.fileProcessUtil = fileProcessUtil;
     }
 
     /**
@@ -104,7 +101,7 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public Flux<ProfileDTO> findByCriteria(ProfileCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Profiles by Criteria");
-        return profileRepository.findByCriteria(criteria, pageable).map(profileMapper::toDto);
+        return null;
     }
 
     /**
@@ -127,7 +124,20 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public Mono<ProfileDTO> findOne(Long id) {
         LOG.debug("Request to get Profile : {}", id);
-        return profileRepository.findOneWithEagerRelationships(id).map(profileMapper::toDto);
+        return profileRepository
+            .findOne(id)
+            .flatMap(profile ->
+                fileObjectRepository
+                    .findById(profile.getProfilePictureId())
+                    .flatMap(fileObject -> {
+                        try {
+                            profile.setImageBase64(minioUtil.getImageAsBase64(fileObject.getBucket(), fileObject.getObjectKey()));
+                        } catch (Exception e) {
+                            return Mono.error(new RuntimeException(e));
+                        }
+                        return Mono.just(profile);
+                    })
+            );
     }
 
     /**
@@ -176,6 +186,34 @@ public class ProfileService {
                             })
                     )
             );
+    }
+
+    public Mono<Void> uploadProfilePicture(FilePart profilePicture) {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile -> {
+                if (
+                    Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_JPEG) &&
+                    Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_PNG)
+                ) {
+                    return fileProcessUtil
+                        .processFile(profilePicture, profile.getUser().getLogin(), "profile-pictures")
+                        .flatMap(fileObjectRepository::save)
+                        .flatMap(fileObject -> {
+                            profile.setProfilePictureId(fileObject.getId());
+                            return profileRepository.save(profile);
+                        });
+                } else {
+                    return Mono.error(
+                        new BadRequestAlertException(
+                            "Wrong file extension",
+                            Objects.requireNonNull(profilePicture.headers().getContentType()).toString(),
+                            "fileExtension"
+                        )
+                    );
+                }
+            })
+            .then();
     }
 
     private Mono<Set<Skill>> updateSkills(Set<Long> skillIds, Profile profile) {

@@ -21,4 +21,8 @@ public class SkillSqlHelper {
         columns.add(Column.aliased("category_id", table, columnPrefix + "_category_id"));
         return columns;
     }
+
+    public static List<Expression> getColumnsShort(Table table, String columnPrefix) {
+        return List.of(Column.aliased("id", table, columnPrefix + "_id"), Column.aliased("name", table, columnPrefix + "_name"));
+    }
 }

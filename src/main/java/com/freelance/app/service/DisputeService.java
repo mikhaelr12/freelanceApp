@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.DisputeCriteria;
 import com.freelance.app.repository.DisputeRepository;
 import com.freelance.app.service.dto.DisputeDTO;
-import com.freelance.app.service.mapper.DisputeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class DisputeService {
 
     private final DisputeRepository disputeRepository;
 
-    private final DisputeMapper disputeMapper;
-
-    public DisputeService(DisputeRepository disputeRepository, DisputeMapper disputeMapper) {
+    public DisputeService(DisputeRepository disputeRepository) {
         this.disputeRepository = disputeRepository;
-        this.disputeMapper = disputeMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class DisputeService {
      */
     public Mono<DisputeDTO> save(DisputeDTO disputeDTO) {
         LOG.debug("Request to save Dispute : {}", disputeDTO);
-        return disputeRepository.save(disputeMapper.toEntity(disputeDTO)).map(disputeMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class DisputeService {
      */
     public Mono<DisputeDTO> update(DisputeDTO disputeDTO) {
         LOG.debug("Request to update Dispute : {}", disputeDTO);
-        return disputeRepository.save(disputeMapper.toEntity(disputeDTO)).map(disputeMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class DisputeService {
     public Mono<DisputeDTO> partialUpdate(DisputeDTO disputeDTO) {
         LOG.debug("Request to partially update Dispute : {}", disputeDTO);
 
-        return disputeRepository
-            .findById(disputeDTO.getId())
-            .map(existingDispute -> {
-                disputeMapper.partialUpdate(existingDispute, disputeDTO);
-
-                return existingDispute;
-            })
-            .flatMap(disputeRepository::save)
-            .map(disputeMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class DisputeService {
     @Transactional(readOnly = true)
     public Flux<DisputeDTO> findByCriteria(DisputeCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Disputes by Criteria");
-        return disputeRepository.findByCriteria(criteria, pageable).map(disputeMapper::toDto);
+        return null;
     }
 
     /**
@@ -112,7 +100,7 @@ public class DisputeService {
     @Transactional(readOnly = true)
     public Mono<DisputeDTO> findOne(Long id) {
         LOG.debug("Request to get Dispute : {}", id);
-        return disputeRepository.findById(id).map(disputeMapper::toDto);
+        return null;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.criteria.OfferCriteria;
+import com.freelance.app.service.dto.OfferShortDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -16,30 +17,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface OfferRepository extends ReactiveCrudRepository<Offer, Long>, OfferRepositoryInternal {
     Flux<Offer> findAllBy(Pageable pageable);
-
-    @Override
-    Mono<Offer> findOneWithEagerRelationships(Long id);
-
-    @Override
-    Flux<Offer> findAllWithEagerRelationships();
-
-    @Override
-    Flux<Offer> findAllWithEagerRelationships(Pageable page);
-
-    @Query("SELECT * FROM offer entity WHERE entity.owner_id = :id")
-    Flux<Offer> findByOwner(Long id);
-
-    @Query("SELECT * FROM offer entity WHERE entity.owner_id IS NULL")
-    Flux<Offer> findAllWhereOwnerIsNull();
-
-    @Query("SELECT * FROM offer entity WHERE entity.offertype_id = :id")
-    Flux<Offer> findByOffertype(Long id);
-
-    @Query("SELECT * FROM offer entity WHERE entity.offertype_id IS NULL")
-    Flux<Offer> findAllWhereOffertypeIsNull();
-
-    @Query("SELECT entity.* FROM offer entity JOIN rel_offer__tag joinTable ON entity.id = joinTable.tag_id WHERE joinTable.tag_id = :id")
-    Flux<Offer> findByTag(Long id);
 
     @Override
     <S extends Offer> Mono<S> save(S entity);
@@ -75,4 +52,6 @@ interface OfferRepositoryInternal {
     Flux<Offer> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
+
+    Flux<OfferShortDTO> findByCriteriaShort(OfferCriteria criteria, Pageable pageable);
 }

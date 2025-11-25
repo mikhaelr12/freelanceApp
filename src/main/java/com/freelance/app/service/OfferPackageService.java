@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.OfferPackageCriteria;
 import com.freelance.app.repository.OfferPackageRepository;
 import com.freelance.app.service.dto.OfferPackageDTO;
-import com.freelance.app.service.mapper.OfferPackageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class OfferPackageService {
 
     private final OfferPackageRepository offerPackageRepository;
 
-    private final OfferPackageMapper offerPackageMapper;
-
-    public OfferPackageService(OfferPackageRepository offerPackageRepository, OfferPackageMapper offerPackageMapper) {
+    public OfferPackageService(OfferPackageRepository offerPackageRepository) {
         this.offerPackageRepository = offerPackageRepository;
-        this.offerPackageMapper = offerPackageMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class OfferPackageService {
      */
     public Mono<OfferPackageDTO> save(OfferPackageDTO offerPackageDTO) {
         LOG.debug("Request to save OfferPackage : {}", offerPackageDTO);
-        return offerPackageRepository.save(offerPackageMapper.toEntity(offerPackageDTO)).map(offerPackageMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class OfferPackageService {
      */
     public Mono<OfferPackageDTO> update(OfferPackageDTO offerPackageDTO) {
         LOG.debug("Request to update OfferPackage : {}", offerPackageDTO);
-        return offerPackageRepository.save(offerPackageMapper.toEntity(offerPackageDTO)).map(offerPackageMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class OfferPackageService {
     public Mono<OfferPackageDTO> partialUpdate(OfferPackageDTO offerPackageDTO) {
         LOG.debug("Request to partially update OfferPackage : {}", offerPackageDTO);
 
-        return offerPackageRepository
-            .findById(offerPackageDTO.getId())
-            .map(existingOfferPackage -> {
-                offerPackageMapper.partialUpdate(existingOfferPackage, offerPackageDTO);
-
-                return existingOfferPackage;
-            })
-            .flatMap(offerPackageRepository::save)
-            .map(offerPackageMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,11 +69,12 @@ public class OfferPackageService {
     @Transactional(readOnly = true)
     public Flux<OfferPackageDTO> findByCriteria(OfferPackageCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferPackages by Criteria");
-        return offerPackageRepository.findByCriteria(criteria, pageable).map(offerPackageMapper::toDto);
+        return null;
     }
 
     /**
      * Find the count of offerPackages by criteria.
+     *
      * @param criteria filtering criteria
      * @return the count of offerPackages
      */
@@ -100,11 +89,12 @@ public class OfferPackageService {
      * @return the list of entities.
      */
     public Flux<OfferPackageDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return offerPackageRepository.findAllWithEagerRelationships(pageable).map(offerPackageMapper::toDto);
+        return null;
     }
 
     /**
      * Returns the number of offerPackages available.
+     *
      * @return the number of entities in the database.
      *
      */
@@ -121,7 +111,7 @@ public class OfferPackageService {
     @Transactional(readOnly = true)
     public Mono<OfferPackageDTO> findOne(Long id) {
         LOG.debug("Request to get OfferPackage : {}", id);
-        return offerPackageRepository.findOneWithEagerRelationships(id).map(offerPackageMapper::toDto);
+        return null;
     }
 
     /**

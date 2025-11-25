@@ -1,9 +1,21 @@
 package com.freelance.app.service;
 
+import com.freelance.app.config.ApplicationProperties;
+import com.freelance.app.domain.FileObject;
+import com.freelance.app.domain.Offer;
+import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.criteria.OfferCriteria;
-import com.freelance.app.repository.OfferRepository;
-import com.freelance.app.service.dto.OfferDTO;
-import com.freelance.app.service.mapper.OfferMapper;
+import com.freelance.app.domain.criteria.OfferMediaCriteria;
+import com.freelance.app.repository.*;
+import com.freelance.app.service.dto.FileObjectDTO;
+import com.freelance.app.service.dto.OfferShortDTO;
+import com.freelance.app.service.dto.ProfileDTO;
+import com.freelance.app.util.MinioUtil;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import tech.jhipster.service.filter.LongFilter;
 
 /**
  * Service Implementation for managing {@link com.freelance.app.domain.Offer}.
@@ -22,116 +35,53 @@ public class OfferService {
     private static final Logger LOG = LoggerFactory.getLogger(OfferService.class);
 
     private final OfferRepository offerRepository;
+    private final OfferTypeRepository offerTypeRepository;
+    private final MinioUtil minioUtil;
+    private final FileObjectRepository fileObjectRepository;
+    private final OfferMediaRepository offerMediaRepository;
+    private final ProfileService profileService;
 
-    private final OfferMapper offerMapper;
-
-    public OfferService(OfferRepository offerRepository, OfferMapper offerMapper) {
+    public OfferService(
+        OfferRepository offerRepository,
+        OfferTypeRepository offerTypeRepository,
+        MinioUtil minioUtil,
+        FileObjectRepository fileObjectRepository,
+        OfferMediaRepository offerMediaRepository,
+        ProfileService profileService
+    ) {
         this.offerRepository = offerRepository;
-        this.offerMapper = offerMapper;
+        this.offerTypeRepository = offerTypeRepository;
+        this.minioUtil = minioUtil;
+        this.fileObjectRepository = fileObjectRepository;
+        this.offerMediaRepository = offerMediaRepository;
+        this.profileService = profileService;
     }
 
-    /**
-     * Save a offer.
-     *
-     * @param offerDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<OfferDTO> save(OfferDTO offerDTO) {
-        LOG.debug("Request to save Offer : {}", offerDTO);
-        return offerRepository.save(offerMapper.toEntity(offerDTO)).map(offerMapper::toDto);
-    }
-
-    /**
-     * Update a offer.
-     *
-     * @param offerDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<OfferDTO> update(OfferDTO offerDTO) {
-        LOG.debug("Request to update Offer : {}", offerDTO);
-        return offerRepository.save(offerMapper.toEntity(offerDTO)).map(offerMapper::toDto);
-    }
-
-    /**
-     * Partially update a offer.
-     *
-     * @param offerDTO the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Mono<OfferDTO> partialUpdate(OfferDTO offerDTO) {
-        LOG.debug("Request to partially update Offer : {}", offerDTO);
-
+    public Mono<List<OfferShortDTO>> getOffers(OfferCriteria criteria, Pageable pageable) {
         return offerRepository
-            .findById(offerDTO.getId())
-            .map(existingOffer -> {
-                offerMapper.partialUpdate(existingOffer, offerDTO);
+            .findByCriteria(criteria, pageable)
+            .flatMap(offer ->
+                Mono.zip(Mono.just(offer), profileService.findOne(offer.getOwnerId()), fetchImages(offer.getId())).map(tuple -> {
+                    Offer o = tuple.getT1();
+                    ProfileDTO owner = tuple.getT2();
+                    List<String> images = tuple.getT3();
 
-                return existingOffer;
-            })
-            .flatMap(offerRepository::save)
-            .map(offerMapper::toDto);
+                    return new OfferShortDTO()
+                        .id(o.getId())
+                        .name(o.getName())
+                        .rating(o.getRating())
+                        .owner(owner)
+                        .offerImages(new HashSet<>(images));
+                })
+            )
+            .collectList();
     }
 
-    /**
-     * Find offers by Criteria.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Flux<OfferDTO> findByCriteria(OfferCriteria criteria, Pageable pageable) {
-        LOG.debug("Request to get all Offers by Criteria");
-        return offerRepository.findByCriteria(criteria, pageable).map(offerMapper::toDto);
-    }
-
-    /**
-     * Find the count of offers by criteria.
-     * @param criteria filtering criteria
-     * @return the count of offers
-     */
-    public Mono<Long> countByCriteria(OfferCriteria criteria) {
-        LOG.debug("Request to get the count of all Offers by Criteria");
-        return offerRepository.countByCriteria(criteria);
-    }
-
-    /**
-     * Get all the offers with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<OfferDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return offerRepository.findAllWithEagerRelationships(pageable).map(offerMapper::toDto);
-    }
-
-    /**
-     * Returns the number of offers available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return offerRepository.count();
-    }
-
-    /**
-     * Get one offer by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Mono<OfferDTO> findOne(Long id) {
-        LOG.debug("Request to get Offer : {}", id);
-        return offerRepository.findOneWithEagerRelationships(id).map(offerMapper::toDto);
-    }
-
-    /**
-     * Delete the offer by id.
-     *
-     * @param id the id of the entity.
-     * @return a Mono to signal the deletion
-     */
-    public Mono<Void> delete(Long id) {
-        LOG.debug("Request to delete Offer : {}", id);
-        return offerRepository.deleteById(id);
+    private Mono<List<String>> fetchImages(Long offerId) {
+        return offerMediaRepository
+            .findByOffer(offerId)
+            .flatMap(media -> fileObjectRepository.findById(media.getFileId()))
+            .map(fileObject -> minioUtil.getImageAsBase64(fileObject.getBucket(), fileObject.getObjectKey()))
+            .collectList();
     }
 }

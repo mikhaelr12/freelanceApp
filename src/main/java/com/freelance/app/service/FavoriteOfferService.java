@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.FavoriteOfferCriteria;
 import com.freelance.app.repository.FavoriteOfferRepository;
 import com.freelance.app.service.dto.FavoriteOfferDTO;
-import com.freelance.app.service.mapper.FavoriteOfferMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class FavoriteOfferService {
 
     private final FavoriteOfferRepository favoriteOfferRepository;
 
-    private final FavoriteOfferMapper favoriteOfferMapper;
-
-    public FavoriteOfferService(FavoriteOfferRepository favoriteOfferRepository, FavoriteOfferMapper favoriteOfferMapper) {
+    public FavoriteOfferService(FavoriteOfferRepository favoriteOfferRepository) {
         this.favoriteOfferRepository = favoriteOfferRepository;
-        this.favoriteOfferMapper = favoriteOfferMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class FavoriteOfferService {
      */
     public Mono<FavoriteOfferDTO> save(FavoriteOfferDTO favoriteOfferDTO) {
         LOG.debug("Request to save FavoriteOffer : {}", favoriteOfferDTO);
-        return favoriteOfferRepository.save(favoriteOfferMapper.toEntity(favoriteOfferDTO)).map(favoriteOfferMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class FavoriteOfferService {
      */
     public Mono<FavoriteOfferDTO> update(FavoriteOfferDTO favoriteOfferDTO) {
         LOG.debug("Request to update FavoriteOffer : {}", favoriteOfferDTO);
-        return favoriteOfferRepository.save(favoriteOfferMapper.toEntity(favoriteOfferDTO)).map(favoriteOfferMapper::toDto);
+        return null;
     }
 
     /**
@@ -60,16 +56,7 @@ public class FavoriteOfferService {
      */
     public Mono<FavoriteOfferDTO> partialUpdate(FavoriteOfferDTO favoriteOfferDTO) {
         LOG.debug("Request to partially update FavoriteOffer : {}", favoriteOfferDTO);
-
-        return favoriteOfferRepository
-            .findById(favoriteOfferDTO.getId())
-            .map(existingFavoriteOffer -> {
-                favoriteOfferMapper.partialUpdate(existingFavoriteOffer, favoriteOfferDTO);
-
-                return existingFavoriteOffer;
-            })
-            .flatMap(favoriteOfferRepository::save)
-            .map(favoriteOfferMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +68,7 @@ public class FavoriteOfferService {
     @Transactional(readOnly = true)
     public Flux<FavoriteOfferDTO> findByCriteria(FavoriteOfferCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all FavoriteOffers by Criteria");
-        return favoriteOfferRepository.findByCriteria(criteria, pageable).map(favoriteOfferMapper::toDto);
+        return null;
     }
 
     /**
@@ -112,7 +99,7 @@ public class FavoriteOfferService {
     @Transactional(readOnly = true)
     public Mono<FavoriteOfferDTO> findOne(Long id) {
         LOG.debug("Request to get FavoriteOffer : {}", id);
-        return favoriteOfferRepository.findById(id).map(favoriteOfferMapper::toDto);
+        return null;
     }
 
     /**

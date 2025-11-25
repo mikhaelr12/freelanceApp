@@ -1,6 +1,7 @@
 package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Skill;
+import com.freelance.app.service.dto.SkillShortDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -34,5 +35,12 @@ public class SkillRowMapper implements BiFunction<Row, String, Skill> {
         entity.setActive(converter.fromRow(row, prefix + "_active", Boolean.class));
         entity.setCategoryId(converter.fromRow(row, prefix + "_category_id", Long.class));
         return entity;
+    }
+
+    public SkillShortDTO applyShort(Row row, String prefix) {
+        return new SkillShortDTO(
+            converter.fromRow(row, prefix + "_id", Long.class),
+            converter.fromRow(row, prefix + "_name", String.class)
+        );
     }
 }

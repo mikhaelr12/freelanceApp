@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
 import com.freelance.app.repository.SubcategoryRepository;
 import com.freelance.app.service.dto.SubcategoryDTO;
-import com.freelance.app.service.mapper.SubcategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class SubcategoryService {
 
     private final SubcategoryRepository subcategoryRepository;
 
-    private final SubcategoryMapper subcategoryMapper;
-
-    public SubcategoryService(SubcategoryRepository subcategoryRepository, SubcategoryMapper subcategoryMapper) {
+    public SubcategoryService(SubcategoryRepository subcategoryRepository) {
         this.subcategoryRepository = subcategoryRepository;
-        this.subcategoryMapper = subcategoryMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class SubcategoryService {
      */
     public Mono<SubcategoryDTO> save(SubcategoryDTO subcategoryDTO) {
         LOG.debug("Request to save Subcategory : {}", subcategoryDTO);
-        return subcategoryRepository.save(subcategoryMapper.toEntity(subcategoryDTO)).map(subcategoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class SubcategoryService {
      */
     public Mono<SubcategoryDTO> update(SubcategoryDTO subcategoryDTO) {
         LOG.debug("Request to update Subcategory : {}", subcategoryDTO);
-        return subcategoryRepository.save(subcategoryMapper.toEntity(subcategoryDTO)).map(subcategoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class SubcategoryService {
     public Mono<SubcategoryDTO> partialUpdate(SubcategoryDTO subcategoryDTO) {
         LOG.debug("Request to partially update Subcategory : {}", subcategoryDTO);
 
-        return subcategoryRepository
-            .findById(subcategoryDTO.getId())
-            .map(existingSubcategory -> {
-                subcategoryMapper.partialUpdate(existingSubcategory, subcategoryDTO);
-
-                return existingSubcategory;
-            })
-            .flatMap(subcategoryRepository::save)
-            .map(subcategoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class SubcategoryService {
     @Transactional(readOnly = true)
     public Flux<SubcategoryDTO> findByCriteria(SubcategoryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Subcategories by Criteria");
-        return subcategoryRepository.findByCriteria(criteria, pageable).map(subcategoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +88,7 @@ public class SubcategoryService {
      * @return the list of entities.
      */
     public Flux<SubcategoryDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return subcategoryRepository.findAllWithEagerRelationships(pageable).map(subcategoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +109,7 @@ public class SubcategoryService {
     @Transactional(readOnly = true)
     public Mono<SubcategoryDTO> findOne(Long id) {
         LOG.debug("Request to get Subcategory : {}", id);
-        return subcategoryRepository.findOneWithEagerRelationships(id).map(subcategoryMapper::toDto);
+        return null;
     }
 
     /**

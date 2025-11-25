@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.TagCriteria;
 import com.freelance.app.repository.TagRepository;
 import com.freelance.app.service.dto.TagDTO;
-import com.freelance.app.service.mapper.TagMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class TagService {
 
     private final TagRepository tagRepository;
 
-    private final TagMapper tagMapper;
-
-    public TagService(TagRepository tagRepository, TagMapper tagMapper) {
+    public TagService(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
-        this.tagMapper = tagMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class TagService {
      */
     public Mono<TagDTO> save(TagDTO tagDTO) {
         LOG.debug("Request to save Tag : {}", tagDTO);
-        return tagRepository.save(tagMapper.toEntity(tagDTO)).map(tagMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class TagService {
      */
     public Mono<TagDTO> update(TagDTO tagDTO) {
         LOG.debug("Request to update Tag : {}", tagDTO);
-        return tagRepository.save(tagMapper.toEntity(tagDTO)).map(tagMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class TagService {
     public Mono<TagDTO> partialUpdate(TagDTO tagDTO) {
         LOG.debug("Request to partially update Tag : {}", tagDTO);
 
-        return tagRepository
-            .findById(tagDTO.getId())
-            .map(existingTag -> {
-                tagMapper.partialUpdate(existingTag, tagDTO);
-
-                return existingTag;
-            })
-            .flatMap(tagRepository::save)
-            .map(tagMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class TagService {
     @Transactional(readOnly = true)
     public Flux<TagDTO> findByCriteria(TagCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Tags by Criteria");
-        return tagRepository.findByCriteria(criteria, pageable).map(tagMapper::toDto);
+        return null;
     }
 
     /**
@@ -112,7 +100,7 @@ public class TagService {
     @Transactional(readOnly = true)
     public Mono<TagDTO> findOne(Long id) {
         LOG.debug("Request to get Tag : {}", id);
-        return tagRepository.findById(id).map(tagMapper::toDto);
+        return null;
     }
 
     /**

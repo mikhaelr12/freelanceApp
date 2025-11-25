@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.CategoryCriteria;
 import com.freelance.app.repository.CategoryRepository;
 import com.freelance.app.service.dto.CategoryDTO;
-import com.freelance.app.service.mapper.CategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    private final CategoryMapper categoryMapper;
-
-    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
+    public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
     }
 
     /**
@@ -38,7 +34,8 @@ public class CategoryService {
      */
     public Mono<CategoryDTO> save(CategoryDTO categoryDTO) {
         LOG.debug("Request to save Category : {}", categoryDTO);
-        return categoryRepository.save(categoryMapper.toEntity(categoryDTO)).map(categoryMapper::toDto);
+        //        return categoryRepository.save(categoryMapper.toEntity(categoryDTO)).map(categoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +46,7 @@ public class CategoryService {
      */
     public Mono<CategoryDTO> update(CategoryDTO categoryDTO) {
         LOG.debug("Request to update Category : {}", categoryDTO);
-        return categoryRepository.save(categoryMapper.toEntity(categoryDTO)).map(categoryMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +58,7 @@ public class CategoryService {
     public Mono<CategoryDTO> partialUpdate(CategoryDTO categoryDTO) {
         LOG.debug("Request to partially update Category : {}", categoryDTO);
 
-        return categoryRepository
-            .findById(categoryDTO.getId())
-            .map(existingCategory -> {
-                categoryMapper.partialUpdate(existingCategory, categoryDTO);
-
-                return existingCategory;
-            })
-            .flatMap(categoryRepository::save)
-            .map(categoryMapper::toDto);
+        return null;
     }
 
     /**

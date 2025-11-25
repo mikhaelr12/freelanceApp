@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.OfferMediaCriteria;
 import com.freelance.app.repository.OfferMediaRepository;
 import com.freelance.app.service.dto.OfferMediaDTO;
-import com.freelance.app.service.mapper.OfferMediaMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class OfferMediaService {
 
     private final OfferMediaRepository offerMediaRepository;
 
-    private final OfferMediaMapper offerMediaMapper;
-
-    public OfferMediaService(OfferMediaRepository offerMediaRepository, OfferMediaMapper offerMediaMapper) {
+    public OfferMediaService(OfferMediaRepository offerMediaRepository) {
         this.offerMediaRepository = offerMediaRepository;
-        this.offerMediaMapper = offerMediaMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class OfferMediaService {
      */
     public Mono<OfferMediaDTO> save(OfferMediaDTO offerMediaDTO) {
         LOG.debug("Request to save OfferMedia : {}", offerMediaDTO);
-        return offerMediaRepository.save(offerMediaMapper.toEntity(offerMediaDTO)).map(offerMediaMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class OfferMediaService {
      */
     public Mono<OfferMediaDTO> update(OfferMediaDTO offerMediaDTO) {
         LOG.debug("Request to update OfferMedia : {}", offerMediaDTO);
-        return offerMediaRepository.save(offerMediaMapper.toEntity(offerMediaDTO)).map(offerMediaMapper::toDto);
+        return null;
     }
 
     /**
@@ -60,16 +56,7 @@ public class OfferMediaService {
      */
     public Mono<OfferMediaDTO> partialUpdate(OfferMediaDTO offerMediaDTO) {
         LOG.debug("Request to partially update OfferMedia : {}", offerMediaDTO);
-
-        return offerMediaRepository
-            .findById(offerMediaDTO.getId())
-            .map(existingOfferMedia -> {
-                offerMediaMapper.partialUpdate(existingOfferMedia, offerMediaDTO);
-
-                return existingOfferMedia;
-            })
-            .flatMap(offerMediaRepository::save)
-            .map(offerMediaMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,11 +68,12 @@ public class OfferMediaService {
     @Transactional(readOnly = true)
     public Flux<OfferMediaDTO> findByCriteria(OfferMediaCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferMedias by Criteria");
-        return offerMediaRepository.findByCriteria(criteria, pageable).map(offerMediaMapper::toDto);
+        return null;
     }
 
     /**
      * Find the count of offerMedias by criteria.
+     *
      * @param criteria filtering criteria
      * @return the count of offerMedias
      */
@@ -100,11 +88,12 @@ public class OfferMediaService {
      * @return the list of entities.
      */
     public Flux<OfferMediaDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return offerMediaRepository.findAllWithEagerRelationships(pageable).map(offerMediaMapper::toDto);
+        return null;
     }
 
     /**
      * Returns the number of offerMedias available.
+     *
      * @return the number of entities in the database.
      *
      */
@@ -121,7 +110,7 @@ public class OfferMediaService {
     @Transactional(readOnly = true)
     public Mono<OfferMediaDTO> findOne(Long id) {
         LOG.debug("Request to get OfferMedia : {}", id);
-        return offerMediaRepository.findOneWithEagerRelationships(id).map(offerMediaMapper::toDto);
+        return null;
     }
 
     /**

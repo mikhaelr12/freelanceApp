@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.ConversationCriteria;
 import com.freelance.app.repository.ConversationRepository;
 import com.freelance.app.service.dto.ConversationDTO;
-import com.freelance.app.service.mapper.ConversationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class ConversationService {
 
     private final ConversationRepository conversationRepository;
 
-    private final ConversationMapper conversationMapper;
-
-    public ConversationService(ConversationRepository conversationRepository, ConversationMapper conversationMapper) {
+    public ConversationService(ConversationRepository conversationRepository) {
         this.conversationRepository = conversationRepository;
-        this.conversationMapper = conversationMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class ConversationService {
      */
     public Mono<ConversationDTO> save(ConversationDTO conversationDTO) {
         LOG.debug("Request to save Conversation : {}", conversationDTO);
-        return conversationRepository.save(conversationMapper.toEntity(conversationDTO)).map(conversationMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class ConversationService {
      */
     public Mono<ConversationDTO> update(ConversationDTO conversationDTO) {
         LOG.debug("Request to update Conversation : {}", conversationDTO);
-        return conversationRepository.save(conversationMapper.toEntity(conversationDTO)).map(conversationMapper::toDto);
+        return null;
     }
 
     /**
@@ -60,16 +56,7 @@ public class ConversationService {
      */
     public Mono<ConversationDTO> partialUpdate(ConversationDTO conversationDTO) {
         LOG.debug("Request to partially update Conversation : {}", conversationDTO);
-
-        return conversationRepository
-            .findById(conversationDTO.getId())
-            .map(existingConversation -> {
-                conversationMapper.partialUpdate(existingConversation, conversationDTO);
-
-                return existingConversation;
-            })
-            .flatMap(conversationRepository::save)
-            .map(conversationMapper::toDto);
+        return null;
     }
 
     /**

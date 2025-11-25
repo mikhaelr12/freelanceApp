@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.FileObjectCriteria;
 import com.freelance.app.repository.FileObjectRepository;
 import com.freelance.app.service.dto.FileObjectDTO;
-import com.freelance.app.service.mapper.FileObjectMapper;
 import com.freelance.app.util.MinioUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +23,10 @@ public class FileObjectService {
 
     private final FileObjectRepository fileObjectRepository;
 
-    private final FileObjectMapper fileObjectMapper;
-
     private final MinioUtil minioUtil;
 
-    public FileObjectService(FileObjectRepository fileObjectRepository, FileObjectMapper fileObjectMapper, MinioUtil minioUtil) {
+    public FileObjectService(FileObjectRepository fileObjectRepository, MinioUtil minioUtil) {
         this.fileObjectRepository = fileObjectRepository;
-        this.fileObjectMapper = fileObjectMapper;
         this.minioUtil = minioUtil;
     }
 
@@ -42,7 +38,7 @@ public class FileObjectService {
      */
     public Mono<FileObjectDTO> save(FileObjectDTO fileObjectDTO) {
         LOG.debug("Request to save FileObject : {}", fileObjectDTO);
-        return fileObjectRepository.save(fileObjectMapper.toEntity(fileObjectDTO)).map(fileObjectMapper::toDto);
+        return null;
     }
 
     /**
@@ -53,7 +49,7 @@ public class FileObjectService {
      */
     public Mono<FileObjectDTO> update(FileObjectDTO fileObjectDTO) {
         LOG.debug("Request to update FileObject : {}", fileObjectDTO);
-        return fileObjectRepository.save(fileObjectMapper.toEntity(fileObjectDTO)).map(fileObjectMapper::toDto);
+        return null;
     }
 
     /**
@@ -65,15 +61,7 @@ public class FileObjectService {
     public Mono<FileObjectDTO> partialUpdate(FileObjectDTO fileObjectDTO) {
         LOG.debug("Request to partially update FileObject : {}", fileObjectDTO);
 
-        return fileObjectRepository
-            .findById(fileObjectDTO.getId())
-            .map(existingFileObject -> {
-                fileObjectMapper.partialUpdate(existingFileObject, fileObjectDTO);
-
-                return existingFileObject;
-            })
-            .flatMap(fileObjectRepository::save)
-            .map(fileObjectMapper::toDto);
+        return null;
     }
 
     /**
@@ -85,7 +73,7 @@ public class FileObjectService {
     @Transactional(readOnly = true)
     public Flux<FileObjectDTO> findByCriteria(FileObjectCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all FileObjects by Criteria");
-        return fileObjectRepository.findByCriteria(criteria, pageable).map(fileObjectMapper::toDto);
+        return null;
     }
 
     /**
@@ -116,7 +104,7 @@ public class FileObjectService {
     @Transactional(readOnly = true)
     public Mono<FileObjectDTO> findOne(Long id) {
         LOG.debug("Request to get FileObject : {}", id);
-        return fileObjectRepository.findById(id).map(fileObjectMapper::toDto);
+        return null;
     }
 
     /**

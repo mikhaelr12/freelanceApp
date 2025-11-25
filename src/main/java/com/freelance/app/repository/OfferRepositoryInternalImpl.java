@@ -10,6 +10,7 @@ import com.freelance.app.repository.rowmapper.ProfileRowMapper;
 import com.freelance.app.repository.sqlhelper.OfferSqlHelper;
 import com.freelance.app.repository.sqlhelper.OfferTypeSqlHelper;
 import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
+import com.freelance.app.service.dto.OfferShortDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -145,6 +146,12 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
     @Override
     public Mono<Void> deleteById(Long entityId) {
         return deleteRelations(entityId).then(super.deleteById(entityId));
+    }
+
+    @Override
+    public Flux<OfferShortDTO> findByCriteriaShort(OfferCriteria criteria, Pageable pageable) {
+        List<Expression> columns = OfferSqlHelper.getColumnShort(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(pageable, buildConditions(criteria), columns).map((row, rowMetadata) -> offerMapper.applyShort(row, "e")).all();
     }
 
     protected Mono<Void> deleteRelations(Long entityId) {

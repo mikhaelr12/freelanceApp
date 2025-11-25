@@ -37,8 +37,7 @@ interface FileObjectRepositoryInternal {
     Flux<FileObject> findAll();
 
     Mono<FileObject> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<FileObject> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<FileObject> findByCriteria(FileObjectCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(FileObjectCriteria criteria);

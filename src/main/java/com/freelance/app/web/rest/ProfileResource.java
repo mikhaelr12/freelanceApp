@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -152,10 +153,9 @@ public class ProfileResource {
                 )
             );
     }
-    //    @PreAuthorize("hasRole('ADMIN')")
-    //    @PatchMapping("/decline-verification/{id}")
-    //    public Mono<ResponseEntity<Void>> declineVerification(@PathVariable("id") final Long id,
-    //                                                          @RequestBody String message) {
-    //        return profileService.declineVerification(id).then(Mono.just(ResponseEntity.ok().build()));
-    //    }
+
+    @PatchMapping(value = "/upload/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Mono<ResponseEntity<Void>> uploadProfilePicture(@RequestPart("profile-picture") FilePart profilePicture) {
+        return profileService.uploadProfilePicture(profilePicture).then(Mono.just(ResponseEntity.ok().build()));
+    }
 }

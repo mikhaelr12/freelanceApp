@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.DeliveryCriteria;
 import com.freelance.app.repository.DeliveryRepository;
 import com.freelance.app.service.dto.DeliveryDTO;
-import com.freelance.app.service.mapper.DeliveryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
 
-    private final DeliveryMapper deliveryMapper;
-
-    public DeliveryService(DeliveryRepository deliveryRepository, DeliveryMapper deliveryMapper) {
+    public DeliveryService(DeliveryRepository deliveryRepository) {
         this.deliveryRepository = deliveryRepository;
-        this.deliveryMapper = deliveryMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class DeliveryService {
      */
     public Mono<DeliveryDTO> save(DeliveryDTO deliveryDTO) {
         LOG.debug("Request to save Delivery : {}", deliveryDTO);
-        return deliveryRepository.save(deliveryMapper.toEntity(deliveryDTO)).map(deliveryMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class DeliveryService {
      */
     public Mono<DeliveryDTO> update(DeliveryDTO deliveryDTO) {
         LOG.debug("Request to update Delivery : {}", deliveryDTO);
-        return deliveryRepository.save(deliveryMapper.toEntity(deliveryDTO)).map(deliveryMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class DeliveryService {
     public Mono<DeliveryDTO> partialUpdate(DeliveryDTO deliveryDTO) {
         LOG.debug("Request to partially update Delivery : {}", deliveryDTO);
 
-        return deliveryRepository
-            .findById(deliveryDTO.getId())
-            .map(existingDelivery -> {
-                deliveryMapper.partialUpdate(existingDelivery, deliveryDTO);
-
-                return existingDelivery;
-            })
-            .flatMap(deliveryRepository::save)
-            .map(deliveryMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     public Flux<DeliveryDTO> findByCriteria(DeliveryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Deliveries by Criteria");
-        return deliveryRepository.findByCriteria(criteria, pageable).map(deliveryMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +88,7 @@ public class DeliveryService {
      * @return the list of entities.
      */
     public Flux<DeliveryDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return deliveryRepository.findAllWithEagerRelationships(pageable).map(deliveryMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +109,7 @@ public class DeliveryService {
     @Transactional(readOnly = true)
     public Mono<DeliveryDTO> findOne(Long id) {
         LOG.debug("Request to get Delivery : {}", id);
-        return deliveryRepository.findOneWithEagerRelationships(id).map(deliveryMapper::toDto);
+        return null;
     }
 
     /**

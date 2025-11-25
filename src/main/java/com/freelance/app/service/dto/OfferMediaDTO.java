@@ -35,8 +35,6 @@ public class OfferMediaDTO implements Serializable {
     @Size(max = 50)
     private String lastModifiedBy;
 
-    private OfferDTO offer;
-
     private FileObjectDTO file;
 
     public Long getId() {
@@ -103,14 +101,6 @@ public class OfferMediaDTO implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    public OfferDTO getOffer() {
-        return offer;
-    }
-
-    public void setOffer(OfferDTO offer) {
-        this.offer = offer;
-    }
-
     public FileObjectDTO getFile() {
         return file;
     }
@@ -152,7 +142,6 @@ public class OfferMediaDTO implements Serializable {
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", offer=" + getOffer() +
             ", file=" + getFile() +
             "}";
     }

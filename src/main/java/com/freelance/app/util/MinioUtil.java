@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -48,5 +50,25 @@ public class MinioUtil {
         return minio.getPresignedObjectUrl(
             GetPresignedObjectUrlArgs.builder().method(Method.GET).bucket(bucket).object(object).expiry(seconds).build()
         );
+    }
+
+    public String getImageAsBase64(String bucket, String object) {
+        InputStream stream = null;
+        try {
+            stream = download(bucket, object);
+            byte[] imageBytes = IOUtils.toByteArray(stream);
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 }

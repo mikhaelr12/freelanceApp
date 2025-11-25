@@ -3,7 +3,6 @@ package com.freelance.app.service;
 import com.freelance.app.domain.criteria.OfferTypeCriteria;
 import com.freelance.app.repository.OfferTypeRepository;
 import com.freelance.app.service.dto.OfferTypeDTO;
-import com.freelance.app.service.mapper.OfferTypeMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,8 @@ public class OfferTypeService {
 
     private final OfferTypeRepository offerTypeRepository;
 
-    private final OfferTypeMapper offerTypeMapper;
-
-    public OfferTypeService(OfferTypeRepository offerTypeRepository, OfferTypeMapper offerTypeMapper) {
+    public OfferTypeService(OfferTypeRepository offerTypeRepository) {
         this.offerTypeRepository = offerTypeRepository;
-        this.offerTypeMapper = offerTypeMapper;
     }
 
     /**
@@ -38,7 +34,7 @@ public class OfferTypeService {
      */
     public Mono<OfferTypeDTO> save(OfferTypeDTO offerTypeDTO) {
         LOG.debug("Request to save OfferType : {}", offerTypeDTO);
-        return offerTypeRepository.save(offerTypeMapper.toEntity(offerTypeDTO)).map(offerTypeMapper::toDto);
+        return null;
     }
 
     /**
@@ -49,7 +45,7 @@ public class OfferTypeService {
      */
     public Mono<OfferTypeDTO> update(OfferTypeDTO offerTypeDTO) {
         LOG.debug("Request to update OfferType : {}", offerTypeDTO);
-        return offerTypeRepository.save(offerTypeMapper.toEntity(offerTypeDTO)).map(offerTypeMapper::toDto);
+        return null;
     }
 
     /**
@@ -61,15 +57,7 @@ public class OfferTypeService {
     public Mono<OfferTypeDTO> partialUpdate(OfferTypeDTO offerTypeDTO) {
         LOG.debug("Request to partially update OfferType : {}", offerTypeDTO);
 
-        return offerTypeRepository
-            .findById(offerTypeDTO.getId())
-            .map(existingOfferType -> {
-                offerTypeMapper.partialUpdate(existingOfferType, offerTypeDTO);
-
-                return existingOfferType;
-            })
-            .flatMap(offerTypeRepository::save)
-            .map(offerTypeMapper::toDto);
+        return null;
     }
 
     /**
@@ -81,7 +69,7 @@ public class OfferTypeService {
     @Transactional(readOnly = true)
     public Flux<OfferTypeDTO> findByCriteria(OfferTypeCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferTypes by Criteria");
-        return offerTypeRepository.findByCriteria(criteria, pageable).map(offerTypeMapper::toDto);
+        return null;
     }
 
     /**
@@ -100,7 +88,7 @@ public class OfferTypeService {
      * @return the list of entities.
      */
     public Flux<OfferTypeDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return offerTypeRepository.findAllWithEagerRelationships(pageable).map(offerTypeMapper::toDto);
+        return null;
     }
 
     /**
@@ -121,7 +109,7 @@ public class OfferTypeService {
     @Transactional(readOnly = true)
     public Mono<OfferTypeDTO> findOne(Long id) {
         LOG.debug("Request to get OfferType : {}", id);
-        return offerTypeRepository.findOneWithEagerRelationships(id).map(offerTypeMapper::toDto);
+        return null;
     }
 
     /**
