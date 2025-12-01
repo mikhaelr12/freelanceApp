@@ -9,7 +9,6 @@ import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
 import com.freelance.app.repository.sqlhelper.SkillSqlHelper;
 import com.freelance.app.repository.sqlhelper.UserSqlHelper;
 import com.freelance.app.service.dto.ProfileDTO;
-import com.freelance.app.service.dto.SkillShortDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;

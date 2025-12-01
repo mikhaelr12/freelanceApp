@@ -1,29 +1,22 @@
 package com.freelance.app.service;
 
-import com.freelance.app.config.ApplicationProperties;
-import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.Offer;
-import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.criteria.OfferCriteria;
-import com.freelance.app.domain.criteria.OfferMediaCriteria;
-import com.freelance.app.repository.*;
-import com.freelance.app.service.dto.FileObjectDTO;
+import com.freelance.app.repository.FileObjectRepository;
+import com.freelance.app.repository.OfferMediaRepository;
+import com.freelance.app.repository.OfferRepository;
+import com.freelance.app.repository.OfferTypeRepository;
 import com.freelance.app.service.dto.OfferShortDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.util.MinioUtil;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import tech.jhipster.service.filter.LongFilter;
 
 /**
  * Service Implementation for managing {@link com.freelance.app.domain.Offer}.
