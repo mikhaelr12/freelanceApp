@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.Message;
 import com.freelance.app.domain.criteria.MessageCriteria;
 import com.freelance.app.repository.MessageRepository;
 import com.freelance.app.service.MessageService;
-import com.freelance.app.service.dto.MessageDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,18 +54,18 @@ public class MessageResource {
     /**
      * {@code POST  /messages} : Create a new message.
      *
-     * @param messageDTO the messageDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new messageDTO, or with status {@code 400 (Bad Request)} if the message has already an ID.
+     * @param message the message to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new message, or with status {@code 400 (Bad Request)} if the message has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<MessageDTO>> createMessage(@Valid @RequestBody MessageDTO messageDTO) throws URISyntaxException {
-        LOG.debug("REST request to save Message : {}", messageDTO);
-        if (messageDTO.getId() != null) {
+    public Mono<ResponseEntity<Message>> createMessage(@Valid @RequestBody Message message) throws URISyntaxException {
+        LOG.debug("REST request to save Message : {}", message);
+        if (message.getId() != null) {
             throw new BadRequestAlertException("A new message cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return messageService
-            .save(messageDTO)
+            .save(message)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/messages/" + result.getId()))
@@ -80,23 +80,23 @@ public class MessageResource {
     /**
      * {@code PUT  /messages/:id} : Updates an existing message.
      *
-     * @param id the id of the messageDTO to save.
-     * @param messageDTO the messageDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated messageDTO,
-     * or with status {@code 400 (Bad Request)} if the messageDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the messageDTO couldn't be updated.
+     * @param id the id of the message to save.
+     * @param message the message to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated message,
+     * or with status {@code 400 (Bad Request)} if the message is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the message couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<MessageDTO>> updateMessage(
+    public Mono<ResponseEntity<Message>> updateMessage(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody MessageDTO messageDTO
+        @Valid @RequestBody Message message
     ) throws URISyntaxException {
-        LOG.debug("REST request to update Message : {}, {}", id, messageDTO);
-        if (messageDTO.getId() == null) {
+        LOG.debug("REST request to update Message : {}, {}", id, message);
+        if (message.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, messageDTO.getId())) {
+        if (!Objects.equals(id, message.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -108,7 +108,7 @@ public class MessageResource {
                 }
 
                 return messageService
-                    .update(messageDTO)
+                    .update(message)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -121,24 +121,24 @@ public class MessageResource {
     /**
      * {@code PATCH  /messages/:id} : Partial updates given fields of an existing message, field will ignore if it is null
      *
-     * @param id the id of the messageDTO to save.
-     * @param messageDTO the messageDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated messageDTO,
-     * or with status {@code 400 (Bad Request)} if the messageDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the messageDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the messageDTO couldn't be updated.
+     * @param id the id of the message to save.
+     * @param message the message to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated message,
+     * or with status {@code 400 (Bad Request)} if the message is not valid,
+     * or with status {@code 404 (Not Found)} if the message is not found,
+     * or with status {@code 500 (Internal Server Error)} if the message couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<MessageDTO>> partialUpdateMessage(
+    public Mono<ResponseEntity<Message>> partialUpdateMessage(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody MessageDTO messageDTO
+        @NotNull @RequestBody Message message
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Message partially : {}, {}", id, messageDTO);
-        if (messageDTO.getId() == null) {
+        LOG.debug("REST request to partial update Message partially : {}, {}", id, message);
+        if (message.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, messageDTO.getId())) {
+        if (!Objects.equals(id, message.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -149,7 +149,7 @@ public class MessageResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<MessageDTO> result = messageService.partialUpdate(messageDTO);
+                Mono<Message> result = messageService.partialUpdate(message);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -170,7 +170,7 @@ public class MessageResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of messages in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<MessageDTO>>> getAllMessages(
+    public Mono<ResponseEntity<List<Message>>> getAllMessages(
         MessageCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -206,20 +206,20 @@ public class MessageResource {
     /**
      * {@code GET  /messages/:id} : get the "id" message.
      *
-     * @param id the id of the messageDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the messageDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the message to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the message, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<MessageDTO>> getMessage(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Message>> getMessage(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Message : {}", id);
-        Mono<MessageDTO> messageDTO = messageService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(messageDTO);
+        Mono<Message> message = messageService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(message);
     }
 
     /**
      * {@code DELETE  /messages/:id} : delete the "id" message.
      *
-     * @param id the id of the messageDTO to delete.
+     * @param id the id of the message to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

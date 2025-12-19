@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Message;
 import com.freelance.app.domain.criteria.MessageCriteria;
 import com.freelance.app.repository.MessageRepository;
-import com.freelance.app.service.dto.MessageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,47 @@ public class MessageService {
     /**
      * Save a message.
      *
-     * @param messageDTO the entity to save.
+     * @param message the entity to save.
      * @return the persisted entity.
      */
-    public Mono<MessageDTO> save(MessageDTO messageDTO) {
-        LOG.debug("Request to save Message : {}", messageDTO);
-        return null;
+    public Mono<Message> save(Message message) {
+        LOG.debug("Request to save Message : {}", message);
+        return messageRepository.save(message);
     }
 
     /**
      * Update a message.
      *
-     * @param messageDTO the entity to save.
+     * @param message the entity to save.
      * @return the persisted entity.
      */
-    public Mono<MessageDTO> update(MessageDTO messageDTO) {
-        LOG.debug("Request to update Message : {}", messageDTO);
-        return null;
+    public Mono<Message> update(Message message) {
+        LOG.debug("Request to update Message : {}", message);
+        return messageRepository.save(message);
     }
 
     /**
      * Partially update a message.
      *
-     * @param messageDTO the entity to update partially.
+     * @param message the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<MessageDTO> partialUpdate(MessageDTO messageDTO) {
-        LOG.debug("Request to partially update Message : {}", messageDTO);
+    public Mono<Message> partialUpdate(Message message) {
+        LOG.debug("Request to partially update Message : {}", message);
 
-        return null;
+        return messageRepository
+            .findById(message.getId())
+            .map(existingMessage -> {
+                if (message.getBody() != null) {
+                    existingMessage.setBody(message.getBody());
+                }
+                if (message.getSentAt() != null) {
+                    existingMessage.setSentAt(message.getSentAt());
+                }
+
+                return existingMessage;
+            })
+            .flatMap(messageRepository::save);
     }
 
     /**
@@ -67,9 +79,9 @@ public class MessageService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<MessageDTO> findByCriteria(MessageCriteria criteria, Pageable pageable) {
+    public Flux<Message> findByCriteria(MessageCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Messages by Criteria");
-        return null;
+        return messageRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -87,8 +99,8 @@ public class MessageService {
      *
      * @return the list of entities.
      */
-    public Flux<MessageDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<Message> findAllWithEagerRelationships(Pageable pageable) {
+        return messageRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -107,9 +119,9 @@ public class MessageService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<MessageDTO> findOne(Long id) {
+    public Mono<Message> findOne(Long id) {
         LOG.debug("Request to get Message : {}", id);
-        return null;
+        return messageRepository.findOneWithEagerRelationships(id);
     }
 
     /**

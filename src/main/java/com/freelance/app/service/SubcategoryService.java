@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Subcategory;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
 import com.freelance.app.repository.SubcategoryRepository;
-import com.freelance.app.service.dto.SubcategoryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,59 @@ public class SubcategoryService {
     /**
      * Save a subcategory.
      *
-     * @param subcategoryDTO the entity to save.
+     * @param subcategory the entity to save.
      * @return the persisted entity.
      */
-    public Mono<SubcategoryDTO> save(SubcategoryDTO subcategoryDTO) {
-        LOG.debug("Request to save Subcategory : {}", subcategoryDTO);
-        return null;
+    public Mono<Subcategory> save(Subcategory subcategory) {
+        LOG.debug("Request to save Subcategory : {}", subcategory);
+        return subcategoryRepository.save(subcategory);
     }
 
     /**
      * Update a subcategory.
      *
-     * @param subcategoryDTO the entity to save.
+     * @param subcategory the entity to save.
      * @return the persisted entity.
      */
-    public Mono<SubcategoryDTO> update(SubcategoryDTO subcategoryDTO) {
-        LOG.debug("Request to update Subcategory : {}", subcategoryDTO);
-        return null;
+    public Mono<Subcategory> update(Subcategory subcategory) {
+        LOG.debug("Request to update Subcategory : {}", subcategory);
+        return subcategoryRepository.save(subcategory);
     }
 
     /**
      * Partially update a subcategory.
      *
-     * @param subcategoryDTO the entity to update partially.
+     * @param subcategory the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<SubcategoryDTO> partialUpdate(SubcategoryDTO subcategoryDTO) {
-        LOG.debug("Request to partially update Subcategory : {}", subcategoryDTO);
+    public Mono<Subcategory> partialUpdate(Subcategory subcategory) {
+        LOG.debug("Request to partially update Subcategory : {}", subcategory);
 
-        return null;
+        return subcategoryRepository
+            .findById(subcategory.getId())
+            .map(existingSubcategory -> {
+                if (subcategory.getName() != null) {
+                    existingSubcategory.setName(subcategory.getName());
+                }
+                if (subcategory.getCreatedDate() != null) {
+                    existingSubcategory.setCreatedDate(subcategory.getCreatedDate());
+                }
+                if (subcategory.getLastModifiedDate() != null) {
+                    existingSubcategory.setLastModifiedDate(subcategory.getLastModifiedDate());
+                }
+                if (subcategory.getCreatedBy() != null) {
+                    existingSubcategory.setCreatedBy(subcategory.getCreatedBy());
+                }
+                if (subcategory.getLastModifiedBy() != null) {
+                    existingSubcategory.setLastModifiedBy(subcategory.getLastModifiedBy());
+                }
+                if (subcategory.getActive() != null) {
+                    existingSubcategory.setActive(subcategory.getActive());
+                }
+
+                return existingSubcategory;
+            })
+            .flatMap(subcategoryRepository::save);
     }
 
     /**
@@ -67,9 +91,9 @@ public class SubcategoryService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<SubcategoryDTO> findByCriteria(SubcategoryCriteria criteria, Pageable pageable) {
+    public Flux<Subcategory> findByCriteria(SubcategoryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Subcategories by Criteria");
-        return null;
+        return subcategoryRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -87,8 +111,8 @@ public class SubcategoryService {
      *
      * @return the list of entities.
      */
-    public Flux<SubcategoryDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<Subcategory> findAllWithEagerRelationships(Pageable pageable) {
+        return subcategoryRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -107,9 +131,9 @@ public class SubcategoryService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<SubcategoryDTO> findOne(Long id) {
+    public Mono<Subcategory> findOne(Long id) {
         LOG.debug("Request to get Subcategory : {}", id);
-        return null;
+        return subcategoryRepository.findOneWithEagerRelationships(id);
     }
 
     /**

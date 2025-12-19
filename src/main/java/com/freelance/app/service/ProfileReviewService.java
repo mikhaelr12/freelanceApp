@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.ProfileReview;
 import com.freelance.app.domain.criteria.ProfileReviewCriteria;
 import com.freelance.app.repository.ProfileReviewRepository;
-import com.freelance.app.service.dto.ProfileReviewDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,59 @@ public class ProfileReviewService {
     /**
      * Save a profileReview.
      *
-     * @param profileReviewDTO the entity to save.
+     * @param profileReview the entity to save.
      * @return the persisted entity.
      */
-    public Mono<ProfileReviewDTO> save(ProfileReviewDTO profileReviewDTO) {
-        LOG.debug("Request to save ProfileReview : {}", profileReviewDTO);
-        return null;
+    public Mono<ProfileReview> save(ProfileReview profileReview) {
+        LOG.debug("Request to save ProfileReview : {}", profileReview);
+        return profileReviewRepository.save(profileReview);
     }
 
     /**
      * Update a profileReview.
      *
-     * @param profileReviewDTO the entity to save.
+     * @param profileReview the entity to save.
      * @return the persisted entity.
      */
-    public Mono<ProfileReviewDTO> update(ProfileReviewDTO profileReviewDTO) {
-        LOG.debug("Request to update ProfileReview : {}", profileReviewDTO);
-        return null;
+    public Mono<ProfileReview> update(ProfileReview profileReview) {
+        LOG.debug("Request to update ProfileReview : {}", profileReview);
+        return profileReviewRepository.save(profileReview);
     }
 
     /**
      * Partially update a profileReview.
      *
-     * @param profileReviewDTO the entity to update partially.
+     * @param profileReview the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<ProfileReviewDTO> partialUpdate(ProfileReviewDTO profileReviewDTO) {
-        LOG.debug("Request to partially update ProfileReview : {}", profileReviewDTO);
+    public Mono<ProfileReview> partialUpdate(ProfileReview profileReview) {
+        LOG.debug("Request to partially update ProfileReview : {}", profileReview);
 
-        return null;
+        return profileReviewRepository
+            .findById(profileReview.getId())
+            .map(existingProfileReview -> {
+                if (profileReview.getText() != null) {
+                    existingProfileReview.setText(profileReview.getText());
+                }
+                if (profileReview.getRating() != null) {
+                    existingProfileReview.setRating(profileReview.getRating());
+                }
+                if (profileReview.getCreatedDate() != null) {
+                    existingProfileReview.setCreatedDate(profileReview.getCreatedDate());
+                }
+                if (profileReview.getLastModifiedDate() != null) {
+                    existingProfileReview.setLastModifiedDate(profileReview.getLastModifiedDate());
+                }
+                if (profileReview.getCreatedBy() != null) {
+                    existingProfileReview.setCreatedBy(profileReview.getCreatedBy());
+                }
+                if (profileReview.getLastModifiedBy() != null) {
+                    existingProfileReview.setLastModifiedBy(profileReview.getLastModifiedBy());
+                }
+
+                return existingProfileReview;
+            })
+            .flatMap(profileReviewRepository::save);
     }
 
     /**
@@ -67,9 +91,9 @@ public class ProfileReviewService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<ProfileReviewDTO> findByCriteria(ProfileReviewCriteria criteria, Pageable pageable) {
+    public Flux<ProfileReview> findByCriteria(ProfileReviewCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all ProfileReviews by Criteria");
-        return null;
+        return profileReviewRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -98,9 +122,9 @@ public class ProfileReviewService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<ProfileReviewDTO> findOne(Long id) {
+    public Mono<ProfileReview> findOne(Long id) {
         LOG.debug("Request to get ProfileReview : {}", id);
-        return null;
+        return profileReviewRepository.findById(id);
     }
 
     /**

@@ -5,9 +5,6 @@ import com.freelance.app.domain.criteria.ConversationCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ConversationRowMapper;
 import com.freelance.app.repository.rowmapper.OrderRowMapper;
-import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
-import com.freelance.app.repository.sqlhelper.OrderSqlHelper;
-import com.freelance.app.service.dto.ConversationDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -17,8 +14,14 @@ import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.*;
+import org.springframework.data.relational.core.sql.Column;
+import org.springframework.data.relational.core.sql.Comparison;
+import org.springframework.data.relational.core.sql.Condition;
+import org.springframework.data.relational.core.sql.Conditions;
+import org.springframework.data.relational.core.sql.Expression;
+import org.springframework.data.relational.core.sql.Select;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoinCondition;
+import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -73,18 +76,15 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
     RowsFetchSpec<Conversation> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = ConversationSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(OrderSqlHelper.getColumns(orderTable, "order"));
-        return createQuery(pageable, whereClause, columns).map(this::process);
-    }
-
-    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(orderTable)
             .on(Column.create("order_id", entityTable))
             .equals(Column.create("id", orderTable));
+        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Conversation.class, pageable, whereClause);
-        return db.sql(select);
+        return db.sql(select).map(this::process);
     }
 
     @Override
@@ -110,29 +110,15 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
     }
 
     @Override
-    public Flux<ConversationDTO> findByCriteria(ConversationCriteria conversationCriteria, Pageable page) {
-        List<Expression> columns = ConversationSqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS);
-        return createQuery(page, buildConditions(conversationCriteria), columns)
-            .map((row, rowMetadata) -> conversationMapper.applyDto(row, "e"))
-            .all();
+    public Flux<Conversation> findByCriteria(ConversationCriteria conversationCriteria, Pageable page) {
+        return createQuery(page, buildConditions(conversationCriteria)).all();
     }
 
     @Override
     public Mono<Long> countByCriteria(ConversationCriteria criteria) {
-        return createCountQuery(buildConditions(criteria)).one();
-    }
-
-    @Override
-    public Mono<ConversationDTO> findDTOById(Long id) {
-        List<Expression> columns = ConversationSqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS);
-        Condition whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
-        return createQuery(null, whereClause, columns).map((row, rowMetadata) -> conversationMapper.applyDto(row, "e")).one();
-    }
-
-    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
-        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
-            row.get(0, Long.class)
-        );
+        return findByCriteria(criteria, null)
+            .collectList()
+            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
     }
 
     private Condition buildConditions(ConversationCriteria criteria) {

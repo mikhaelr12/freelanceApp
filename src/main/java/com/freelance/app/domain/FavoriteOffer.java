@@ -1,10 +1,10 @@
 package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.NotNull;
-import java.io.Serial;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -16,7 +16,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class FavoriteOffer implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -25,7 +24,8 @@ public class FavoriteOffer implements Serializable {
 
     @NotNull(message = "must not be null")
     @Column("created_at")
-    private Instant createdAt = Instant.now();
+    @CreatedDate
+    private Instant createdAt;
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "user", "profilePicture", "skills" }, allowSetters = true)

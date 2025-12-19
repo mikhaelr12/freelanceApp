@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Tag;
 import com.freelance.app.domain.criteria.TagCriteria;
 import com.freelance.app.repository.TagRepository;
-import com.freelance.app.service.dto.TagDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,56 @@ public class TagService {
     /**
      * Save a tag.
      *
-     * @param tagDTO the entity to save.
+     * @param tag the entity to save.
      * @return the persisted entity.
      */
-    public Mono<TagDTO> save(TagDTO tagDTO) {
-        LOG.debug("Request to save Tag : {}", tagDTO);
-        return null;
+    public Mono<Tag> save(Tag tag) {
+        LOG.debug("Request to save Tag : {}", tag);
+        return tagRepository.save(tag);
     }
 
     /**
      * Update a tag.
      *
-     * @param tagDTO the entity to save.
+     * @param tag the entity to save.
      * @return the persisted entity.
      */
-    public Mono<TagDTO> update(TagDTO tagDTO) {
-        LOG.debug("Request to update Tag : {}", tagDTO);
-        return null;
+    public Mono<Tag> update(Tag tag) {
+        LOG.debug("Request to update Tag : {}", tag);
+        return tagRepository.save(tag);
     }
 
     /**
      * Partially update a tag.
      *
-     * @param tagDTO the entity to update partially.
+     * @param tag the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<TagDTO> partialUpdate(TagDTO tagDTO) {
-        LOG.debug("Request to partially update Tag : {}", tagDTO);
+    public Mono<Tag> partialUpdate(Tag tag) {
+        LOG.debug("Request to partially update Tag : {}", tag);
 
-        return null;
+        return tagRepository
+            .findById(tag.getId())
+            .map(existingTag -> {
+                if (tag.getName() != null) {
+                    existingTag.setName(tag.getName());
+                }
+                if (tag.getCreatedDate() != null) {
+                    existingTag.setCreatedDate(tag.getCreatedDate());
+                }
+                if (tag.getLastModifiedDate() != null) {
+                    existingTag.setLastModifiedDate(tag.getLastModifiedDate());
+                }
+                if (tag.getCreatedBy() != null) {
+                    existingTag.setCreatedBy(tag.getCreatedBy());
+                }
+                if (tag.getLastModifiedBy() != null) {
+                    existingTag.setLastModifiedBy(tag.getLastModifiedBy());
+                }
+
+                return existingTag;
+            })
+            .flatMap(tagRepository::save);
     }
 
     /**
@@ -67,9 +88,9 @@ public class TagService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<TagDTO> findByCriteria(TagCriteria criteria, Pageable pageable) {
+    public Flux<Tag> findByCriteria(TagCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Tags by Criteria");
-        return null;
+        return tagRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -98,9 +119,9 @@ public class TagService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<TagDTO> findOne(Long id) {
+    public Mono<Tag> findOne(Long id) {
         LOG.debug("Request to get Tag : {}", id);
-        return null;
+        return tagRepository.findById(id);
     }
 
     /**

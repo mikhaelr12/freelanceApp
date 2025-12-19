@@ -2,7 +2,6 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.criteria.ConversationCriteria;
-import com.freelance.app.service.dto.ConversationDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -47,9 +46,7 @@ interface ConversationRepositoryInternal {
     Mono<Conversation> findById(Long id);
     // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
     // Flux<Conversation> findAllBy(Pageable pageable, Criteria criteria);
-    Flux<ConversationDTO> findByCriteria(ConversationCriteria criteria, Pageable pageable);
+    Flux<Conversation> findByCriteria(ConversationCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(ConversationCriteria criteria);
-
-    Mono<ConversationDTO> findDTOById(Long id);
 }

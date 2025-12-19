@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.OfferType;
 import com.freelance.app.domain.criteria.OfferTypeCriteria;
 import com.freelance.app.repository.OfferTypeRepository;
-import com.freelance.app.service.dto.OfferTypeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,59 @@ public class OfferTypeService {
     /**
      * Save a offerType.
      *
-     * @param offerTypeDTO the entity to save.
+     * @param offerType the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferTypeDTO> save(OfferTypeDTO offerTypeDTO) {
-        LOG.debug("Request to save OfferType : {}", offerTypeDTO);
-        return null;
+    public Mono<OfferType> save(OfferType offerType) {
+        LOG.debug("Request to save OfferType : {}", offerType);
+        return offerTypeRepository.save(offerType);
     }
 
     /**
      * Update a offerType.
      *
-     * @param offerTypeDTO the entity to save.
+     * @param offerType the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferTypeDTO> update(OfferTypeDTO offerTypeDTO) {
-        LOG.debug("Request to update OfferType : {}", offerTypeDTO);
-        return null;
+    public Mono<OfferType> update(OfferType offerType) {
+        LOG.debug("Request to update OfferType : {}", offerType);
+        return offerTypeRepository.save(offerType);
     }
 
     /**
      * Partially update a offerType.
      *
-     * @param offerTypeDTO the entity to update partially.
+     * @param offerType the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<OfferTypeDTO> partialUpdate(OfferTypeDTO offerTypeDTO) {
-        LOG.debug("Request to partially update OfferType : {}", offerTypeDTO);
+    public Mono<OfferType> partialUpdate(OfferType offerType) {
+        LOG.debug("Request to partially update OfferType : {}", offerType);
 
-        return null;
+        return offerTypeRepository
+            .findById(offerType.getId())
+            .map(existingOfferType -> {
+                if (offerType.getName() != null) {
+                    existingOfferType.setName(offerType.getName());
+                }
+                if (offerType.getCreatedDate() != null) {
+                    existingOfferType.setCreatedDate(offerType.getCreatedDate());
+                }
+                if (offerType.getLastModifiedDate() != null) {
+                    existingOfferType.setLastModifiedDate(offerType.getLastModifiedDate());
+                }
+                if (offerType.getCreatedBy() != null) {
+                    existingOfferType.setCreatedBy(offerType.getCreatedBy());
+                }
+                if (offerType.getLastModifiedBy() != null) {
+                    existingOfferType.setLastModifiedBy(offerType.getLastModifiedBy());
+                }
+                if (offerType.getActive() != null) {
+                    existingOfferType.setActive(offerType.getActive());
+                }
+
+                return existingOfferType;
+            })
+            .flatMap(offerTypeRepository::save);
     }
 
     /**
@@ -67,9 +91,9 @@ public class OfferTypeService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<OfferTypeDTO> findByCriteria(OfferTypeCriteria criteria, Pageable pageable) {
+    public Flux<OfferType> findByCriteria(OfferTypeCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferTypes by Criteria");
-        return null;
+        return offerTypeRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -87,8 +111,8 @@ public class OfferTypeService {
      *
      * @return the list of entities.
      */
-    public Flux<OfferTypeDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<OfferType> findAllWithEagerRelationships(Pageable pageable) {
+        return offerTypeRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -107,9 +131,9 @@ public class OfferTypeService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<OfferTypeDTO> findOne(Long id) {
+    public Mono<OfferType> findOne(Long id) {
         LOG.debug("Request to get OfferType : {}", id);
-        return null;
+        return offerTypeRepository.findOneWithEagerRelationships(id);
     }
 
     /**

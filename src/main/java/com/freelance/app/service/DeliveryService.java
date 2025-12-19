@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Delivery;
 import com.freelance.app.domain.criteria.DeliveryCriteria;
 import com.freelance.app.repository.DeliveryRepository;
-import com.freelance.app.service.dto.DeliveryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,47 @@ public class DeliveryService {
     /**
      * Save a delivery.
      *
-     * @param deliveryDTO the entity to save.
+     * @param delivery the entity to save.
      * @return the persisted entity.
      */
-    public Mono<DeliveryDTO> save(DeliveryDTO deliveryDTO) {
-        LOG.debug("Request to save Delivery : {}", deliveryDTO);
-        return null;
+    public Mono<Delivery> save(Delivery delivery) {
+        LOG.debug("Request to save Delivery : {}", delivery);
+        return deliveryRepository.save(delivery);
     }
 
     /**
      * Update a delivery.
      *
-     * @param deliveryDTO the entity to save.
+     * @param delivery the entity to save.
      * @return the persisted entity.
      */
-    public Mono<DeliveryDTO> update(DeliveryDTO deliveryDTO) {
-        LOG.debug("Request to update Delivery : {}", deliveryDTO);
-        return null;
+    public Mono<Delivery> update(Delivery delivery) {
+        LOG.debug("Request to update Delivery : {}", delivery);
+        return deliveryRepository.save(delivery);
     }
 
     /**
      * Partially update a delivery.
      *
-     * @param deliveryDTO the entity to update partially.
+     * @param delivery the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<DeliveryDTO> partialUpdate(DeliveryDTO deliveryDTO) {
-        LOG.debug("Request to partially update Delivery : {}", deliveryDTO);
+    public Mono<Delivery> partialUpdate(Delivery delivery) {
+        LOG.debug("Request to partially update Delivery : {}", delivery);
 
-        return null;
+        return deliveryRepository
+            .findById(delivery.getId())
+            .map(existingDelivery -> {
+                if (delivery.getNote() != null) {
+                    existingDelivery.setNote(delivery.getNote());
+                }
+                if (delivery.getDeliveredAt() != null) {
+                    existingDelivery.setDeliveredAt(delivery.getDeliveredAt());
+                }
+
+                return existingDelivery;
+            })
+            .flatMap(deliveryRepository::save);
     }
 
     /**
@@ -67,9 +79,9 @@ public class DeliveryService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<DeliveryDTO> findByCriteria(DeliveryCriteria criteria, Pageable pageable) {
+    public Flux<Delivery> findByCriteria(DeliveryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Deliveries by Criteria");
-        return null;
+        return deliveryRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -87,8 +99,8 @@ public class DeliveryService {
      *
      * @return the list of entities.
      */
-    public Flux<DeliveryDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<Delivery> findAllWithEagerRelationships(Pageable pageable) {
+        return deliveryRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -107,9 +119,9 @@ public class DeliveryService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<DeliveryDTO> findOne(Long id) {
+    public Mono<Delivery> findOne(Long id) {
         LOG.debug("Request to get Delivery : {}", id);
-        return null;
+        return deliveryRepository.findOneWithEagerRelationships(id);
     }
 
     /**

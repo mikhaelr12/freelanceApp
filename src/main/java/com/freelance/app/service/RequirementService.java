@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Requirement;
 import com.freelance.app.domain.criteria.RequirementCriteria;
 import com.freelance.app.repository.RequirementRepository;
-import com.freelance.app.service.dto.RequirementDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,34 +29,47 @@ public class RequirementService {
     /**
      * Save a requirement.
      *
-     * @param requirementDTO the entity to save.
+     * @param requirement the entity to save.
      * @return the persisted entity.
      */
-    public Mono<RequirementDTO> save(RequirementDTO requirementDTO) {
-        LOG.debug("Request to save Requirement : {}", requirementDTO);
-        return null;
+    public Mono<Requirement> save(Requirement requirement) {
+        LOG.debug("Request to save Requirement : {}", requirement);
+        return requirementRepository.save(requirement);
     }
 
     /**
      * Update a requirement.
      *
-     * @param requirementDTO the entity to save.
+     * @param requirement the entity to save.
      * @return the persisted entity.
      */
-    public Mono<RequirementDTO> update(RequirementDTO requirementDTO) {
-        LOG.debug("Request to update Requirement : {}", requirementDTO);
-        return null;
+    public Mono<Requirement> update(Requirement requirement) {
+        LOG.debug("Request to update Requirement : {}", requirement);
+        return requirementRepository.save(requirement);
     }
 
     /**
      * Partially update a requirement.
      *
-     * @param requirementDTO the entity to update partially.
+     * @param requirement the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<RequirementDTO> partialUpdate(RequirementDTO requirementDTO) {
-        LOG.debug("Request to partially update Requirement : {}", requirementDTO);
-        return null;
+    public Mono<Requirement> partialUpdate(Requirement requirement) {
+        LOG.debug("Request to partially update Requirement : {}", requirement);
+
+        return requirementRepository
+            .findById(requirement.getId())
+            .map(existingRequirement -> {
+                if (requirement.getPrompt() != null) {
+                    existingRequirement.setPrompt(requirement.getPrompt());
+                }
+                if (requirement.getAnswer() != null) {
+                    existingRequirement.setAnswer(requirement.getAnswer());
+                }
+
+                return existingRequirement;
+            })
+            .flatMap(requirementRepository::save);
     }
 
     /**
@@ -66,9 +79,9 @@ public class RequirementService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<RequirementDTO> findByCriteria(RequirementCriteria criteria, Pageable pageable) {
+    public Flux<Requirement> findByCriteria(RequirementCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Requirements by Criteria");
-        return null;
+        return requirementRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -97,9 +110,9 @@ public class RequirementService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<RequirementDTO> findOne(Long id) {
+    public Mono<Requirement> findOne(Long id) {
         LOG.debug("Request to get Requirement : {}", id);
-        return null;
+        return requirementRepository.findById(id);
     }
 
     /**

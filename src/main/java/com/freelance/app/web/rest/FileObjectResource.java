@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.criteria.FileObjectCriteria;
 import com.freelance.app.repository.FileObjectRepository;
 import com.freelance.app.service.FileObjectService;
-import com.freelance.app.service.dto.FileObjectDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,18 +54,18 @@ public class FileObjectResource {
     /**
      * {@code POST  /file-objects} : Create a new fileObject.
      *
-     * @param fileObjectDTO the fileObjectDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fileObjectDTO, or with status {@code 400 (Bad Request)} if the fileObject has already an ID.
+     * @param fileObject the fileObject to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new fileObject, or with status {@code 400 (Bad Request)} if the fileObject has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<FileObjectDTO>> createFileObject(@Valid @RequestBody FileObjectDTO fileObjectDTO) throws URISyntaxException {
-        LOG.debug("REST request to save FileObject : {}", fileObjectDTO);
-        if (fileObjectDTO.getId() != null) {
+    public Mono<ResponseEntity<FileObject>> createFileObject(@Valid @RequestBody FileObject fileObject) throws URISyntaxException {
+        LOG.debug("REST request to save FileObject : {}", fileObject);
+        if (fileObject.getId() != null) {
             throw new BadRequestAlertException("A new fileObject cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return fileObjectService
-            .save(fileObjectDTO)
+            .save(fileObject)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/file-objects/" + result.getId()))
@@ -80,23 +80,23 @@ public class FileObjectResource {
     /**
      * {@code PUT  /file-objects/:id} : Updates an existing fileObject.
      *
-     * @param id the id of the fileObjectDTO to save.
-     * @param fileObjectDTO the fileObjectDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fileObjectDTO,
-     * or with status {@code 400 (Bad Request)} if the fileObjectDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the fileObjectDTO couldn't be updated.
+     * @param id the id of the fileObject to save.
+     * @param fileObject the fileObject to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fileObject,
+     * or with status {@code 400 (Bad Request)} if the fileObject is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the fileObject couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<FileObjectDTO>> updateFileObject(
+    public Mono<ResponseEntity<FileObject>> updateFileObject(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody FileObjectDTO fileObjectDTO
+        @Valid @RequestBody FileObject fileObject
     ) throws URISyntaxException {
-        LOG.debug("REST request to update FileObject : {}, {}", id, fileObjectDTO);
-        if (fileObjectDTO.getId() == null) {
+        LOG.debug("REST request to update FileObject : {}, {}", id, fileObject);
+        if (fileObject.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, fileObjectDTO.getId())) {
+        if (!Objects.equals(id, fileObject.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -108,7 +108,7 @@ public class FileObjectResource {
                 }
 
                 return fileObjectService
-                    .update(fileObjectDTO)
+                    .update(fileObject)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -121,24 +121,24 @@ public class FileObjectResource {
     /**
      * {@code PATCH  /file-objects/:id} : Partial updates given fields of an existing fileObject, field will ignore if it is null
      *
-     * @param id the id of the fileObjectDTO to save.
-     * @param fileObjectDTO the fileObjectDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fileObjectDTO,
-     * or with status {@code 400 (Bad Request)} if the fileObjectDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the fileObjectDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the fileObjectDTO couldn't be updated.
+     * @param id the id of the fileObject to save.
+     * @param fileObject the fileObject to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fileObject,
+     * or with status {@code 400 (Bad Request)} if the fileObject is not valid,
+     * or with status {@code 404 (Not Found)} if the fileObject is not found,
+     * or with status {@code 500 (Internal Server Error)} if the fileObject couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<FileObjectDTO>> partialUpdateFileObject(
+    public Mono<ResponseEntity<FileObject>> partialUpdateFileObject(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody FileObjectDTO fileObjectDTO
+        @NotNull @RequestBody FileObject fileObject
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update FileObject partially : {}, {}", id, fileObjectDTO);
-        if (fileObjectDTO.getId() == null) {
+        LOG.debug("REST request to partial update FileObject partially : {}, {}", id, fileObject);
+        if (fileObject.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, fileObjectDTO.getId())) {
+        if (!Objects.equals(id, fileObject.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -149,7 +149,7 @@ public class FileObjectResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<FileObjectDTO> result = fileObjectService.partialUpdate(fileObjectDTO);
+                Mono<FileObject> result = fileObjectService.partialUpdate(fileObject);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -170,7 +170,7 @@ public class FileObjectResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of fileObjects in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<FileObjectDTO>>> getAllFileObjects(
+    public Mono<ResponseEntity<List<FileObject>>> getAllFileObjects(
         FileObjectCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -206,20 +206,20 @@ public class FileObjectResource {
     /**
      * {@code GET  /file-objects/:id} : get the "id" fileObject.
      *
-     * @param id the id of the fileObjectDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the fileObjectDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the fileObject to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the fileObject, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<FileObjectDTO>> getFileObject(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<FileObject>> getFileObject(@PathVariable("id") Long id) {
         LOG.debug("REST request to get FileObject : {}", id);
-        Mono<FileObjectDTO> fileObjectDTO = fileObjectService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(fileObjectDTO);
+        Mono<FileObject> fileObject = fileObjectService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(fileObject);
     }
 
     /**
      * {@code DELETE  /file-objects/:id} : delete the "id" fileObject.
      *
-     * @param id the id of the fileObjectDTO to delete.
+     * @param id the id of the fileObject to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

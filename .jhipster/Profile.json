@@ -3,7 +3,6 @@
     "changelogDate": "20251009121203"
   },
   "applications": "*",
-  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "firstName",

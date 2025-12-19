@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.ProfileReview;
 import com.freelance.app.domain.criteria.ProfileReviewCriteria;
 import com.freelance.app.repository.ProfileReviewRepository;
 import com.freelance.app.service.ProfileReviewService;
-import com.freelance.app.service.dto.ProfileReviewDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,19 +54,19 @@ public class ProfileReviewResource {
     /**
      * {@code POST  /profile-reviews} : Create a new profileReview.
      *
-     * @param profileReviewDTO the profileReviewDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileReviewDTO, or with status {@code 400 (Bad Request)} if the profileReview has already an ID.
+     * @param profileReview the profileReview to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileReview, or with status {@code 400 (Bad Request)} if the profileReview has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<ProfileReviewDTO>> createProfileReview(@Valid @RequestBody ProfileReviewDTO profileReviewDTO)
+    public Mono<ResponseEntity<ProfileReview>> createProfileReview(@Valid @RequestBody ProfileReview profileReview)
         throws URISyntaxException {
-        LOG.debug("REST request to save ProfileReview : {}", profileReviewDTO);
-        if (profileReviewDTO.getId() != null) {
+        LOG.debug("REST request to save ProfileReview : {}", profileReview);
+        if (profileReview.getId() != null) {
             throw new BadRequestAlertException("A new profileReview cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return profileReviewService
-            .save(profileReviewDTO)
+            .save(profileReview)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/profile-reviews/" + result.getId()))
@@ -81,23 +81,23 @@ public class ProfileReviewResource {
     /**
      * {@code PUT  /profile-reviews/:id} : Updates an existing profileReview.
      *
-     * @param id the id of the profileReviewDTO to save.
-     * @param profileReviewDTO the profileReviewDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileReviewDTO,
-     * or with status {@code 400 (Bad Request)} if the profileReviewDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the profileReviewDTO couldn't be updated.
+     * @param id the id of the profileReview to save.
+     * @param profileReview the profileReview to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileReview,
+     * or with status {@code 400 (Bad Request)} if the profileReview is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the profileReview couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<ProfileReviewDTO>> updateProfileReview(
+    public Mono<ResponseEntity<ProfileReview>> updateProfileReview(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody ProfileReviewDTO profileReviewDTO
+        @Valid @RequestBody ProfileReview profileReview
     ) throws URISyntaxException {
-        LOG.debug("REST request to update ProfileReview : {}, {}", id, profileReviewDTO);
-        if (profileReviewDTO.getId() == null) {
+        LOG.debug("REST request to update ProfileReview : {}, {}", id, profileReview);
+        if (profileReview.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, profileReviewDTO.getId())) {
+        if (!Objects.equals(id, profileReview.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -109,7 +109,7 @@ public class ProfileReviewResource {
                 }
 
                 return profileReviewService
-                    .update(profileReviewDTO)
+                    .update(profileReview)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -122,24 +122,24 @@ public class ProfileReviewResource {
     /**
      * {@code PATCH  /profile-reviews/:id} : Partial updates given fields of an existing profileReview, field will ignore if it is null
      *
-     * @param id the id of the profileReviewDTO to save.
-     * @param profileReviewDTO the profileReviewDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileReviewDTO,
-     * or with status {@code 400 (Bad Request)} if the profileReviewDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the profileReviewDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the profileReviewDTO couldn't be updated.
+     * @param id the id of the profileReview to save.
+     * @param profileReview the profileReview to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileReview,
+     * or with status {@code 400 (Bad Request)} if the profileReview is not valid,
+     * or with status {@code 404 (Not Found)} if the profileReview is not found,
+     * or with status {@code 500 (Internal Server Error)} if the profileReview couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<ProfileReviewDTO>> partialUpdateProfileReview(
+    public Mono<ResponseEntity<ProfileReview>> partialUpdateProfileReview(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody ProfileReviewDTO profileReviewDTO
+        @NotNull @RequestBody ProfileReview profileReview
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update ProfileReview partially : {}, {}", id, profileReviewDTO);
-        if (profileReviewDTO.getId() == null) {
+        LOG.debug("REST request to partial update ProfileReview partially : {}, {}", id, profileReview);
+        if (profileReview.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, profileReviewDTO.getId())) {
+        if (!Objects.equals(id, profileReview.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -150,7 +150,7 @@ public class ProfileReviewResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<ProfileReviewDTO> result = profileReviewService.partialUpdate(profileReviewDTO);
+                Mono<ProfileReview> result = profileReviewService.partialUpdate(profileReview);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -171,7 +171,7 @@ public class ProfileReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profileReviews in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<ProfileReviewDTO>>> getAllProfileReviews(
+    public Mono<ResponseEntity<List<ProfileReview>>> getAllProfileReviews(
         ProfileReviewCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -207,20 +207,20 @@ public class ProfileReviewResource {
     /**
      * {@code GET  /profile-reviews/:id} : get the "id" profileReview.
      *
-     * @param id the id of the profileReviewDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profileReviewDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the profileReview to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profileReview, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<ProfileReviewDTO>> getProfileReview(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<ProfileReview>> getProfileReview(@PathVariable("id") Long id) {
         LOG.debug("REST request to get ProfileReview : {}", id);
-        Mono<ProfileReviewDTO> profileReviewDTO = profileReviewService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(profileReviewDTO);
+        Mono<ProfileReview> profileReview = profileReviewService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(profileReview);
     }
 
     /**
      * {@code DELETE  /profile-reviews/:id} : delete the "id" profileReview.
      *
-     * @param id the id of the profileReviewDTO to delete.
+     * @param id the id of the profileReview to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

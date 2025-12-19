@@ -3,7 +3,6 @@
     "changelogDate": "20251009121205"
   },
   "applications": "*",
-  "dto": "mapstruct",
   "entityTableName": "jhi_order",
   "fields": [
     {

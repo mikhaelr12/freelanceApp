@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.criteria.OfferMediaCriteria;
 import com.freelance.app.repository.OfferMediaRepository;
-import com.freelance.app.service.dto.OfferMediaDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,34 +29,62 @@ public class OfferMediaService {
     /**
      * Save a offerMedia.
      *
-     * @param offerMediaDTO the entity to save.
+     * @param offerMedia the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferMediaDTO> save(OfferMediaDTO offerMediaDTO) {
-        LOG.debug("Request to save OfferMedia : {}", offerMediaDTO);
-        return null;
+    public Mono<OfferMedia> save(OfferMedia offerMedia) {
+        LOG.debug("Request to save OfferMedia : {}", offerMedia);
+        return offerMediaRepository.save(offerMedia);
     }
 
     /**
      * Update a offerMedia.
      *
-     * @param offerMediaDTO the entity to save.
+     * @param offerMedia the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferMediaDTO> update(OfferMediaDTO offerMediaDTO) {
-        LOG.debug("Request to update OfferMedia : {}", offerMediaDTO);
-        return null;
+    public Mono<OfferMedia> update(OfferMedia offerMedia) {
+        LOG.debug("Request to update OfferMedia : {}", offerMedia);
+        return offerMediaRepository.save(offerMedia);
     }
 
     /**
      * Partially update a offerMedia.
      *
-     * @param offerMediaDTO the entity to update partially.
+     * @param offerMedia the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<OfferMediaDTO> partialUpdate(OfferMediaDTO offerMediaDTO) {
-        LOG.debug("Request to partially update OfferMedia : {}", offerMediaDTO);
-        return null;
+    public Mono<OfferMedia> partialUpdate(OfferMedia offerMedia) {
+        LOG.debug("Request to partially update OfferMedia : {}", offerMedia);
+
+        return offerMediaRepository
+            .findById(offerMedia.getId())
+            .map(existingOfferMedia -> {
+                if (offerMedia.getMediaKind() != null) {
+                    existingOfferMedia.setMediaKind(offerMedia.getMediaKind());
+                }
+                if (offerMedia.getIsPrimary() != null) {
+                    existingOfferMedia.setIsPrimary(offerMedia.getIsPrimary());
+                }
+                if (offerMedia.getCaption() != null) {
+                    existingOfferMedia.setCaption(offerMedia.getCaption());
+                }
+                if (offerMedia.getCreatedDate() != null) {
+                    existingOfferMedia.setCreatedDate(offerMedia.getCreatedDate());
+                }
+                if (offerMedia.getLastModifiedDate() != null) {
+                    existingOfferMedia.setLastModifiedDate(offerMedia.getLastModifiedDate());
+                }
+                if (offerMedia.getCreatedBy() != null) {
+                    existingOfferMedia.setCreatedBy(offerMedia.getCreatedBy());
+                }
+                if (offerMedia.getLastModifiedBy() != null) {
+                    existingOfferMedia.setLastModifiedBy(offerMedia.getLastModifiedBy());
+                }
+
+                return existingOfferMedia;
+            })
+            .flatMap(offerMediaRepository::save);
     }
 
     /**
@@ -66,14 +94,13 @@ public class OfferMediaService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<OfferMediaDTO> findByCriteria(OfferMediaCriteria criteria, Pageable pageable) {
+    public Flux<OfferMedia> findByCriteria(OfferMediaCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferMedias by Criteria");
-        return null;
+        return offerMediaRepository.findByCriteria(criteria, pageable);
     }
 
     /**
      * Find the count of offerMedias by criteria.
-     *
      * @param criteria filtering criteria
      * @return the count of offerMedias
      */
@@ -87,13 +114,12 @@ public class OfferMediaService {
      *
      * @return the list of entities.
      */
-    public Flux<OfferMediaDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<OfferMedia> findAllWithEagerRelationships(Pageable pageable) {
+        return offerMediaRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
      * Returns the number of offerMedias available.
-     *
      * @return the number of entities in the database.
      *
      */
@@ -108,9 +134,9 @@ public class OfferMediaService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<OfferMediaDTO> findOne(Long id) {
+    public Mono<OfferMedia> findOne(Long id) {
         LOG.debug("Request to get OfferMedia : {}", id);
-        return null;
+        return offerMediaRepository.findOneWithEagerRelationships(id);
     }
 
     /**

@@ -65,7 +65,6 @@ public class FileProcessUtil {
                         .fileSize(size)
                         .checksum(checksum)
                         .durationSeconds(0)
-                        .createdDate(Instant.now())
                 )
             );
         });

@@ -5,7 +5,6 @@ import com.freelance.app.domain.criteria.ProfileReviewCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ProfileReviewRowMapper;
 import com.freelance.app.repository.rowmapper.ProfileRowMapper;
-import com.freelance.app.repository.sqlhelper.ProfileReviewSqlHelper;
 import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
@@ -16,8 +15,14 @@ import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.*;
+import org.springframework.data.relational.core.sql.Column;
+import org.springframework.data.relational.core.sql.Comparison;
+import org.springframework.data.relational.core.sql.Condition;
+import org.springframework.data.relational.core.sql.Conditions;
+import org.springframework.data.relational.core.sql.Expression;
+import org.springframework.data.relational.core.sql.Select;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoinCondition;
+import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -74,10 +79,6 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
         List<Expression> columns = ProfileReviewSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(ProfileSqlHelper.getColumns(reviewerTable, "reviewer"));
         columns.addAll(ProfileSqlHelper.getColumns(revieweeTable, "reviewee"));
-        return createQuery(pageable, whereClause, columns).map(this::process);
-    }
-
-    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -87,8 +88,9 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
             .leftOuterJoin(revieweeTable)
             .on(Column.create("reviewee_id", entityTable))
             .equals(Column.create("id", revieweeTable));
+        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, ProfileReview.class, pageable, whereClause);
-        return db.sql(select);
+        return db.sql(select).map(this::process);
     }
 
     @Override
@@ -121,13 +123,9 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
 
     @Override
     public Mono<Long> countByCriteria(ProfileReviewCriteria criteria) {
-        return createCountQuery(buildConditions(criteria)).one();
-    }
-
-    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
-        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
-            row.get(0, Long.class)
-        );
+        return findByCriteria(criteria, null)
+            .collectList()
+            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
     }
 
     private Condition buildConditions(ProfileReviewCriteria criteria) {

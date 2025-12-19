@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Category;
 import com.freelance.app.domain.criteria.CategoryCriteria;
 import com.freelance.app.repository.CategoryRepository;
-import com.freelance.app.service.dto.CategoryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,36 +29,59 @@ public class CategoryService {
     /**
      * Save a category.
      *
-     * @param categoryDTO the entity to save.
+     * @param category the entity to save.
      * @return the persisted entity.
      */
-    public Mono<CategoryDTO> save(CategoryDTO categoryDTO) {
-        LOG.debug("Request to save Category : {}", categoryDTO);
-        //        return categoryRepository.save(categoryMapper.toEntity(categoryDTO)).map(categoryMapper::toDto);
-        return null;
+    public Mono<Category> save(Category category) {
+        LOG.debug("Request to save Category : {}", category);
+        return categoryRepository.save(category);
     }
 
     /**
      * Update a category.
      *
-     * @param categoryDTO the entity to save.
+     * @param category the entity to save.
      * @return the persisted entity.
      */
-    public Mono<CategoryDTO> update(CategoryDTO categoryDTO) {
-        LOG.debug("Request to update Category : {}", categoryDTO);
-        return null;
+    public Mono<Category> update(Category category) {
+        LOG.debug("Request to update Category : {}", category);
+        return categoryRepository.save(category);
     }
 
     /**
      * Partially update a category.
      *
-     * @param categoryDTO the entity to update partially.
+     * @param category the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<CategoryDTO> partialUpdate(CategoryDTO categoryDTO) {
-        LOG.debug("Request to partially update Category : {}", categoryDTO);
+    public Mono<Category> partialUpdate(Category category) {
+        LOG.debug("Request to partially update Category : {}", category);
 
-        return null;
+        return categoryRepository
+            .findById(category.getId())
+            .map(existingCategory -> {
+                if (category.getName() != null) {
+                    existingCategory.setName(category.getName());
+                }
+                if (category.getCreatedDate() != null) {
+                    existingCategory.setCreatedDate(category.getCreatedDate());
+                }
+                if (category.getLastModifiedDate() != null) {
+                    existingCategory.setLastModifiedDate(category.getLastModifiedDate());
+                }
+                if (category.getCreatedBy() != null) {
+                    existingCategory.setCreatedBy(category.getCreatedBy());
+                }
+                if (category.getLastModifiedBy() != null) {
+                    existingCategory.setLastModifiedBy(category.getLastModifiedBy());
+                }
+                if (category.getActive() != null) {
+                    existingCategory.setActive(category.getActive());
+                }
+
+                return existingCategory;
+            })
+            .flatMap(categoryRepository::save);
     }
 
     /**
@@ -68,7 +91,7 @@ public class CategoryService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<CategoryDTO> findByCriteria(CategoryCriteria criteria, Pageable pageable) {
+    public Flux<Category> findByCriteria(CategoryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Categories by Criteria");
         return categoryRepository.findByCriteria(criteria, pageable);
     }
@@ -99,9 +122,9 @@ public class CategoryService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<CategoryDTO> findOne(Long id) {
+    public Mono<Category> findOne(Long id) {
         LOG.debug("Request to get Category : {}", id);
-        return categoryRepository.findDTOById(id);
+        return categoryRepository.findById(id);
     }
 
     /**

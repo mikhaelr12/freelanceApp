@@ -1,7 +1,6 @@
 package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Category;
-import com.freelance.app.service.dto.CategoryDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -33,13 +32,6 @@ public class CategoryRowMapper implements BiFunction<Row, String, Category> {
         entity.setCreatedBy(converter.fromRow(row, prefix + "_created_by", String.class));
         entity.setLastModifiedBy(converter.fromRow(row, prefix + "_last_modified_by", String.class));
         entity.setActive(converter.fromRow(row, prefix + "_active", Boolean.class));
-        return entity;
-    }
-
-    public CategoryDTO applyDTO(Row row, String prefix) {
-        CategoryDTO entity = new CategoryDTO();
-        entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
-        entity.setName(converter.fromRow(row, prefix + "_name", String.class));
         return entity;
     }
 }
