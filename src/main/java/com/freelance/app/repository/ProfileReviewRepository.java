@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.ProfileReview;
 import com.freelance.app.domain.criteria.ProfileReviewCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -30,16 +31,19 @@ public interface ProfileReviewRepository extends ReactiveCrudRepository<ProfileR
     Flux<ProfileReview> findAllWhereRevieweeIsNull();
 
     @Override
-    <S extends ProfileReview> Mono<S> save(S entity);
+    <S extends ProfileReview> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<ProfileReview> findAll();
 
     @Override
-    Mono<ProfileReview> findById(Long id);
+    @NotNull
+    Mono<ProfileReview> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface ProfileReviewRepositoryInternal {

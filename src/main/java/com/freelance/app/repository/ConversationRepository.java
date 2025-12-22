@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.criteria.ConversationCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -24,16 +25,19 @@ public interface ConversationRepository extends ReactiveCrudRepository<Conversat
     Flux<Conversation> findAllWhereOrderIsNull();
 
     @Override
-    <S extends Conversation> Mono<S> save(S entity);
+    <S extends Conversation> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Conversation> findAll();
 
     @Override
-    Mono<Conversation> findById(Long id);
+    @NotNull
+    Mono<Conversation> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface ConversationRepositoryInternal {
@@ -44,8 +48,7 @@ interface ConversationRepositoryInternal {
     Flux<Conversation> findAll();
 
     Mono<Conversation> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Conversation> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Conversation> findByCriteria(ConversationCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(ConversationCriteria criteria);

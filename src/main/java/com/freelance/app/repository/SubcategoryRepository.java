@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -33,16 +34,19 @@ public interface SubcategoryRepository extends ReactiveCrudRepository<Subcategor
     Flux<Subcategory> findAllWhereCategoryIsNull();
 
     @Override
-    <S extends Subcategory> Mono<S> save(S entity);
+    <S extends Subcategory> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Subcategory> findAll();
 
     @Override
-    Mono<Subcategory> findById(Long id);
+    @NotNull
+    Mono<Subcategory> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface SubcategoryRepositoryInternal {
@@ -53,8 +57,7 @@ interface SubcategoryRepositoryInternal {
     Flux<Subcategory> findAll();
 
     Mono<Subcategory> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Subcategory> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Subcategory> findByCriteria(SubcategoryCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(SubcategoryCriteria criteria);

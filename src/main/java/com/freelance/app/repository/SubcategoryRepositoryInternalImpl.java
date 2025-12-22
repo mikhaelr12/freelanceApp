@@ -11,19 +11,14 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.Column;
-import org.springframework.data.relational.core.sql.Comparison;
-import org.springframework.data.relational.core.sql.Condition;
-import org.springframework.data.relational.core.sql.Conditions;
-import org.springframework.data.relational.core.sql.Expression;
-import org.springframework.data.relational.core.sql.Select;
+import org.springframework.data.relational.core.sql.*;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoinCondition;
-import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -38,9 +33,7 @@ import tech.jhipster.service.ConditionBuilder;
 class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategory, Long> implements SubcategoryRepositoryInternal {
 
     private final DatabaseClient db;
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
-
     private final CategoryRowMapper categoryMapper;
     private final SubcategoryRowMapper subcategoryMapper;
     private final ColumnConverter columnConverter;
@@ -63,7 +56,6 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
             converter
         );
         this.db = template.getDatabaseClient();
-        this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.categoryMapper = categoryMapper;
         this.subcategoryMapper = subcategoryMapper;
@@ -84,18 +76,17 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
             .leftOuterJoin(categoryTable)
             .on(Column.create("category_id", entityTable))
             .equals(Column.create("id", categoryTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Subcategory.class, pageable, whereClause);
         return db.sql(select).map(this::process);
     }
 
     @Override
-    public Flux<Subcategory> findAll() {
+    public @NotNull Flux<Subcategory> findAll() {
         return findAllBy(null);
     }
 
     @Override
-    public Mono<Subcategory> findById(Long id) {
+    public @NotNull Mono<Subcategory> findById(Long id) {
         Comparison whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
         return createQuery(null, whereClause).one();
     }
@@ -122,7 +113,7 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
     }
 
     @Override
-    public <S extends Subcategory> Mono<S> save(S entity) {
+    public <S extends Subcategory> @NotNull Mono<S> save(@NotNull S entity) {
         return super.save(entity);
     }
 
@@ -140,7 +131,7 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
 
     private Condition buildConditions(SubcategoryCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
-        List<Condition> allConditions = new ArrayList<Condition>();
+        List<Condition> allConditions = new ArrayList<>();
         if (criteria != null) {
             if (criteria.getId() != null) {
                 builder.buildFilterConditionForField(criteria.getId(), entityTable.column("id"));

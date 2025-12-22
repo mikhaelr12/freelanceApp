@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.SkillCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -33,16 +34,19 @@ public interface SkillRepository extends ReactiveCrudRepository<Skill, Long>, Sk
     Flux<Skill> findAllWhereCategoryIsNull();
 
     @Override
-    <S extends Skill> Mono<S> save(S entity);
+    <S extends Skill> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Skill> findAll();
 
     @Override
-    Mono<Skill> findById(Long id);
+    @NotNull
+    Mono<Skill> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface SkillRepositoryInternal {
@@ -53,8 +57,7 @@ interface SkillRepositoryInternal {
     Flux<Skill> findAll();
 
     Mono<Skill> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Skill> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Skill> findByCriteria(SkillCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(SkillCriteria criteria);

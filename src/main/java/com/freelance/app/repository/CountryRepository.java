@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Country;
 import com.freelance.app.domain.criteria.CountryCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -17,16 +18,19 @@ public interface CountryRepository extends ReactiveCrudRepository<Country, Long>
     Flux<Country> findAllBy(Pageable pageable);
 
     @Override
-    <S extends Country> Mono<S> save(S entity);
+    <S extends Country> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Country> findAll();
 
     @Override
-    Mono<Country> findById(Long id);
+    @NotNull
+    Mono<Country> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface CountryRepositoryInternal {
@@ -37,8 +41,7 @@ interface CountryRepositoryInternal {
     Flux<Country> findAll();
 
     Mono<Country> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Country> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Country> findByCriteria(CountryCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(CountryCriteria criteria);

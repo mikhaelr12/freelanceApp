@@ -56,10 +56,9 @@ public class CategoryResource {
      *
      * @param category the category to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new category, or with status {@code 400 (Bad Request)} if the category has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Category>> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
+    public Mono<ResponseEntity<Category>> createCategory(@Valid @RequestBody Category category) {
         LOG.debug("REST request to save Category : {}", category);
         if (category.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class CategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated category,
      * or with status {@code 400 (Bad Request)} if the category is not valid,
      * or with status {@code 500 (Internal Server Error)} if the category couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Category>> updateCategory(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody Category category
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Category : {}, {}", id, category);
         if (category.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class CategoryResource {
      * or with status {@code 400 (Bad Request)} if the category is not valid,
      * or with status {@code 404 (Not Found)} if the category is not found,
      * or with status {@code 500 (Internal Server Error)} if the category couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Category>> partialUpdateCategory(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Category category
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Category partially : {}, {}", id, category);
         if (category.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class CategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the category, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Category>> getCategory(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Category>> getCategory(@PathVariable Long id) {
         LOG.debug("REST request to get Category : {}", id);
         Mono<Category> category = categoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(category);
@@ -223,7 +220,7 @@ public class CategoryResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteCategory(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteCategory(@PathVariable Long id) {
         LOG.debug("REST request to delete Category : {}", id);
         return categoryService
             .delete(id)

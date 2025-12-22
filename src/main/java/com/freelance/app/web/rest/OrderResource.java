@@ -56,10 +56,9 @@ public class OrderResource {
      *
      * @param order the order to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new order, or with status {@code 400 (Bad Request)} if the order has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Order>> createOrder(@Valid @RequestBody Order order) throws URISyntaxException {
+    public Mono<ResponseEntity<Order>> createOrder(@Valid @RequestBody Order order) {
         LOG.debug("REST request to save Order : {}", order);
         if (order.getId() != null) {
             throw new BadRequestAlertException("A new order cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,9 @@ public class OrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated order,
      * or with status {@code 400 (Bad Request)} if the order is not valid,
      * or with status {@code 500 (Internal Server Error)} if the order couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Order>> updateOrder(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Order order
-    ) throws URISyntaxException {
+    public Mono<ResponseEntity<Order>> updateOrder(@PathVariable(required = false) final Long id, @Valid @RequestBody Order order) {
         LOG.debug("REST request to update Order : {}, {}", id, order);
         if (order.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +122,12 @@ public class OrderResource {
      * or with status {@code 400 (Bad Request)} if the order is not valid,
      * or with status {@code 404 (Not Found)} if the order is not found,
      * or with status {@code 500 (Internal Server Error)} if the order couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Order>> partialUpdateOrder(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Order order
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Order partially : {}, {}", id, order);
         if (order.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +204,7 @@ public class OrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the order, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Order>> getOrder(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Order>> getOrder(@PathVariable Long id) {
         LOG.debug("REST request to get Order : {}", id);
         Mono<Order> order = orderService.findOne(id);
         return ResponseUtil.wrapOrNotFound(order);
@@ -223,7 +217,7 @@ public class OrderResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteOrder(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteOrder(@PathVariable Long id) {
         LOG.debug("REST request to delete Order : {}", id);
         return orderService
             .delete(id)

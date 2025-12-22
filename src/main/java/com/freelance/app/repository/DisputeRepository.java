@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.criteria.DisputeCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -24,16 +25,19 @@ public interface DisputeRepository extends ReactiveCrudRepository<Dispute, Long>
     Flux<Dispute> findAllWhereOrderIsNull();
 
     @Override
-    <S extends Dispute> Mono<S> save(S entity);
+    <S extends Dispute> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Dispute> findAll();
 
     @Override
-    Mono<Dispute> findById(Long id);
+    @NotNull
+    Mono<Dispute> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface DisputeRepositoryInternal {
@@ -44,8 +48,7 @@ interface DisputeRepositoryInternal {
     Flux<Dispute> findAll();
 
     Mono<Dispute> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Dispute> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Dispute> findByCriteria(DisputeCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(DisputeCriteria criteria);

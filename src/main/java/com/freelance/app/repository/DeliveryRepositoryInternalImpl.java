@@ -13,19 +13,14 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.Column;
-import org.springframework.data.relational.core.sql.Comparison;
-import org.springframework.data.relational.core.sql.Condition;
-import org.springframework.data.relational.core.sql.Conditions;
-import org.springframework.data.relational.core.sql.Expression;
-import org.springframework.data.relational.core.sql.Select;
+import org.springframework.data.relational.core.sql.*;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoinCondition;
-import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -40,9 +35,7 @@ import tech.jhipster.service.ConditionBuilder;
 class DeliveryRepositoryInternalImpl extends SimpleR2dbcRepository<Delivery, Long> implements DeliveryRepositoryInternal {
 
     private final DatabaseClient db;
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
-
     private final OrderRowMapper orderMapper;
     private final FileObjectRowMapper fileobjectMapper;
     private final DeliveryRowMapper deliveryMapper;
@@ -68,7 +61,6 @@ class DeliveryRepositoryInternalImpl extends SimpleR2dbcRepository<Delivery, Lon
             converter
         );
         this.db = template.getDatabaseClient();
-        this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.orderMapper = orderMapper;
         this.fileobjectMapper = fileobjectMapper;
@@ -94,18 +86,17 @@ class DeliveryRepositoryInternalImpl extends SimpleR2dbcRepository<Delivery, Lon
             .leftOuterJoin(fileTable)
             .on(Column.create("file_id", entityTable))
             .equals(Column.create("id", fileTable));
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Delivery.class, pageable, whereClause);
         return db.sql(select).map(this::process);
     }
 
     @Override
-    public Flux<Delivery> findAll() {
+    public @NotNull Flux<Delivery> findAll() {
         return findAllBy(null);
     }
 
     @Override
-    public Mono<Delivery> findById(Long id) {
+    public @NotNull Mono<Delivery> findById(Long id) {
         Comparison whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
         return createQuery(null, whereClause).one();
     }
@@ -133,7 +124,7 @@ class DeliveryRepositoryInternalImpl extends SimpleR2dbcRepository<Delivery, Lon
     }
 
     @Override
-    public <S extends Delivery> Mono<S> save(S entity) {
+    public <S extends Delivery> @NotNull Mono<S> save(@NotNull S entity) {
         return super.save(entity);
     }
 
@@ -151,7 +142,7 @@ class DeliveryRepositoryInternalImpl extends SimpleR2dbcRepository<Delivery, Lon
 
     private Condition buildConditions(DeliveryCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
-        List<Condition> allConditions = new ArrayList<Condition>();
+        List<Condition> allConditions = new ArrayList<>();
         if (criteria != null) {
             if (criteria.getId() != null) {
                 builder.buildFilterConditionForField(criteria.getId(), entityTable.column("id"));

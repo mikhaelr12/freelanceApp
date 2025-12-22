@@ -56,10 +56,9 @@ public class RequirementResource {
      *
      * @param requirement the requirement to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new requirement, or with status {@code 400 (Bad Request)} if the requirement has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Requirement>> createRequirement(@Valid @RequestBody Requirement requirement) throws URISyntaxException {
+    public Mono<ResponseEntity<Requirement>> createRequirement(@Valid @RequestBody Requirement requirement) {
         LOG.debug("REST request to save Requirement : {}", requirement);
         if (requirement.getId() != null) {
             throw new BadRequestAlertException("A new requirement cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class RequirementResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirement,
      * or with status {@code 400 (Bad Request)} if the requirement is not valid,
      * or with status {@code 500 (Internal Server Error)} if the requirement couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Requirement>> updateRequirement(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody Requirement requirement
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Requirement : {}, {}", id, requirement);
         if (requirement.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class RequirementResource {
      * or with status {@code 400 (Bad Request)} if the requirement is not valid,
      * or with status {@code 404 (Not Found)} if the requirement is not found,
      * or with status {@code 500 (Internal Server Error)} if the requirement couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Requirement>> partialUpdateRequirement(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Requirement requirement
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Requirement partially : {}, {}", id, requirement);
         if (requirement.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class RequirementResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the requirement, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Requirement>> getRequirement(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Requirement>> getRequirement(@PathVariable Long id) {
         LOG.debug("REST request to get Requirement : {}", id);
         Mono<Requirement> requirement = requirementService.findOne(id);
         return ResponseUtil.wrapOrNotFound(requirement);
@@ -223,7 +220,7 @@ public class RequirementResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteRequirement(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteRequirement(@PathVariable Long id) {
         LOG.debug("REST request to delete Requirement : {}", id);
         return requirementService
             .delete(id)

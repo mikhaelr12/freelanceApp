@@ -56,10 +56,9 @@ public class DeliveryResource {
      *
      * @param delivery the delivery to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new delivery, or with status {@code 400 (Bad Request)} if the delivery has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Delivery>> createDelivery(@Valid @RequestBody Delivery delivery) throws URISyntaxException {
+    public Mono<ResponseEntity<Delivery>> createDelivery(@Valid @RequestBody Delivery delivery) {
         LOG.debug("REST request to save Delivery : {}", delivery);
         if (delivery.getId() != null) {
             throw new BadRequestAlertException("A new delivery cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class DeliveryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated delivery,
      * or with status {@code 400 (Bad Request)} if the delivery is not valid,
      * or with status {@code 500 (Internal Server Error)} if the delivery couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Delivery>> updateDelivery(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody Delivery delivery
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Delivery : {}, {}", id, delivery);
         if (delivery.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class DeliveryResource {
      * or with status {@code 400 (Bad Request)} if the delivery is not valid,
      * or with status {@code 404 (Not Found)} if the delivery is not found,
      * or with status {@code 500 (Internal Server Error)} if the delivery couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Delivery>> partialUpdateDelivery(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Delivery delivery
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Delivery partially : {}, {}", id, delivery);
         if (delivery.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class DeliveryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the delivery, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Delivery>> getDelivery(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Delivery>> getDelivery(@PathVariable Long id) {
         LOG.debug("REST request to get Delivery : {}", id);
         Mono<Delivery> delivery = deliveryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(delivery);
@@ -223,7 +220,7 @@ public class DeliveryResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteDelivery(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteDelivery(@PathVariable Long id) {
         LOG.debug("REST request to delete Delivery : {}", id);
         return deliveryService
             .delete(id)

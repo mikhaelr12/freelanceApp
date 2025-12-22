@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.OfferType;
 import com.freelance.app.domain.criteria.OfferTypeCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -33,16 +34,19 @@ public interface OfferTypeRepository extends ReactiveCrudRepository<OfferType, L
     Flux<OfferType> findAllWhereSubcategoryIsNull();
 
     @Override
-    <S extends OfferType> Mono<S> save(S entity);
+    <S extends OfferType> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<OfferType> findAll();
 
     @Override
-    Mono<OfferType> findById(Long id);
+    @NotNull
+    Mono<OfferType> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface OfferTypeRepositoryInternal {
@@ -53,8 +57,7 @@ interface OfferTypeRepositoryInternal {
     Flux<OfferType> findAll();
 
     Mono<OfferType> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<OfferType> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<OfferType> findByCriteria(OfferTypeCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(OfferTypeCriteria criteria);

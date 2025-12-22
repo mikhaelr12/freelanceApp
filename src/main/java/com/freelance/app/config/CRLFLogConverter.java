@@ -50,7 +50,7 @@ public class CRLFLogConverter extends CompositeConverter<ILoggingEvent> {
         if ((markers != null && !markers.isEmpty() && markers.get(0).contains(CRLF_SAFE_MARKER)) || isLoggerSafe(event)) {
             return in;
         }
-        String replacement = element == null ? "_" : toAnsiString("_", element);
+        String replacement = element == null ? "_" : toAnsiString(element);
         return in.replaceAll("[\n\r\t]", replacement);
     }
 
@@ -63,7 +63,7 @@ public class CRLFLogConverter extends CompositeConverter<ILoggingEvent> {
         return false;
     }
 
-    protected String toAnsiString(String in, AnsiElement element) {
-        return AnsiOutput.toString(element, in);
+    protected String toAnsiString(AnsiElement element) {
+        return AnsiOutput.toString(element, "_");
     }
 }

@@ -3,6 +3,7 @@ package com.freelance.app.repository;
 import com.freelance.app.domain.Profile;
 import com.freelance.app.domain.criteria.ProfileCriteria;
 import com.freelance.app.service.dto.ProfileDTO;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -21,16 +22,19 @@ public interface ProfileRepository extends ReactiveCrudRepository<Profile, Long>
     Mono<Profile> findOneWithEagerRelationships(Long id);
 
     @Override
-    <S extends Profile> Mono<S> save(S entity);
+    <S extends Profile> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Profile> findAll();
 
     @Override
-    Mono<Profile> findById(Long id);
+    @NotNull
+    Mono<Profile> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 
     Mono<Profile> findByUserId(Long id);
 }

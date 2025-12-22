@@ -56,10 +56,9 @@ public class OfferTypeResource {
      *
      * @param offerType the offerType to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new offerType, or with status {@code 400 (Bad Request)} if the offerType has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<OfferType>> createOfferType(@Valid @RequestBody OfferType offerType) throws URISyntaxException {
+    public Mono<ResponseEntity<OfferType>> createOfferType(@Valid @RequestBody OfferType offerType) {
         LOG.debug("REST request to save OfferType : {}", offerType);
         if (offerType.getId() != null) {
             throw new BadRequestAlertException("A new offerType cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class OfferTypeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerType,
      * or with status {@code 400 (Bad Request)} if the offerType is not valid,
      * or with status {@code 500 (Internal Server Error)} if the offerType couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<OfferType>> updateOfferType(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody OfferType offerType
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update OfferType : {}, {}", id, offerType);
         if (offerType.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class OfferTypeResource {
      * or with status {@code 400 (Bad Request)} if the offerType is not valid,
      * or with status {@code 404 (Not Found)} if the offerType is not found,
      * or with status {@code 500 (Internal Server Error)} if the offerType couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<OfferType>> partialUpdateOfferType(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody OfferType offerType
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update OfferType partially : {}, {}", id, offerType);
         if (offerType.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class OfferTypeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerType, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<OfferType>> getOfferType(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<OfferType>> getOfferType(@PathVariable Long id) {
         LOG.debug("REST request to get OfferType : {}", id);
         Mono<OfferType> offerType = offerTypeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(offerType);
@@ -223,7 +220,7 @@ public class OfferTypeResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteOfferType(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteOfferType(@PathVariable Long id) {
         LOG.debug("REST request to delete OfferType : {}", id);
         return offerTypeService
             .delete(id)

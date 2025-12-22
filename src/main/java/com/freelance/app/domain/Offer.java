@@ -211,14 +211,12 @@ public class Offer extends AbstractAuditingEntity<Long> implements Serializable 
         return this;
     }
 
-    public Offer addTag(Tag tag) {
+    public void addTag(Tag tag) {
         this.tags.add(tag);
-        return this;
     }
 
-    public Offer removeTag(Tag tag) {
+    public void removeTag(Tag tag) {
         this.tags.remove(tag);
-        return this;
     }
 
     public Long getOwnerId() {

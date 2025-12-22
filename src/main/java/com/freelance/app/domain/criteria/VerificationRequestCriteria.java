@@ -1,5 +1,6 @@
 package com.freelance.app.domain.criteria;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import tech.jhipster.service.filter.LongFilter;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class VerificationRequestCriteria implements Serializable, Criteria {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;

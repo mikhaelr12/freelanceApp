@@ -56,10 +56,9 @@ public class SkillResource {
      *
      * @param skill the skill to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new skill, or with status {@code 400 (Bad Request)} if the skill has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Skill>> createSkill(@Valid @RequestBody Skill skill) throws URISyntaxException {
+    public Mono<ResponseEntity<Skill>> createSkill(@Valid @RequestBody Skill skill) {
         LOG.debug("REST request to save Skill : {}", skill);
         if (skill.getId() != null) {
             throw new BadRequestAlertException("A new skill cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,9 @@ public class SkillResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated skill,
      * or with status {@code 400 (Bad Request)} if the skill is not valid,
      * or with status {@code 500 (Internal Server Error)} if the skill couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Skill>> updateSkill(
-        @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Skill skill
-    ) throws URISyntaxException {
+    public Mono<ResponseEntity<Skill>> updateSkill(@PathVariable(required = false) final Long id, @Valid @RequestBody Skill skill) {
         LOG.debug("REST request to update Skill : {}, {}", id, skill);
         if (skill.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +122,12 @@ public class SkillResource {
      * or with status {@code 400 (Bad Request)} if the skill is not valid,
      * or with status {@code 404 (Not Found)} if the skill is not found,
      * or with status {@code 500 (Internal Server Error)} if the skill couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Skill>> partialUpdateSkill(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Skill skill
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Skill partially : {}, {}", id, skill);
         if (skill.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +204,7 @@ public class SkillResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the skill, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Skill>> getSkill(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Skill>> getSkill(@PathVariable Long id) {
         LOG.debug("REST request to get Skill : {}", id);
         Mono<Skill> skill = skillService.findOne(id);
         return ResponseUtil.wrapOrNotFound(skill);
@@ -223,7 +217,7 @@ public class SkillResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteSkill(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteSkill(@PathVariable Long id) {
         LOG.debug("REST request to delete Skill : {}", id);
         return skillService
             .delete(id)

@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.criteria.FavoriteOfferCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -30,16 +31,19 @@ public interface FavoriteOfferRepository extends ReactiveCrudRepository<Favorite
     Flux<FavoriteOffer> findAllWhereOfferIsNull();
 
     @Override
-    <S extends FavoriteOffer> Mono<S> save(S entity);
+    <S extends FavoriteOffer> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<FavoriteOffer> findAll();
 
     @Override
-    Mono<FavoriteOffer> findById(Long id);
+    @NotNull
+    Mono<FavoriteOffer> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface FavoriteOfferRepositoryInternal {
@@ -50,8 +54,7 @@ interface FavoriteOfferRepositoryInternal {
     Flux<FavoriteOffer> findAll();
 
     Mono<FavoriteOffer> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<FavoriteOffer> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<FavoriteOffer> findByCriteria(FavoriteOfferCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(FavoriteOfferCriteria criteria);

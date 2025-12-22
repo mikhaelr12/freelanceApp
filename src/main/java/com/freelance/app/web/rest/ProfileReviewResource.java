@@ -56,11 +56,9 @@ public class ProfileReviewResource {
      *
      * @param profileReview the profileReview to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileReview, or with status {@code 400 (Bad Request)} if the profileReview has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<ProfileReview>> createProfileReview(@Valid @RequestBody ProfileReview profileReview)
-        throws URISyntaxException {
+    public Mono<ResponseEntity<ProfileReview>> createProfileReview(@Valid @RequestBody ProfileReview profileReview) {
         LOG.debug("REST request to save ProfileReview : {}", profileReview);
         if (profileReview.getId() != null) {
             throw new BadRequestAlertException("A new profileReview cannot already have an ID", ENTITY_NAME, "idexists");
@@ -86,13 +84,12 @@ public class ProfileReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated profileReview,
      * or with status {@code 400 (Bad Request)} if the profileReview is not valid,
      * or with status {@code 500 (Internal Server Error)} if the profileReview couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<ProfileReview>> updateProfileReview(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody ProfileReview profileReview
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update ProfileReview : {}, {}", id, profileReview);
         if (profileReview.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -128,13 +125,12 @@ public class ProfileReviewResource {
      * or with status {@code 400 (Bad Request)} if the profileReview is not valid,
      * or with status {@code 404 (Not Found)} if the profileReview is not found,
      * or with status {@code 500 (Internal Server Error)} if the profileReview couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<ProfileReview>> partialUpdateProfileReview(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody ProfileReview profileReview
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update ProfileReview partially : {}, {}", id, profileReview);
         if (profileReview.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -211,7 +207,7 @@ public class ProfileReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profileReview, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<ProfileReview>> getProfileReview(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<ProfileReview>> getProfileReview(@PathVariable Long id) {
         LOG.debug("REST request to get ProfileReview : {}", id);
         Mono<ProfileReview> profileReview = profileReviewService.findOne(id);
         return ResponseUtil.wrapOrNotFound(profileReview);
@@ -224,7 +220,7 @@ public class ProfileReviewResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteProfileReview(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteProfileReview(@PathVariable Long id) {
         LOG.debug("REST request to delete ProfileReview : {}", id);
         return profileReviewService
             .delete(id)

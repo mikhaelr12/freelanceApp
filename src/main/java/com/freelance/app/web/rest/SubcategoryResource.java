@@ -56,10 +56,9 @@ public class SubcategoryResource {
      *
      * @param subcategory the subcategory to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new subcategory, or with status {@code 400 (Bad Request)} if the subcategory has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Subcategory>> createSubcategory(@Valid @RequestBody Subcategory subcategory) throws URISyntaxException {
+    public Mono<ResponseEntity<Subcategory>> createSubcategory(@Valid @RequestBody Subcategory subcategory) {
         LOG.debug("REST request to save Subcategory : {}", subcategory);
         if (subcategory.getId() != null) {
             throw new BadRequestAlertException("A new subcategory cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class SubcategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subcategory,
      * or with status {@code 400 (Bad Request)} if the subcategory is not valid,
      * or with status {@code 500 (Internal Server Error)} if the subcategory couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Subcategory>> updateSubcategory(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody Subcategory subcategory
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Subcategory : {}, {}", id, subcategory);
         if (subcategory.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class SubcategoryResource {
      * or with status {@code 400 (Bad Request)} if the subcategory is not valid,
      * or with status {@code 404 (Not Found)} if the subcategory is not found,
      * or with status {@code 500 (Internal Server Error)} if the subcategory couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Subcategory>> partialUpdateSubcategory(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Subcategory subcategory
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Subcategory partially : {}, {}", id, subcategory);
         if (subcategory.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class SubcategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subcategory, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Subcategory>> getSubcategory(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Subcategory>> getSubcategory(@PathVariable Long id) {
         LOG.debug("REST request to get Subcategory : {}", id);
         Mono<Subcategory> subcategory = subcategoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(subcategory);
@@ -223,7 +220,7 @@ public class SubcategoryResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteSubcategory(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteSubcategory(@PathVariable Long id) {
         LOG.debug("REST request to delete Subcategory : {}", id);
         return subcategoryService
             .delete(id)

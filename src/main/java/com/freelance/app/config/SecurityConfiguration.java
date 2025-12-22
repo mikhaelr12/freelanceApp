@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                 )
             )
             .cors(withDefaults())
-            .csrf(csrf -> csrf.disable())
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .addFilterAfter(new SpaWebFilter(), SecurityWebFiltersOrder.HTTPS_REDIRECT)
             .headers(headers ->
                 headers
@@ -90,7 +90,7 @@ public class SecurityConfiguration {
                     .pathMatchers("/management/prometheus").permitAll()
                     .pathMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             )
-            .httpBasic(basic -> basic.disable())
+            .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
         return http.build();
     }

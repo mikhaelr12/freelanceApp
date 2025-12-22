@@ -56,10 +56,9 @@ public class ConversationResource {
      *
      * @param conversation the conversation to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new conversation, or with status {@code 400 (Bad Request)} if the conversation has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Conversation>> createConversation(@Valid @RequestBody Conversation conversation) throws URISyntaxException {
+    public Mono<ResponseEntity<Conversation>> createConversation(@Valid @RequestBody Conversation conversation) {
         LOG.debug("REST request to save Conversation : {}", conversation);
         if (conversation.getId() != null) {
             throw new BadRequestAlertException("A new conversation cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class ConversationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated conversation,
      * or with status {@code 400 (Bad Request)} if the conversation is not valid,
      * or with status {@code 500 (Internal Server Error)} if the conversation couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Conversation>> updateConversation(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody Conversation conversation
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update Conversation : {}, {}", id, conversation);
         if (conversation.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class ConversationResource {
      * or with status {@code 400 (Bad Request)} if the conversation is not valid,
      * or with status {@code 404 (Not Found)} if the conversation is not found,
      * or with status {@code 500 (Internal Server Error)} if the conversation couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<Conversation>> partialUpdateConversation(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody Conversation conversation
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update Conversation partially : {}, {}", id, conversation);
         if (conversation.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class ConversationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the conversation, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Conversation>> getConversation(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Conversation>> getConversation(@PathVariable Long id) {
         LOG.debug("REST request to get Conversation : {}", id);
         Mono<Conversation> conversation = conversationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(conversation);
@@ -223,7 +220,7 @@ public class ConversationResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteConversation(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteConversation(@PathVariable Long id) {
         LOG.debug("REST request to delete Conversation : {}", id);
         return conversationService
             .delete(id)

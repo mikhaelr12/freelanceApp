@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Delivery;
 import com.freelance.app.domain.criteria.DeliveryCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -39,16 +40,19 @@ public interface DeliveryRepository extends ReactiveCrudRepository<Delivery, Lon
     Flux<Delivery> findAllWhereFileIsNull();
 
     @Override
-    <S extends Delivery> Mono<S> save(S entity);
+    <S extends Delivery> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Delivery> findAll();
 
     @Override
-    Mono<Delivery> findById(Long id);
+    @NotNull
+    Mono<Delivery> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface DeliveryRepositoryInternal {
@@ -59,8 +63,7 @@ interface DeliveryRepositoryInternal {
     Flux<Delivery> findAll();
 
     Mono<Delivery> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Delivery> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Delivery> findByCriteria(DeliveryCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(DeliveryCriteria criteria);

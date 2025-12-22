@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
@@ -36,9 +37,7 @@ import tech.jhipster.service.ConditionBuilder;
 class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long> implements ProfileRepositoryInternal {
 
     private final DatabaseClient db;
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
-
     private final UserRowMapper userMapper;
     private final FileObjectRowMapper fileobjectMapper;
     private final ProfileRowMapper profileMapper;
@@ -69,7 +68,6 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
             converter
         );
         this.db = template.getDatabaseClient();
-        this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.userMapper = userMapper;
         this.fileobjectMapper = fileobjectMapper;
@@ -101,12 +99,12 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
     }
 
     @Override
-    public Flux<Profile> findAll() {
+    public @NotNull Flux<Profile> findAll() {
         return findAllBy(null);
     }
 
     @Override
-    public Mono<Profile> findById(Long id) {
+    public @NotNull Mono<Profile> findById(Long id) {
         Comparison whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
         return createQuery(null, whereClause).one();
     }
@@ -134,8 +132,8 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
     }
 
     @Override
-    public <S extends Profile> Mono<S> save(S entity) {
-        return super.save(entity).flatMap((S e) -> updateRelations(e));
+    public <S extends Profile> @NotNull Mono<S> save(@NotNull S entity) {
+        return super.save(entity).flatMap(this::updateRelations);
     }
 
     protected <S extends Profile> Mono<S> updateRelations(S entity) {
@@ -144,7 +142,7 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
     }
 
     @Override
-    public Mono<Void> deleteById(Long entityId) {
+    public @NotNull Mono<Void> deleteById(@NotNull Long entityId) {
         return deleteRelations(entityId).then(super.deleteById(entityId));
     }
 
@@ -200,7 +198,7 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
 
     private Condition buildConditions(ProfileCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
-        List<Condition> allConditions = new ArrayList<Condition>();
+        List<Condition> allConditions = new ArrayList<>();
         if (criteria != null) {
             if (criteria.getId() != null) {
                 builder.buildFilterConditionForField(criteria.getId(), entityTable.column("id"));

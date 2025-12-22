@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.criteria.OfferMediaCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -39,16 +40,19 @@ public interface OfferMediaRepository extends ReactiveCrudRepository<OfferMedia,
     Flux<OfferMedia> findAllWhereFileIsNull();
 
     @Override
-    <S extends OfferMedia> Mono<S> save(S entity);
+    <S extends OfferMedia> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<OfferMedia> findAll();
 
     @Override
-    Mono<OfferMedia> findById(Long id);
+    @NotNull
+    Mono<OfferMedia> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface OfferMediaRepositoryInternal {
@@ -59,8 +63,7 @@ interface OfferMediaRepositoryInternal {
     Flux<OfferMedia> findAll();
 
     Mono<OfferMedia> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<OfferMedia> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<OfferMedia> findByCriteria(OfferMediaCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(OfferMediaCriteria criteria);

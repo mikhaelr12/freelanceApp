@@ -14,6 +14,7 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
@@ -37,9 +38,7 @@ class VerificationRequestRepositoryInternalImpl
     implements VerificationRequestRepositoryInternal {
 
     private final DatabaseClient db;
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
-
     private final ProfileRowMapper profileMapper;
     private final FileObjectRowMapper fileobjectMapper;
     private final VerificationRequestRowMapper verificationrequestMapper;
@@ -65,7 +64,6 @@ class VerificationRequestRepositoryInternalImpl
             converter
         );
         this.db = template.getDatabaseClient();
-        this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.profileMapper = profileMapper;
         this.fileobjectMapper = fileobjectMapper;
@@ -100,12 +98,12 @@ class VerificationRequestRepositoryInternalImpl
     }
 
     @Override
-    public Flux<VerificationRequest> findAll() {
+    public @NotNull Flux<VerificationRequest> findAll() {
         return findAllBy(null);
     }
 
     @Override
-    public Mono<VerificationRequest> findById(Long id) {
+    public @NotNull Mono<VerificationRequest> findById(Long id) {
         Comparison whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
         return createQuery(null, whereClause).one();
     }
@@ -118,7 +116,7 @@ class VerificationRequestRepositoryInternalImpl
     }
 
     @Override
-    public <S extends VerificationRequest> Mono<S> save(S entity) {
+    public <S extends VerificationRequest> @NotNull Mono<S> save(@NotNull S entity) {
         return super.save(entity);
     }
 
@@ -148,7 +146,7 @@ class VerificationRequestRepositoryInternalImpl
 
     private Condition buildConditions(VerificationRequestCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
-        List<Condition> allConditions = new ArrayList<Condition>();
+        List<Condition> allConditions = new ArrayList<>();
         if (criteria != null) {
             if (criteria.getId() != null) {
                 builder.buildFilterConditionForField(criteria.getId(), entityTable.column("id"));

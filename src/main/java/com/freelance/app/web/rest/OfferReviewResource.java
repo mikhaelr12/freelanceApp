@@ -56,10 +56,9 @@ public class OfferReviewResource {
      *
      * @param offerReview the offerReview to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new offerReview, or with status {@code 400 (Bad Request)} if the offerReview has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<OfferReview>> createOfferReview(@Valid @RequestBody OfferReview offerReview) throws URISyntaxException {
+    public Mono<ResponseEntity<OfferReview>> createOfferReview(@Valid @RequestBody OfferReview offerReview) {
         LOG.debug("REST request to save OfferReview : {}", offerReview);
         if (offerReview.getId() != null) {
             throw new BadRequestAlertException("A new offerReview cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,13 +84,12 @@ public class OfferReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerReview,
      * or with status {@code 400 (Bad Request)} if the offerReview is not valid,
      * or with status {@code 500 (Internal Server Error)} if the offerReview couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<OfferReview>> updateOfferReview(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody OfferReview offerReview
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to update OfferReview : {}, {}", id, offerReview);
         if (offerReview.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -127,13 +125,12 @@ public class OfferReviewResource {
      * or with status {@code 400 (Bad Request)} if the offerReview is not valid,
      * or with status {@code 404 (Not Found)} if the offerReview is not found,
      * or with status {@code 500 (Internal Server Error)} if the offerReview couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public Mono<ResponseEntity<OfferReview>> partialUpdateOfferReview(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @NotNull @RequestBody OfferReview offerReview
-    ) throws URISyntaxException {
+    ) {
         LOG.debug("REST request to partial update OfferReview partially : {}, {}", id, offerReview);
         if (offerReview.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -210,7 +207,7 @@ public class OfferReviewResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerReview, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<OfferReview>> getOfferReview(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<OfferReview>> getOfferReview(@PathVariable Long id) {
         LOG.debug("REST request to get OfferReview : {}", id);
         Mono<OfferReview> offerReview = offerReviewService.findOne(id);
         return ResponseUtil.wrapOrNotFound(offerReview);
@@ -223,7 +220,7 @@ public class OfferReviewResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteOfferReview(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteOfferReview(@PathVariable Long id) {
         LOG.debug("REST request to delete OfferReview : {}", id);
         return offerReviewService
             .delete(id)

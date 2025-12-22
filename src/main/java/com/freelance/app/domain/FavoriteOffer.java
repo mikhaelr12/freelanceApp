@@ -1,7 +1,8 @@
 package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class FavoriteOffer implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

@@ -1,11 +1,14 @@
 package com.freelance.app.domain.criteria;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import org.springdoc.core.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.*;
+import tech.jhipster.service.filter.Filter;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
 
 /**
  * Criteria class for the {@link com.freelance.app.domain.Requirement} entity. This class is used
@@ -20,6 +23,7 @@ import tech.jhipster.service.filter.*;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class RequirementCriteria implements Serializable, Criteria {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;

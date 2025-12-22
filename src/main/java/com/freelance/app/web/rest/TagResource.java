@@ -56,10 +56,9 @@ public class TagResource {
      *
      * @param tag the tag to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tag, or with status {@code 400 (Bad Request)} if the tag has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<Tag>> createTag(@Valid @RequestBody Tag tag) throws URISyntaxException {
+    public Mono<ResponseEntity<Tag>> createTag(@Valid @RequestBody Tag tag) {
         LOG.debug("REST request to save Tag : {}", tag);
         if (tag.getId() != null) {
             throw new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists");
@@ -85,11 +84,9 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tag,
      * or with status {@code 400 (Bad Request)} if the tag is not valid,
      * or with status {@code 500 (Internal Server Error)} if the tag couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Tag>> updateTag(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Tag tag)
-        throws URISyntaxException {
+    public Mono<ResponseEntity<Tag>> updateTag(@PathVariable(required = false) final Long id, @Valid @RequestBody Tag tag) {
         LOG.debug("REST request to update Tag : {}, {}", id, tag);
         if (tag.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -125,13 +122,9 @@ public class TagResource {
      * or with status {@code 400 (Bad Request)} if the tag is not valid,
      * or with status {@code 404 (Not Found)} if the tag is not found,
      * or with status {@code 500 (Internal Server Error)} if the tag couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<Tag>> partialUpdateTag(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Tag tag
-    ) throws URISyntaxException {
+    public Mono<ResponseEntity<Tag>> partialUpdateTag(@PathVariable(required = false) final Long id, @NotNull @RequestBody Tag tag) {
         LOG.debug("REST request to partial update Tag partially : {}, {}", id, tag);
         if (tag.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -208,7 +201,7 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tag, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Tag>> getTag(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Tag>> getTag(@PathVariable Long id) {
         LOG.debug("REST request to get Tag : {}", id);
         Mono<Tag> tag = tagService.findOne(id);
         return ResponseUtil.wrapOrNotFound(tag);
@@ -221,7 +214,7 @@ public class TagResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteTag(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteTag(@PathVariable Long id) {
         LOG.debug("REST request to delete Tag : {}", id);
         return tagService
             .delete(id)

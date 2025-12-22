@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Message;
 import com.freelance.app.domain.criteria.MessageCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -39,16 +40,19 @@ public interface MessageRepository extends ReactiveCrudRepository<Message, Long>
     Flux<Message> findAllWhereSenderIsNull();
 
     @Override
-    <S extends Message> Mono<S> save(S entity);
+    <S extends Message> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Message> findAll();
 
     @Override
-    Mono<Message> findById(Long id);
+    @NotNull
+    Mono<Message> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface MessageRepositoryInternal {
@@ -59,8 +63,7 @@ interface MessageRepositoryInternal {
     Flux<Message> findAll();
 
     Mono<Message> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Message> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Message> findByCriteria(MessageCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(MessageCriteria criteria);

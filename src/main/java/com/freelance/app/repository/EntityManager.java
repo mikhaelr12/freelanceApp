@@ -49,13 +49,11 @@ public class EntityManager {
     }
 
     private final SqlRenderer sqlRenderer;
-    private final UpdateMapper updateMapper;
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final StatementMapper statementMapper;
 
     public EntityManager(SqlRenderer sqlRenderer, UpdateMapper updateMapper, R2dbcEntityTemplate r2dbcEntityTemplate) {
         this.sqlRenderer = sqlRenderer;
-        this.updateMapper = updateMapper;
         this.r2dbcEntityTemplate = r2dbcEntityTemplate;
         this.statementMapper = r2dbcEntityTemplate.getDataAccessStrategy().getStatementMapper();
     }
@@ -183,7 +181,7 @@ public class EntityManager {
                     return r2dbcEntityTemplate.getDatabaseClient().sql(statementMapper.getMappedObject(insert)).fetch().rowsUpdated();
                 })
                 .collectList()
-                .map((List<Long> updates) -> updates.stream().reduce(Long::sum).orElse(0l))
+                .map((List<Long> updates) -> updates.stream().reduce(Long::sum).orElse(0L))
         );
     }
 

@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Category;
 import com.freelance.app.domain.criteria.CategoryCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -17,16 +18,19 @@ public interface CategoryRepository extends ReactiveCrudRepository<Category, Lon
     Flux<Category> findAllBy(Pageable pageable);
 
     @Override
-    <S extends Category> Mono<S> save(S entity);
+    <S extends Category> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Category> findAll();
 
     @Override
-    Mono<Category> findById(Long id);
+    @NotNull
+    Mono<Category> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface CategoryRepositoryInternal {
@@ -37,8 +41,7 @@ interface CategoryRepositoryInternal {
     Flux<Category> findAll();
 
     Mono<Category> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Category> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Category> findByCriteria(CategoryCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(CategoryCriteria criteria);

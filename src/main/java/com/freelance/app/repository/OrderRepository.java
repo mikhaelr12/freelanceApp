@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Order;
 import com.freelance.app.domain.criteria.OrderCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -45,16 +46,19 @@ public interface OrderRepository extends ReactiveCrudRepository<Order, Long>, Or
     Flux<Order> findAllWhereOfferpackageIsNull();
 
     @Override
-    <S extends Order> Mono<S> save(S entity);
+    <S extends Order> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Order> findAll();
 
     @Override
-    Mono<Order> findById(Long id);
+    @NotNull
+    Mono<Order> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface OrderRepositoryInternal {
@@ -65,8 +69,7 @@ interface OrderRepositoryInternal {
     Flux<Order> findAll();
 
     Mono<Order> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Order> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Order> findByCriteria(OrderCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(OrderCriteria criteria);

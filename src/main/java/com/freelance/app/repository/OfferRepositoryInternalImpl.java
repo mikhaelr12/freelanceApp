@@ -15,6 +15,7 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
@@ -36,9 +37,7 @@ import tech.jhipster.service.ConditionBuilder;
 class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> implements OfferRepositoryInternal {
 
     private final DatabaseClient db;
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final EntityManager entityManager;
-
     private final ProfileRowMapper profileMapper;
     private final OfferTypeRowMapper offertypeMapper;
     private final OfferRowMapper offerMapper;
@@ -66,7 +65,6 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
             converter
         );
         this.db = template.getDatabaseClient();
-        this.r2dbcEntityTemplate = template;
         this.entityManager = entityManager;
         this.profileMapper = profileMapper;
         this.offertypeMapper = offertypeMapper;
@@ -101,12 +99,12 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
     }
 
     @Override
-    public Flux<Offer> findAll() {
+    public @NotNull Flux<Offer> findAll() {
         return findAllBy(null);
     }
 
     @Override
-    public Mono<Offer> findById(Long id) {
+    public @NotNull Mono<Offer> findById(Long id) {
         Comparison whereClause = Conditions.isEqual(entityTable.column("id"), Conditions.just(id.toString()));
         return createQuery(null, whereClause).one();
     }
@@ -134,8 +132,8 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
     }
 
     @Override
-    public <S extends Offer> Mono<S> save(S entity) {
-        return super.save(entity).flatMap((S e) -> updateRelations(e));
+    public <S extends Offer> @NotNull Mono<S> save(@NotNull S entity) {
+        return super.save(entity).flatMap(this::updateRelations);
     }
 
     protected <S extends Offer> Mono<S> updateRelations(S entity) {
@@ -144,7 +142,7 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
     }
 
     @Override
-    public Mono<Void> deleteById(Long entityId) {
+    public @NotNull Mono<Void> deleteById(@NotNull Long entityId) {
         return deleteRelations(entityId).then(super.deleteById(entityId));
     }
 
@@ -176,7 +174,7 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
 
     private Condition buildConditions(OfferCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
-        List<Condition> allConditions = new ArrayList<Condition>();
+        List<Condition> allConditions = new ArrayList<>();
         if (criteria != null) {
             if (criteria.getId() != null) {
                 builder.buildFilterConditionForField(criteria.getId(), entityTable.column("id"));

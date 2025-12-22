@@ -27,9 +27,9 @@ public class MinioUtil {
         }
     }
 
-    public ObjectWriteResponse uploadFile(String bucketName, String objectName, InputStream inputStream)
+    public void uploadFile(String bucketName, String objectName, InputStream inputStream)
         throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        return minio.putObject(
+        minio.putObject(
             PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(inputStream, inputStream.available(), -1).build()
         );
     }
@@ -53,21 +53,11 @@ public class MinioUtil {
     }
 
     public String getImageAsBase64(String bucket, String object) {
-        InputStream stream = null;
-        try {
-            stream = download(bucket, object);
+        try (InputStream stream = download(bucket, object)) {
             byte[] imageBytes = IOUtils.toByteArray(stream);
             return Base64.getEncoder().encodeToString(imageBytes);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return null;
     }

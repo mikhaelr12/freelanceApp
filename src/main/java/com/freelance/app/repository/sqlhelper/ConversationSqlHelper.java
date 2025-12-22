@@ -12,16 +12,7 @@ public class ConversationSqlHelper {
         List<Expression> columns = new ArrayList<>();
         columns.add(Column.aliased("id", table, columnPrefix + "_id"));
         columns.add(Column.aliased("created_at", table, columnPrefix + "_created_at"));
-
         columns.add(Column.aliased("order_id", table, columnPrefix + "_order_id"));
         return columns;
-    }
-
-    public static List<Expression> getColumnsDTO(Table table, String columnPrefix) {
-        return List.of(
-            Column.aliased("id", table, columnPrefix + "_id"),
-            Column.aliased("order_id", table, columnPrefix + "_order_id"),
-            Column.aliased("created_at", table, columnPrefix + "_created_at")
-        );
     }
 }

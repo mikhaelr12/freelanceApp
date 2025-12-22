@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Requirement;
 import com.freelance.app.domain.criteria.RequirementCriteria;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -24,16 +25,19 @@ public interface RequirementRepository extends ReactiveCrudRepository<Requiremen
     Flux<Requirement> findAllWhereOrderIsNull();
 
     @Override
-    <S extends Requirement> Mono<S> save(S entity);
+    <S extends Requirement> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<Requirement> findAll();
 
     @Override
-    Mono<Requirement> findById(Long id);
+    @NotNull
+    Mono<Requirement> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 }
 
 interface RequirementRepositoryInternal {
@@ -44,8 +48,7 @@ interface RequirementRepositoryInternal {
     Flux<Requirement> findAll();
 
     Mono<Requirement> findById(Long id);
-    // this is not supported at the moment because of https://github.com/jhipster/generator-jhipster/issues/18269
-    // Flux<Requirement> findAllBy(Pageable pageable, Criteria criteria);
+
     Flux<Requirement> findByCriteria(RequirementCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(RequirementCriteria criteria);

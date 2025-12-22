@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freelance.app.domain.enumeration.ProfileType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Profile implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -236,14 +238,12 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Profile addSkill(Skill skill) {
+    public void addSkill(Skill skill) {
         this.skills.add(skill);
-        return this;
     }
 
-    public Profile removeSkill(Skill skill) {
+    public void removeSkill(Skill skill) {
         this.skills.remove(skill);
-        return this;
     }
 
     public Long getUserId() {

@@ -3,6 +3,7 @@ package com.freelance.app.repository;
 import com.freelance.app.domain.VerificationRequest;
 import com.freelance.app.domain.criteria.VerificationRequestCriteria;
 import com.freelance.app.service.dto.VerificationRequestDTO;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -19,16 +20,19 @@ public interface VerificationRequestRepository
     Flux<VerificationRequest> findAllBy(Pageable pageable);
 
     @Override
-    <S extends VerificationRequest> Mono<S> save(S entity);
+    <S extends VerificationRequest> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
+    @NotNull
     Flux<VerificationRequest> findAll();
 
     @Override
-    Mono<VerificationRequest> findById(Long id);
+    @NotNull
+    Mono<VerificationRequest> findById(@NotNull Long id);
 
     @Override
-    Mono<Void> deleteById(Long id);
+    @NotNull
+    Mono<Void> deleteById(@NotNull Long id);
 
     Mono<VerificationRequest> findByProfileId(Long id);
 }

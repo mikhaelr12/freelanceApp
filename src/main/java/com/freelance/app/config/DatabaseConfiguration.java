@@ -5,6 +5,7 @@ import java.time.*;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -62,7 +63,7 @@ public class DatabaseConfiguration {
     public enum InstantWriteConverter implements Converter<Instant, LocalDateTime> {
         INSTANCE;
 
-        public LocalDateTime convert(Instant source) {
+        public LocalDateTime convert(@NotNull Instant source) {
             return LocalDateTime.ofInstant(source, ZoneOffset.UTC);
         }
     }
@@ -92,7 +93,7 @@ public class DatabaseConfiguration {
         INSTANCE;
 
         @Override
-        public ZonedDateTime convert(LocalDateTime localDateTime) {
+        public ZonedDateTime convert(@NotNull LocalDateTime localDateTime) {
             // Be aware - we are using the UTC timezone
             return ZonedDateTime.of(localDateTime, ZoneOffset.UTC);
         }
@@ -113,8 +114,8 @@ public class DatabaseConfiguration {
         INSTANCE;
 
         @Override
-        public Long convert(Duration source) {
-            return source != null ? source.toMillis() : null;
+        public Long convert(@NotNull Duration source) {
+            return source.toMillis();
         }
     }
 
@@ -123,8 +124,8 @@ public class DatabaseConfiguration {
         INSTANCE;
 
         @Override
-        public Duration convert(Long source) {
-            return source != null ? Duration.ofMillis(source) : null;
+        public Duration convert(@NotNull Long source) {
+            return Duration.ofMillis(source);
         }
     }
 }
