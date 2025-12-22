@@ -73,10 +73,7 @@ class FavoriteOfferRepositoryInternalImpl extends SimpleR2dbcRepository<Favorite
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<FavoriteOffer> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = FavoriteOfferSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(ProfileSqlHelper.getColumns(profileTable, "profile"));
-        columns.addAll(OfferSqlHelper.getColumns(offerTable, "offer"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -86,8 +83,15 @@ class FavoriteOfferRepositoryInternalImpl extends SimpleR2dbcRepository<Favorite
             .leftOuterJoin(offerTable)
             .on(Column.create("offer_id", entityTable))
             .equals(Column.create("id", offerTable));
-        String select = entityManager.createSelect(selectFrom, FavoriteOffer.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, FavoriteOffer.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<FavoriteOffer> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = FavoriteOfferSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(ProfileSqlHelper.getColumns(profileTable, "profile"));
+        columns.addAll(OfferSqlHelper.getColumns(offerTable, "offer"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -120,9 +124,9 @@ class FavoriteOfferRepositoryInternalImpl extends SimpleR2dbcRepository<Favorite
 
     @Override
     public Mono<Long> countByCriteria(FavoriteOfferCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(FavoriteOfferCriteria criteria) {

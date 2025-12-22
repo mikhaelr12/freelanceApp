@@ -73,10 +73,7 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<Message> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = MessageSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(ConversationSqlHelper.getColumns(conversationTable, "conversation"));
-        columns.addAll(UserSqlHelper.getColumns(senderTable, "sender"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -86,8 +83,15 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
             .leftOuterJoin(senderTable)
             .on(Column.create("sender_id", entityTable))
             .equals(Column.create("id", senderTable));
-        String select = entityManager.createSelect(selectFrom, Message.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, Message.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<Message> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = MessageSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(ConversationSqlHelper.getColumns(conversationTable, "conversation"));
+        columns.addAll(UserSqlHelper.getColumns(senderTable, "sender"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -135,9 +139,9 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
 
     @Override
     public Mono<Long> countByCriteria(MessageCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(MessageCriteria criteria) {

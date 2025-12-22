@@ -74,11 +74,7 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<Order> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = OrderSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(UserSqlHelper.getColumns(buyerTable, "buyer"));
-        columns.addAll(UserSqlHelper.getColumns(sellerTable, "seller"));
-        columns.addAll(OfferPackageSqlHelper.getColumns(offerpackageTable, "offerpackage"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -91,8 +87,16 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
             .leftOuterJoin(offerpackageTable)
             .on(Column.create("offerpackage_id", entityTable))
             .equals(Column.create("id", offerpackageTable));
-        String select = entityManager.createSelect(selectFrom, Order.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, Order.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<Order> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = OrderSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(UserSqlHelper.getColumns(buyerTable, "buyer"));
+        columns.addAll(UserSqlHelper.getColumns(sellerTable, "seller"));
+        columns.addAll(OfferPackageSqlHelper.getColumns(offerpackageTable, "offerpackage"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -141,9 +145,9 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
 
     @Override
     public Mono<Long> countByCriteria(OrderCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(OrderCriteria criteria) {

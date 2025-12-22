@@ -67,17 +67,21 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<OfferType> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = OfferTypeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(SubcategorySqlHelper.getColumns(subcategoryTable, "subcategory"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(subcategoryTable)
             .on(Column.create("subcategory_id", entityTable))
             .equals(Column.create("id", subcategoryTable));
-        String select = entityManager.createSelect(selectFrom, OfferType.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, OfferType.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<OfferType> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = OfferTypeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(SubcategorySqlHelper.getColumns(subcategoryTable, "subcategory"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -124,9 +128,9 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
 
     @Override
     public Mono<Long> countByCriteria(OfferTypeCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(OfferTypeCriteria criteria) {

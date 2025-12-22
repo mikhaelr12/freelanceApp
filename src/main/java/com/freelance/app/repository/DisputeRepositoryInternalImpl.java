@@ -67,17 +67,21 @@ class DisputeRepositoryInternalImpl extends SimpleR2dbcRepository<Dispute, Long>
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<Dispute> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = DisputeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(OrderSqlHelper.getColumns(orderTable, "order"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(orderTable)
             .on(Column.create("order_id", entityTable))
             .equals(Column.create("id", orderTable));
-        String select = entityManager.createSelect(selectFrom, Dispute.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, Dispute.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<Dispute> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = DisputeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(OrderSqlHelper.getColumns(orderTable, "order"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -109,9 +113,9 @@ class DisputeRepositoryInternalImpl extends SimpleR2dbcRepository<Dispute, Long>
 
     @Override
     public Mono<Long> countByCriteria(DisputeCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(DisputeCriteria criteria) {
