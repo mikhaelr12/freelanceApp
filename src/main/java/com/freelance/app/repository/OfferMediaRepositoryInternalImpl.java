@@ -6,6 +6,8 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.FileObjectRowMapper;
 import com.freelance.app.repository.rowmapper.OfferMediaRowMapper;
 import com.freelance.app.repository.rowmapper.OfferRowMapper;
+import com.freelance.app.repository.sqlhelper.FileObjectSqlHelper;
+import com.freelance.app.repository.sqlhelper.OfferMediaSqlHelper;
 import com.freelance.app.repository.sqlhelper.OfferSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;

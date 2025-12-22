@@ -6,6 +6,8 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ConversationRowMapper;
 import com.freelance.app.repository.rowmapper.MessageRowMapper;
 import com.freelance.app.repository.rowmapper.UserRowMapper;
+import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
+import com.freelance.app.repository.sqlhelper.MessageSqlHelper;
 import com.freelance.app.repository.sqlhelper.UserSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;

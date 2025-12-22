@@ -20,9 +20,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/freelanceapp
   mail:
     host: localhost
-    port: 25
-    username:
-    password:
+    port: 3025
+    username: null
+    password: null
   messages:
     cache-duration: PT1S
   r2dbc:

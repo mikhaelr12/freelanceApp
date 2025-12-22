@@ -4,6 +4,7 @@ import com.freelance.app.domain.Category;
 import com.freelance.app.domain.criteria.CategoryCriteria;
 import com.freelance.app.repository.rowmapper.CategoryRowMapper;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
+import com.freelance.app.repository.sqlhelper.CategorySqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;

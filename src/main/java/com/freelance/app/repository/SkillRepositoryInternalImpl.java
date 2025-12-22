@@ -5,6 +5,8 @@ import com.freelance.app.domain.criteria.SkillCriteria;
 import com.freelance.app.repository.rowmapper.CategoryRowMapper;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.SkillRowMapper;
+import com.freelance.app.repository.sqlhelper.CategorySqlHelper;
+import com.freelance.app.repository.sqlhelper.SkillSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;

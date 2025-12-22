@@ -4,6 +4,7 @@ import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.criteria.FileObjectCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.FileObjectRowMapper;
+import com.freelance.app.repository.sqlhelper.FileObjectSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
