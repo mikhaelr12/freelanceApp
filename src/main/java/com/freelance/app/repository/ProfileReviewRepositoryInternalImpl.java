@@ -68,10 +68,7 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<ProfileReview> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = ProfileReviewSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(ProfileSqlHelper.getColumns(reviewerTable, "reviewer"));
-        columns.addAll(ProfileSqlHelper.getColumns(revieweeTable, "reviewee"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -81,8 +78,15 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
             .leftOuterJoin(revieweeTable)
             .on(Column.create("reviewee_id", entityTable))
             .equals(Column.create("id", revieweeTable));
-        String select = entityManager.createSelect(selectFrom, ProfileReview.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, ProfileReview.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<ProfileReview> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = ProfileReviewSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(ProfileSqlHelper.getColumns(reviewerTable, "reviewer"));
+        columns.addAll(ProfileSqlHelper.getColumns(revieweeTable, "reviewee"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -115,9 +119,9 @@ class ProfileReviewRepositoryInternalImpl extends SimpleR2dbcRepository<ProfileR
 
     @Override
     public Mono<Long> countByCriteria(ProfileReviewCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(ProfileReviewCriteria criteria) {

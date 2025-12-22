@@ -62,12 +62,15 @@ class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> impleme
         return createQuery(pageable, null).all();
     }
 
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
+        SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
+        String select = entityManager.createSelect(selectFrom, Tag.class, pageable, condition);
+        return db.sql(select);
+    }
+
     RowsFetchSpec<Tag> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = TagSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
-        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
-        String select = entityManager.createSelect(selectFrom, Tag.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -97,9 +100,9 @@ class TagRepositoryInternalImpl extends SimpleR2dbcRepository<Tag, Long> impleme
 
     @Override
     public Mono<Long> countByCriteria(TagCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(TagCriteria criteria) {

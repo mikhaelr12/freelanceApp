@@ -81,10 +81,7 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<Profile> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = ProfileSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(UserSqlHelper.getColumns(userTable, "user"));
-        columns.addAll(FileObjectSqlHelper.getColumns(profilePictureTable, "profilePicture"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -94,8 +91,15 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
             .leftOuterJoin(profilePictureTable)
             .on(Column.create("profile_picture_id", entityTable))
             .equals(Column.create("id", profilePictureTable));
-        String select = entityManager.createSelect(selectFrom, Profile.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, Profile.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<Profile> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = ProfileSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(UserSqlHelper.getColumns(userTable, "user"));
+        columns.addAll(FileObjectSqlHelper.getColumns(profilePictureTable, "profilePicture"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -191,9 +195,9 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
 
     @Override
     public Mono<Long> countByCriteria(ProfileCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(ProfileCriteria criteria) {

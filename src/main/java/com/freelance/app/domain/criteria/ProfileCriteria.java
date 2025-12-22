@@ -1,6 +1,7 @@
 package com.freelance.app.domain.criteria;
 
 import com.freelance.app.domain.enumeration.ProfileType;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class ProfileCriteria implements Serializable, Criteria {
         }
     }
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;

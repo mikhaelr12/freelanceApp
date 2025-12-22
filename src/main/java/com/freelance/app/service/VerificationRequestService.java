@@ -10,7 +10,6 @@ import com.freelance.app.service.dto.VerificationRequestDTO;
 import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
-import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -158,8 +157,6 @@ public class VerificationRequestService {
                         } else {
                             verificationRequest.setStatus(status);
                         }
-                        verificationRequest.lastModifiedDate(Instant.now());
-                        verificationRequest.lastModifiedBy(login);
 
                         return verificationRequestRepository
                             .save(verificationRequest)

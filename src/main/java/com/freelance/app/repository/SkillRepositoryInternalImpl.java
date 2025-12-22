@@ -67,17 +67,21 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<Skill> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = SkillSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(CategorySqlHelper.getColumns(categoryTable, "category"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(categoryTable)
             .on(Column.create("category_id", entityTable))
             .equals(Column.create("id", categoryTable));
-        String select = entityManager.createSelect(selectFrom, Skill.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, Skill.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<Skill> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = SkillSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(CategorySqlHelper.getColumns(categoryTable, "category"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -124,9 +128,9 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
 
     @Override
     public Mono<Long> countByCriteria(SkillCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(SkillCriteria criteria) {

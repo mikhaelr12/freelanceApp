@@ -87,7 +87,7 @@ public class ProfileResource {
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
      */
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    //    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<ProfileDTO>>> getAllProfiles(
         ProfileCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
@@ -115,7 +115,7 @@ public class ProfileResource {
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
      */
-    @GetMapping("/count")
+    //    @GetMapping("/count")
     public Mono<ResponseEntity<Long>> countProfiles(ProfileCriteria criteria) {
         LOG.debug("REST request to count Profiles by criteria: {}", criteria);
         return profileService.countByCriteria(criteria).map(count -> ResponseEntity.status(HttpStatus.OK).body(count));

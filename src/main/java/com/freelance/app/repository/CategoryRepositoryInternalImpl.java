@@ -61,11 +61,15 @@ class CategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Category, Lon
         return createQuery(pageable, null).all();
     }
 
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
+        SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
+        String select = entityManager.createSelect(selectFrom, Category.class, pageable, condition);
+        return db.sql(select);
+    }
+
     RowsFetchSpec<Category> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = CategorySqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
-        String select = entityManager.createSelect(selectFrom, Category.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -95,9 +99,9 @@ class CategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Category, Lon
 
     @Override
     public Mono<Long> countByCriteria(CategoryCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(CategoryCriteria criteria) {

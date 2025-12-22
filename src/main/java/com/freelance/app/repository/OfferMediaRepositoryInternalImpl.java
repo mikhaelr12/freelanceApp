@@ -73,10 +73,7 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
         return createQuery(pageable, null).all();
     }
 
-    RowsFetchSpec<OfferMedia> createQuery(Pageable pageable, Condition whereClause) {
-        List<Expression> columns = OfferMediaSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(OfferSqlHelper.getColumns(offerTable, "offer"));
-        columns.addAll(FileObjectSqlHelper.getColumns(fileTable, "file"));
+    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition condition, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -86,8 +83,15 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
             .leftOuterJoin(fileTable)
             .on(Column.create("file_id", entityTable))
             .equals(Column.create("id", fileTable));
-        String select = entityManager.createSelect(selectFrom, OfferMedia.class, pageable, whereClause);
-        return db.sql(select).map(this::process);
+        String select = entityManager.createSelect(selectFrom, OfferMedia.class, pageable, condition);
+        return db.sql(select);
+    }
+
+    RowsFetchSpec<OfferMedia> createQuery(Pageable pageable, Condition whereClause) {
+        List<Expression> columns = OfferMediaSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        columns.addAll(OfferSqlHelper.getColumns(offerTable, "offer"));
+        columns.addAll(FileObjectSqlHelper.getColumns(fileTable, "file"));
+        return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
     @Override
@@ -135,9 +139,9 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
 
     @Override
     public Mono<Long> countByCriteria(OfferMediaCriteria criteria) {
-        return findByCriteria(criteria, null)
-            .collectList()
-            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
+        return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
+            .map((row, rowMetadata) -> row.get(0, Long.class))
+            .one();
     }
 
     private Condition buildConditions(OfferMediaCriteria criteria) {
