@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.criteria.OfferMediaCriteria;
 import com.freelance.app.repository.OfferMediaRepository;
 import com.freelance.app.service.OfferMediaService;
-import com.freelance.app.service.dto.OfferMediaDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,18 +54,18 @@ public class OfferMediaResource {
     /**
      * {@code POST  /offer-medias} : Create a new offerMedia.
      *
-     * @param offerMediaDTO the offerMediaDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new offerMediaDTO, or with status {@code 400 (Bad Request)} if the offerMedia has already an ID.
+     * @param offerMedia the offerMedia to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new offerMedia, or with status {@code 400 (Bad Request)} if the offerMedia has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<OfferMediaDTO>> createOfferMedia(@Valid @RequestBody OfferMediaDTO offerMediaDTO) throws URISyntaxException {
-        LOG.debug("REST request to save OfferMedia : {}", offerMediaDTO);
-        if (offerMediaDTO.getId() != null) {
+    public Mono<ResponseEntity<OfferMedia>> createOfferMedia(@Valid @RequestBody OfferMedia offerMedia) throws URISyntaxException {
+        LOG.debug("REST request to save OfferMedia : {}", offerMedia);
+        if (offerMedia.getId() != null) {
             throw new BadRequestAlertException("A new offerMedia cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return offerMediaService
-            .save(offerMediaDTO)
+            .save(offerMedia)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/offer-medias/" + result.getId()))
@@ -80,23 +80,23 @@ public class OfferMediaResource {
     /**
      * {@code PUT  /offer-medias/:id} : Updates an existing offerMedia.
      *
-     * @param id the id of the offerMediaDTO to save.
-     * @param offerMediaDTO the offerMediaDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerMediaDTO,
-     * or with status {@code 400 (Bad Request)} if the offerMediaDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the offerMediaDTO couldn't be updated.
+     * @param id the id of the offerMedia to save.
+     * @param offerMedia the offerMedia to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerMedia,
+     * or with status {@code 400 (Bad Request)} if the offerMedia is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the offerMedia couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<OfferMediaDTO>> updateOfferMedia(
+    public Mono<ResponseEntity<OfferMedia>> updateOfferMedia(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody OfferMediaDTO offerMediaDTO
+        @Valid @RequestBody OfferMedia offerMedia
     ) throws URISyntaxException {
-        LOG.debug("REST request to update OfferMedia : {}, {}", id, offerMediaDTO);
-        if (offerMediaDTO.getId() == null) {
+        LOG.debug("REST request to update OfferMedia : {}, {}", id, offerMedia);
+        if (offerMedia.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, offerMediaDTO.getId())) {
+        if (!Objects.equals(id, offerMedia.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -108,7 +108,7 @@ public class OfferMediaResource {
                 }
 
                 return offerMediaService
-                    .update(offerMediaDTO)
+                    .update(offerMedia)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -121,24 +121,24 @@ public class OfferMediaResource {
     /**
      * {@code PATCH  /offer-medias/:id} : Partial updates given fields of an existing offerMedia, field will ignore if it is null
      *
-     * @param id the id of the offerMediaDTO to save.
-     * @param offerMediaDTO the offerMediaDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerMediaDTO,
-     * or with status {@code 400 (Bad Request)} if the offerMediaDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the offerMediaDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the offerMediaDTO couldn't be updated.
+     * @param id the id of the offerMedia to save.
+     * @param offerMedia the offerMedia to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerMedia,
+     * or with status {@code 400 (Bad Request)} if the offerMedia is not valid,
+     * or with status {@code 404 (Not Found)} if the offerMedia is not found,
+     * or with status {@code 500 (Internal Server Error)} if the offerMedia couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<OfferMediaDTO>> partialUpdateOfferMedia(
+    public Mono<ResponseEntity<OfferMedia>> partialUpdateOfferMedia(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody OfferMediaDTO offerMediaDTO
+        @NotNull @RequestBody OfferMedia offerMedia
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update OfferMedia partially : {}, {}", id, offerMediaDTO);
-        if (offerMediaDTO.getId() == null) {
+        LOG.debug("REST request to partial update OfferMedia partially : {}, {}", id, offerMedia);
+        if (offerMedia.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, offerMediaDTO.getId())) {
+        if (!Objects.equals(id, offerMedia.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -149,7 +149,7 @@ public class OfferMediaResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<OfferMediaDTO> result = offerMediaService.partialUpdate(offerMediaDTO);
+                Mono<OfferMedia> result = offerMediaService.partialUpdate(offerMedia);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -170,7 +170,7 @@ public class OfferMediaResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of offerMedias in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<OfferMediaDTO>>> getAllOfferMedias(
+    public Mono<ResponseEntity<List<OfferMedia>>> getAllOfferMedias(
         OfferMediaCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -206,20 +206,20 @@ public class OfferMediaResource {
     /**
      * {@code GET  /offer-medias/:id} : get the "id" offerMedia.
      *
-     * @param id the id of the offerMediaDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerMediaDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the offerMedia to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerMedia, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<OfferMediaDTO>> getOfferMedia(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<OfferMedia>> getOfferMedia(@PathVariable("id") Long id) {
         LOG.debug("REST request to get OfferMedia : {}", id);
-        Mono<OfferMediaDTO> offerMediaDTO = offerMediaService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(offerMediaDTO);
+        Mono<OfferMedia> offerMedia = offerMediaService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(offerMedia);
     }
 
     /**
      * {@code DELETE  /offer-medias/:id} : delete the "id" offerMedia.
      *
-     * @param id the id of the offerMediaDTO to delete.
+     * @param id the id of the offerMedia to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

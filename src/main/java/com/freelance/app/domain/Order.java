@@ -2,9 +2,7 @@ package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freelance.app.domain.enumeration.OrderStatus;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -19,7 +17,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class Order extends AbstractAuditingEntity<Long> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -110,26 +107,6 @@ public class Order extends AbstractAuditingEntity<Long> implements Serializable 
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public Order createdDate(Instant createdDate) {
-        this.setCreatedDate(createdDate);
-        return this;
-    }
-
-    public Order lastModifiedDate(Instant lastModifiedDate) {
-        this.setLastModifiedDate(lastModifiedDate);
-        return this;
-    }
-
-    public Order createdBy(String createdBy) {
-        this.setCreatedBy(createdBy);
-        return this;
-    }
-
-    public Order lastModifiedBy(String lastModifiedBy) {
-        this.setLastModifiedBy(lastModifiedBy);
-        return this;
     }
 
     public User getBuyer() {

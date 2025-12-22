@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.criteria.DisputeCriteria;
 import com.freelance.app.repository.DisputeRepository;
 import com.freelance.app.service.DisputeService;
-import com.freelance.app.service.dto.DisputeDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,18 +54,18 @@ public class DisputeResource {
     /**
      * {@code POST  /disputes} : Create a new dispute.
      *
-     * @param disputeDTO the disputeDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new disputeDTO, or with status {@code 400 (Bad Request)} if the dispute has already an ID.
+     * @param dispute the dispute to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new dispute, or with status {@code 400 (Bad Request)} if the dispute has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<DisputeDTO>> createDispute(@Valid @RequestBody DisputeDTO disputeDTO) throws URISyntaxException {
-        LOG.debug("REST request to save Dispute : {}", disputeDTO);
-        if (disputeDTO.getId() != null) {
+    public Mono<ResponseEntity<Dispute>> createDispute(@Valid @RequestBody Dispute dispute) throws URISyntaxException {
+        LOG.debug("REST request to save Dispute : {}", dispute);
+        if (dispute.getId() != null) {
             throw new BadRequestAlertException("A new dispute cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return disputeService
-            .save(disputeDTO)
+            .save(dispute)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/disputes/" + result.getId()))
@@ -80,23 +80,23 @@ public class DisputeResource {
     /**
      * {@code PUT  /disputes/:id} : Updates an existing dispute.
      *
-     * @param id the id of the disputeDTO to save.
-     * @param disputeDTO the disputeDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated disputeDTO,
-     * or with status {@code 400 (Bad Request)} if the disputeDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the disputeDTO couldn't be updated.
+     * @param id the id of the dispute to save.
+     * @param dispute the dispute to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated dispute,
+     * or with status {@code 400 (Bad Request)} if the dispute is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the dispute couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DisputeDTO>> updateDispute(
+    public Mono<ResponseEntity<Dispute>> updateDispute(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody DisputeDTO disputeDTO
+        @Valid @RequestBody Dispute dispute
     ) throws URISyntaxException {
-        LOG.debug("REST request to update Dispute : {}, {}", id, disputeDTO);
-        if (disputeDTO.getId() == null) {
+        LOG.debug("REST request to update Dispute : {}, {}", id, dispute);
+        if (dispute.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, disputeDTO.getId())) {
+        if (!Objects.equals(id, dispute.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -108,7 +108,7 @@ public class DisputeResource {
                 }
 
                 return disputeService
-                    .update(disputeDTO)
+                    .update(dispute)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -121,24 +121,24 @@ public class DisputeResource {
     /**
      * {@code PATCH  /disputes/:id} : Partial updates given fields of an existing dispute, field will ignore if it is null
      *
-     * @param id the id of the disputeDTO to save.
-     * @param disputeDTO the disputeDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated disputeDTO,
-     * or with status {@code 400 (Bad Request)} if the disputeDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the disputeDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the disputeDTO couldn't be updated.
+     * @param id the id of the dispute to save.
+     * @param dispute the dispute to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated dispute,
+     * or with status {@code 400 (Bad Request)} if the dispute is not valid,
+     * or with status {@code 404 (Not Found)} if the dispute is not found,
+     * or with status {@code 500 (Internal Server Error)} if the dispute couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<DisputeDTO>> partialUpdateDispute(
+    public Mono<ResponseEntity<Dispute>> partialUpdateDispute(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody DisputeDTO disputeDTO
+        @NotNull @RequestBody Dispute dispute
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Dispute partially : {}, {}", id, disputeDTO);
-        if (disputeDTO.getId() == null) {
+        LOG.debug("REST request to partial update Dispute partially : {}, {}", id, dispute);
+        if (dispute.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, disputeDTO.getId())) {
+        if (!Objects.equals(id, dispute.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -149,7 +149,7 @@ public class DisputeResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<DisputeDTO> result = disputeService.partialUpdate(disputeDTO);
+                Mono<Dispute> result = disputeService.partialUpdate(dispute);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -170,7 +170,7 @@ public class DisputeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of disputes in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<DisputeDTO>>> getAllDisputes(
+    public Mono<ResponseEntity<List<Dispute>>> getAllDisputes(
         DisputeCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -206,20 +206,20 @@ public class DisputeResource {
     /**
      * {@code GET  /disputes/:id} : get the "id" dispute.
      *
-     * @param id the id of the disputeDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the disputeDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the dispute to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the dispute, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DisputeDTO>> getDispute(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Dispute>> getDispute(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Dispute : {}", id);
-        Mono<DisputeDTO> disputeDTO = disputeService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(disputeDTO);
+        Mono<Dispute> dispute = disputeService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(dispute);
     }
 
     /**
      * {@code DELETE  /disputes/:id} : delete the "id" dispute.
      *
-     * @param id the id of the disputeDTO to delete.
+     * @param id the id of the dispute to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

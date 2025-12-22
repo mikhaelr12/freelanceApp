@@ -1,8 +1,6 @@
 package com.freelance.app.domain;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
@@ -16,7 +14,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class FileObject extends AbstractAuditingEntity<Long> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -140,26 +137,6 @@ public class FileObject extends AbstractAuditingEntity<Long> implements Serializ
         this.durationSeconds = durationSeconds;
     }
 
-    public FileObject createdDate(Instant createdDate) {
-        this.setCreatedDate(createdDate);
-        return this;
-    }
-
-    public FileObject lastModifiedDate(Instant lastModifiedDate) {
-        this.setLastModifiedDate(lastModifiedDate);
-        return this;
-    }
-
-    public FileObject createdBy(String createdBy) {
-        this.setCreatedBy(createdBy);
-        return this;
-    }
-
-    public FileObject lastModifiedBy(String lastModifiedBy) {
-        this.setLastModifiedBy(lastModifiedBy);
-        return this;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -175,7 +152,6 @@ public class FileObject extends AbstractAuditingEntity<Long> implements Serializ
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 

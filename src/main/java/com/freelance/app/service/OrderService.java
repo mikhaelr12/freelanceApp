@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Order;
 import com.freelance.app.domain.criteria.OrderCriteria;
 import com.freelance.app.repository.OrderRepository;
-import com.freelance.app.service.dto.OrderDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,34 +29,62 @@ public class OrderService {
     /**
      * Save a order.
      *
-     * @param orderDTO the entity to save.
+     * @param order the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OrderDTO> save(OrderDTO orderDTO) {
-        LOG.debug("Request to save Order : {}", orderDTO);
-        return null;
+    public Mono<Order> save(Order order) {
+        LOG.debug("Request to save Order : {}", order);
+        return orderRepository.save(order);
     }
 
     /**
      * Update a order.
      *
-     * @param orderDTO the entity to save.
+     * @param order the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OrderDTO> update(OrderDTO orderDTO) {
-        LOG.debug("Request to update Order : {}", orderDTO);
-        return null;
+    public Mono<Order> update(Order order) {
+        LOG.debug("Request to update Order : {}", order);
+        return orderRepository.save(order);
     }
 
     /**
      * Partially update a order.
      *
-     * @param orderDTO the entity to update partially.
+     * @param order the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<OrderDTO> partialUpdate(OrderDTO orderDTO) {
-        LOG.debug("Request to partially update Order : {}", orderDTO);
-        return null;
+    public Mono<Order> partialUpdate(Order order) {
+        LOG.debug("Request to partially update Order : {}", order);
+
+        return orderRepository
+            .findById(order.getId())
+            .map(existingOrder -> {
+                if (order.getStatus() != null) {
+                    existingOrder.setStatus(order.getStatus());
+                }
+                if (order.getTotalAmount() != null) {
+                    existingOrder.setTotalAmount(order.getTotalAmount());
+                }
+                if (order.getCurrency() != null) {
+                    existingOrder.setCurrency(order.getCurrency());
+                }
+                if (order.getCreatedDate() != null) {
+                    existingOrder.setCreatedDate(order.getCreatedDate());
+                }
+                if (order.getLastModifiedDate() != null) {
+                    existingOrder.setLastModifiedDate(order.getLastModifiedDate());
+                }
+                if (order.getCreatedBy() != null) {
+                    existingOrder.setCreatedBy(order.getCreatedBy());
+                }
+                if (order.getLastModifiedBy() != null) {
+                    existingOrder.setLastModifiedBy(order.getLastModifiedBy());
+                }
+
+                return existingOrder;
+            })
+            .flatMap(orderRepository::save);
     }
 
     /**
@@ -66,9 +94,9 @@ public class OrderService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<OrderDTO> findByCriteria(OrderCriteria criteria, Pageable pageable) {
+    public Flux<Order> findByCriteria(OrderCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Orders by Criteria");
-        return null;
+        return orderRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -86,8 +114,8 @@ public class OrderService {
      *
      * @return the list of entities.
      */
-    public Flux<OrderDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<Order> findAllWithEagerRelationships(Pageable pageable) {
+        return orderRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -106,9 +134,9 @@ public class OrderService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<OrderDTO> findOne(Long id) {
+    public Mono<Order> findOne(Long id) {
         LOG.debug("Request to get Order : {}", id);
-        return null;
+        return orderRepository.findOneWithEagerRelationships(id);
     }
 
     /**

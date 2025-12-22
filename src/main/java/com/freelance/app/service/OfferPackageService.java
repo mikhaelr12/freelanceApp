@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.OfferPackage;
 import com.freelance.app.domain.criteria.OfferPackageCriteria;
 import com.freelance.app.repository.OfferPackageRepository;
-import com.freelance.app.service.dto.OfferPackageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,74 @@ public class OfferPackageService {
     /**
      * Save a offerPackage.
      *
-     * @param offerPackageDTO the entity to save.
+     * @param offerPackage the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferPackageDTO> save(OfferPackageDTO offerPackageDTO) {
-        LOG.debug("Request to save OfferPackage : {}", offerPackageDTO);
-        return null;
+    public Mono<OfferPackage> save(OfferPackage offerPackage) {
+        LOG.debug("Request to save OfferPackage : {}", offerPackage);
+        return offerPackageRepository.save(offerPackage);
     }
 
     /**
      * Update a offerPackage.
      *
-     * @param offerPackageDTO the entity to save.
+     * @param offerPackage the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferPackageDTO> update(OfferPackageDTO offerPackageDTO) {
-        LOG.debug("Request to update OfferPackage : {}", offerPackageDTO);
-        return null;
+    public Mono<OfferPackage> update(OfferPackage offerPackage) {
+        LOG.debug("Request to update OfferPackage : {}", offerPackage);
+        return offerPackageRepository.save(offerPackage);
     }
 
     /**
      * Partially update a offerPackage.
      *
-     * @param offerPackageDTO the entity to update partially.
+     * @param offerPackage the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<OfferPackageDTO> partialUpdate(OfferPackageDTO offerPackageDTO) {
-        LOG.debug("Request to partially update OfferPackage : {}", offerPackageDTO);
+    public Mono<OfferPackage> partialUpdate(OfferPackage offerPackage) {
+        LOG.debug("Request to partially update OfferPackage : {}", offerPackage);
 
-        return null;
+        return offerPackageRepository
+            .findById(offerPackage.getId())
+            .map(existingOfferPackage -> {
+                if (offerPackage.getName() != null) {
+                    existingOfferPackage.setName(offerPackage.getName());
+                }
+                if (offerPackage.getDescription() != null) {
+                    existingOfferPackage.setDescription(offerPackage.getDescription());
+                }
+                if (offerPackage.getPrice() != null) {
+                    existingOfferPackage.setPrice(offerPackage.getPrice());
+                }
+                if (offerPackage.getCurrency() != null) {
+                    existingOfferPackage.setCurrency(offerPackage.getCurrency());
+                }
+                if (offerPackage.getDeliveryDays() != null) {
+                    existingOfferPackage.setDeliveryDays(offerPackage.getDeliveryDays());
+                }
+                if (offerPackage.getPackageTier() != null) {
+                    existingOfferPackage.setPackageTier(offerPackage.getPackageTier());
+                }
+                if (offerPackage.getActive() != null) {
+                    existingOfferPackage.setActive(offerPackage.getActive());
+                }
+                if (offerPackage.getCreatedDate() != null) {
+                    existingOfferPackage.setCreatedDate(offerPackage.getCreatedDate());
+                }
+                if (offerPackage.getLastModifiedDate() != null) {
+                    existingOfferPackage.setLastModifiedDate(offerPackage.getLastModifiedDate());
+                }
+                if (offerPackage.getCreatedBy() != null) {
+                    existingOfferPackage.setCreatedBy(offerPackage.getCreatedBy());
+                }
+                if (offerPackage.getLastModifiedBy() != null) {
+                    existingOfferPackage.setLastModifiedBy(offerPackage.getLastModifiedBy());
+                }
+
+                return existingOfferPackage;
+            })
+            .flatMap(offerPackageRepository::save);
     }
 
     /**
@@ -67,14 +106,13 @@ public class OfferPackageService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<OfferPackageDTO> findByCriteria(OfferPackageCriteria criteria, Pageable pageable) {
+    public Flux<OfferPackage> findByCriteria(OfferPackageCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferPackages by Criteria");
-        return null;
+        return offerPackageRepository.findByCriteria(criteria, pageable);
     }
 
     /**
      * Find the count of offerPackages by criteria.
-     *
      * @param criteria filtering criteria
      * @return the count of offerPackages
      */
@@ -88,13 +126,12 @@ public class OfferPackageService {
      *
      * @return the list of entities.
      */
-    public Flux<OfferPackageDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<OfferPackage> findAllWithEagerRelationships(Pageable pageable) {
+        return offerPackageRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
      * Returns the number of offerPackages available.
-     *
      * @return the number of entities in the database.
      *
      */
@@ -109,9 +146,9 @@ public class OfferPackageService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<OfferPackageDTO> findOne(Long id) {
+    public Mono<OfferPackage> findOne(Long id) {
         LOG.debug("Request to get OfferPackage : {}", id);
-        return null;
+        return offerPackageRepository.findOneWithEagerRelationships(id);
     }
 
     /**

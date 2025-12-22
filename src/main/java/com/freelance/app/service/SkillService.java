@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.SkillCriteria;
 import com.freelance.app.repository.SkillRepository;
-import com.freelance.app.service.dto.SkillDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,59 @@ public class SkillService {
     /**
      * Save a skill.
      *
-     * @param skillDTO the entity to save.
+     * @param skill the entity to save.
      * @return the persisted entity.
      */
-    public Mono<SkillDTO> save(SkillDTO skillDTO) {
-        LOG.debug("Request to save Skill : {}", skillDTO);
-        return null;
+    public Mono<Skill> save(Skill skill) {
+        LOG.debug("Request to save Skill : {}", skill);
+        return skillRepository.save(skill);
     }
 
     /**
      * Update a skill.
      *
-     * @param skillDTO the entity to save.
+     * @param skill the entity to save.
      * @return the persisted entity.
      */
-    public Mono<SkillDTO> update(SkillDTO skillDTO) {
-        LOG.debug("Request to update Skill : {}", skillDTO);
-        return null;
+    public Mono<Skill> update(Skill skill) {
+        LOG.debug("Request to update Skill : {}", skill);
+        return skillRepository.save(skill);
     }
 
     /**
      * Partially update a skill.
      *
-     * @param skillDTO the entity to update partially.
+     * @param skill the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<SkillDTO> partialUpdate(SkillDTO skillDTO) {
-        LOG.debug("Request to partially update Skill : {}", skillDTO);
+    public Mono<Skill> partialUpdate(Skill skill) {
+        LOG.debug("Request to partially update Skill : {}", skill);
 
-        return null;
+        return skillRepository
+            .findById(skill.getId())
+            .map(existingSkill -> {
+                if (skill.getName() != null) {
+                    existingSkill.setName(skill.getName());
+                }
+                if (skill.getCreatedDate() != null) {
+                    existingSkill.setCreatedDate(skill.getCreatedDate());
+                }
+                if (skill.getLastModifiedDate() != null) {
+                    existingSkill.setLastModifiedDate(skill.getLastModifiedDate());
+                }
+                if (skill.getCreatedBy() != null) {
+                    existingSkill.setCreatedBy(skill.getCreatedBy());
+                }
+                if (skill.getLastModifiedBy() != null) {
+                    existingSkill.setLastModifiedBy(skill.getLastModifiedBy());
+                }
+                if (skill.getActive() != null) {
+                    existingSkill.setActive(skill.getActive());
+                }
+
+                return existingSkill;
+            })
+            .flatMap(skillRepository::save);
     }
 
     /**
@@ -67,9 +91,9 @@ public class SkillService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<SkillDTO> findByCriteria(SkillCriteria criteria, Pageable pageable) {
+    public Flux<Skill> findByCriteria(SkillCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Skills by Criteria");
-        return null;
+        return skillRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -87,8 +111,8 @@ public class SkillService {
      *
      * @return the list of entities.
      */
-    public Flux<SkillDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<Skill> findAllWithEagerRelationships(Pageable pageable) {
+        return skillRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -107,9 +131,9 @@ public class SkillService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<SkillDTO> findOne(Long id) {
+    public Mono<Skill> findOne(Long id) {
         LOG.debug("Request to get Skill : {}", id);
-        return null;
+        return skillRepository.findOneWithEagerRelationships(id);
     }
 
     /**

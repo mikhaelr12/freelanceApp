@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.criteria.FavoriteOfferCriteria;
 import com.freelance.app.repository.FavoriteOfferRepository;
 import com.freelance.app.service.FavoriteOfferService;
-import com.freelance.app.service.dto.FavoriteOfferDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,19 +54,19 @@ public class FavoriteOfferResource {
     /**
      * {@code POST  /favorite-offers} : Create a new favoriteOffer.
      *
-     * @param favoriteOfferDTO the favoriteOfferDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new favoriteOfferDTO, or with status {@code 400 (Bad Request)} if the favoriteOffer has already an ID.
+     * @param favoriteOffer the favoriteOffer to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new favoriteOffer, or with status {@code 400 (Bad Request)} if the favoriteOffer has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<FavoriteOfferDTO>> createFavoriteOffer(@Valid @RequestBody FavoriteOfferDTO favoriteOfferDTO)
+    public Mono<ResponseEntity<FavoriteOffer>> createFavoriteOffer(@Valid @RequestBody FavoriteOffer favoriteOffer)
         throws URISyntaxException {
-        LOG.debug("REST request to save FavoriteOffer : {}", favoriteOfferDTO);
-        if (favoriteOfferDTO.getId() != null) {
+        LOG.debug("REST request to save FavoriteOffer : {}", favoriteOffer);
+        if (favoriteOffer.getId() != null) {
             throw new BadRequestAlertException("A new favoriteOffer cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return favoriteOfferService
-            .save(favoriteOfferDTO)
+            .save(favoriteOffer)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/favorite-offers/" + result.getId()))
@@ -81,23 +81,23 @@ public class FavoriteOfferResource {
     /**
      * {@code PUT  /favorite-offers/:id} : Updates an existing favoriteOffer.
      *
-     * @param id the id of the favoriteOfferDTO to save.
-     * @param favoriteOfferDTO the favoriteOfferDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated favoriteOfferDTO,
-     * or with status {@code 400 (Bad Request)} if the favoriteOfferDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the favoriteOfferDTO couldn't be updated.
+     * @param id the id of the favoriteOffer to save.
+     * @param favoriteOffer the favoriteOffer to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated favoriteOffer,
+     * or with status {@code 400 (Bad Request)} if the favoriteOffer is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the favoriteOffer couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<FavoriteOfferDTO>> updateFavoriteOffer(
+    public Mono<ResponseEntity<FavoriteOffer>> updateFavoriteOffer(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody FavoriteOfferDTO favoriteOfferDTO
+        @Valid @RequestBody FavoriteOffer favoriteOffer
     ) throws URISyntaxException {
-        LOG.debug("REST request to update FavoriteOffer : {}, {}", id, favoriteOfferDTO);
-        if (favoriteOfferDTO.getId() == null) {
+        LOG.debug("REST request to update FavoriteOffer : {}, {}", id, favoriteOffer);
+        if (favoriteOffer.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, favoriteOfferDTO.getId())) {
+        if (!Objects.equals(id, favoriteOffer.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -109,7 +109,7 @@ public class FavoriteOfferResource {
                 }
 
                 return favoriteOfferService
-                    .update(favoriteOfferDTO)
+                    .update(favoriteOffer)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -122,24 +122,24 @@ public class FavoriteOfferResource {
     /**
      * {@code PATCH  /favorite-offers/:id} : Partial updates given fields of an existing favoriteOffer, field will ignore if it is null
      *
-     * @param id the id of the favoriteOfferDTO to save.
-     * @param favoriteOfferDTO the favoriteOfferDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated favoriteOfferDTO,
-     * or with status {@code 400 (Bad Request)} if the favoriteOfferDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the favoriteOfferDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the favoriteOfferDTO couldn't be updated.
+     * @param id the id of the favoriteOffer to save.
+     * @param favoriteOffer the favoriteOffer to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated favoriteOffer,
+     * or with status {@code 400 (Bad Request)} if the favoriteOffer is not valid,
+     * or with status {@code 404 (Not Found)} if the favoriteOffer is not found,
+     * or with status {@code 500 (Internal Server Error)} if the favoriteOffer couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<FavoriteOfferDTO>> partialUpdateFavoriteOffer(
+    public Mono<ResponseEntity<FavoriteOffer>> partialUpdateFavoriteOffer(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody FavoriteOfferDTO favoriteOfferDTO
+        @NotNull @RequestBody FavoriteOffer favoriteOffer
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update FavoriteOffer partially : {}, {}", id, favoriteOfferDTO);
-        if (favoriteOfferDTO.getId() == null) {
+        LOG.debug("REST request to partial update FavoriteOffer partially : {}, {}", id, favoriteOffer);
+        if (favoriteOffer.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, favoriteOfferDTO.getId())) {
+        if (!Objects.equals(id, favoriteOffer.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -150,7 +150,7 @@ public class FavoriteOfferResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<FavoriteOfferDTO> result = favoriteOfferService.partialUpdate(favoriteOfferDTO);
+                Mono<FavoriteOffer> result = favoriteOfferService.partialUpdate(favoriteOffer);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -171,7 +171,7 @@ public class FavoriteOfferResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of favoriteOffers in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<FavoriteOfferDTO>>> getAllFavoriteOffers(
+    public Mono<ResponseEntity<List<FavoriteOffer>>> getAllFavoriteOffers(
         FavoriteOfferCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -207,20 +207,20 @@ public class FavoriteOfferResource {
     /**
      * {@code GET  /favorite-offers/:id} : get the "id" favoriteOffer.
      *
-     * @param id the id of the favoriteOfferDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the favoriteOfferDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the favoriteOffer to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the favoriteOffer, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<FavoriteOfferDTO>> getFavoriteOffer(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<FavoriteOffer>> getFavoriteOffer(@PathVariable("id") Long id) {
         LOG.debug("REST request to get FavoriteOffer : {}", id);
-        Mono<FavoriteOfferDTO> favoriteOfferDTO = favoriteOfferService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(favoriteOfferDTO);
+        Mono<FavoriteOffer> favoriteOffer = favoriteOfferService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(favoriteOffer);
     }
 
     /**
      * {@code DELETE  /favorite-offers/:id} : delete the "id" favoriteOffer.
      *
-     * @param id the id of the favoriteOfferDTO to delete.
+     * @param id the id of the favoriteOffer to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

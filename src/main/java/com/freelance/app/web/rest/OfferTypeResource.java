@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.OfferType;
 import com.freelance.app.domain.criteria.OfferTypeCriteria;
 import com.freelance.app.repository.OfferTypeRepository;
 import com.freelance.app.service.OfferTypeService;
-import com.freelance.app.service.dto.OfferTypeDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,18 +54,18 @@ public class OfferTypeResource {
     /**
      * {@code POST  /offer-types} : Create a new offerType.
      *
-     * @param offerTypeDTO the offerTypeDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new offerTypeDTO, or with status {@code 400 (Bad Request)} if the offerType has already an ID.
+     * @param offerType the offerType to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new offerType, or with status {@code 400 (Bad Request)} if the offerType has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<OfferTypeDTO>> createOfferType(@Valid @RequestBody OfferTypeDTO offerTypeDTO) throws URISyntaxException {
-        LOG.debug("REST request to save OfferType : {}", offerTypeDTO);
-        if (offerTypeDTO.getId() != null) {
+    public Mono<ResponseEntity<OfferType>> createOfferType(@Valid @RequestBody OfferType offerType) throws URISyntaxException {
+        LOG.debug("REST request to save OfferType : {}", offerType);
+        if (offerType.getId() != null) {
             throw new BadRequestAlertException("A new offerType cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return offerTypeService
-            .save(offerTypeDTO)
+            .save(offerType)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/offer-types/" + result.getId()))
@@ -80,23 +80,23 @@ public class OfferTypeResource {
     /**
      * {@code PUT  /offer-types/:id} : Updates an existing offerType.
      *
-     * @param id the id of the offerTypeDTO to save.
-     * @param offerTypeDTO the offerTypeDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerTypeDTO,
-     * or with status {@code 400 (Bad Request)} if the offerTypeDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the offerTypeDTO couldn't be updated.
+     * @param id the id of the offerType to save.
+     * @param offerType the offerType to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerType,
+     * or with status {@code 400 (Bad Request)} if the offerType is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the offerType couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<OfferTypeDTO>> updateOfferType(
+    public Mono<ResponseEntity<OfferType>> updateOfferType(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody OfferTypeDTO offerTypeDTO
+        @Valid @RequestBody OfferType offerType
     ) throws URISyntaxException {
-        LOG.debug("REST request to update OfferType : {}, {}", id, offerTypeDTO);
-        if (offerTypeDTO.getId() == null) {
+        LOG.debug("REST request to update OfferType : {}, {}", id, offerType);
+        if (offerType.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, offerTypeDTO.getId())) {
+        if (!Objects.equals(id, offerType.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -108,7 +108,7 @@ public class OfferTypeResource {
                 }
 
                 return offerTypeService
-                    .update(offerTypeDTO)
+                    .update(offerType)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -121,24 +121,24 @@ public class OfferTypeResource {
     /**
      * {@code PATCH  /offer-types/:id} : Partial updates given fields of an existing offerType, field will ignore if it is null
      *
-     * @param id the id of the offerTypeDTO to save.
-     * @param offerTypeDTO the offerTypeDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerTypeDTO,
-     * or with status {@code 400 (Bad Request)} if the offerTypeDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the offerTypeDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the offerTypeDTO couldn't be updated.
+     * @param id the id of the offerType to save.
+     * @param offerType the offerType to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated offerType,
+     * or with status {@code 400 (Bad Request)} if the offerType is not valid,
+     * or with status {@code 404 (Not Found)} if the offerType is not found,
+     * or with status {@code 500 (Internal Server Error)} if the offerType couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<OfferTypeDTO>> partialUpdateOfferType(
+    public Mono<ResponseEntity<OfferType>> partialUpdateOfferType(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody OfferTypeDTO offerTypeDTO
+        @NotNull @RequestBody OfferType offerType
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update OfferType partially : {}, {}", id, offerTypeDTO);
-        if (offerTypeDTO.getId() == null) {
+        LOG.debug("REST request to partial update OfferType partially : {}, {}", id, offerType);
+        if (offerType.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, offerTypeDTO.getId())) {
+        if (!Objects.equals(id, offerType.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -149,7 +149,7 @@ public class OfferTypeResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<OfferTypeDTO> result = offerTypeService.partialUpdate(offerTypeDTO);
+                Mono<OfferType> result = offerTypeService.partialUpdate(offerType);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -170,7 +170,7 @@ public class OfferTypeResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of offerTypes in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<OfferTypeDTO>>> getAllOfferTypes(
+    public Mono<ResponseEntity<List<OfferType>>> getAllOfferTypes(
         OfferTypeCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -206,20 +206,20 @@ public class OfferTypeResource {
     /**
      * {@code GET  /offer-types/:id} : get the "id" offerType.
      *
-     * @param id the id of the offerTypeDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerTypeDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the offerType to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the offerType, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<OfferTypeDTO>> getOfferType(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<OfferType>> getOfferType(@PathVariable("id") Long id) {
         LOG.debug("REST request to get OfferType : {}", id);
-        Mono<OfferTypeDTO> offerTypeDTO = offerTypeService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(offerTypeDTO);
+        Mono<OfferType> offerType = offerTypeService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(offerType);
     }
 
     /**
      * {@code DELETE  /offer-types/:id} : delete the "id" offerType.
      *
-     * @param id the id of the offerTypeDTO to delete.
+     * @param id the id of the offerType to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

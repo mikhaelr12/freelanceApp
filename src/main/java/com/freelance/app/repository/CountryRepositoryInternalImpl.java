@@ -4,7 +4,6 @@ import com.freelance.app.domain.Country;
 import com.freelance.app.domain.criteria.CountryCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.CountryRowMapper;
-import com.freelance.app.repository.sqlhelper.CountrySqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -14,8 +13,13 @@ import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.*;
+import org.springframework.data.relational.core.sql.Comparison;
+import org.springframework.data.relational.core.sql.Condition;
+import org.springframework.data.relational.core.sql.Conditions;
+import org.springframework.data.relational.core.sql.Expression;
+import org.springframework.data.relational.core.sql.Select;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoin;
+import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -65,13 +69,10 @@ class CountryRepositoryInternalImpl extends SimpleR2dbcRepository<Country, Long>
 
     RowsFetchSpec<Country> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = CountrySqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        return createQuery(pageable, whereClause, columns).map(this::process);
-    }
-
-    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoin selectFrom = Select.builder().select(columns).from(entityTable);
+        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Country.class, pageable, whereClause);
-        return db.sql(select);
+        return db.sql(select).map(this::process);
     }
 
     @Override
@@ -102,13 +103,9 @@ class CountryRepositoryInternalImpl extends SimpleR2dbcRepository<Country, Long>
 
     @Override
     public Mono<Long> countByCriteria(CountryCriteria criteria) {
-        return createCountQuery(buildConditions(criteria)).one();
-    }
-
-    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
-        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
-            row.get(0, Long.class)
-        );
+        return findByCriteria(criteria, null)
+            .collectList()
+            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
     }
 
     private Condition buildConditions(CountryCriteria criteria) {

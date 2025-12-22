@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.Requirement;
 import com.freelance.app.domain.criteria.RequirementCriteria;
 import com.freelance.app.repository.RequirementRepository;
 import com.freelance.app.service.RequirementService;
-import com.freelance.app.service.dto.RequirementDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,19 +54,18 @@ public class RequirementResource {
     /**
      * {@code POST  /requirements} : Create a new requirement.
      *
-     * @param requirementDTO the requirementDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new requirementDTO, or with status {@code 400 (Bad Request)} if the requirement has already an ID.
+     * @param requirement the requirement to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new requirement, or with status {@code 400 (Bad Request)} if the requirement has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<RequirementDTO>> createRequirement(@Valid @RequestBody RequirementDTO requirementDTO)
-        throws URISyntaxException {
-        LOG.debug("REST request to save Requirement : {}", requirementDTO);
-        if (requirementDTO.getId() != null) {
+    public Mono<ResponseEntity<Requirement>> createRequirement(@Valid @RequestBody Requirement requirement) throws URISyntaxException {
+        LOG.debug("REST request to save Requirement : {}", requirement);
+        if (requirement.getId() != null) {
             throw new BadRequestAlertException("A new requirement cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return requirementService
-            .save(requirementDTO)
+            .save(requirement)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/requirements/" + result.getId()))
@@ -81,23 +80,23 @@ public class RequirementResource {
     /**
      * {@code PUT  /requirements/:id} : Updates an existing requirement.
      *
-     * @param id the id of the requirementDTO to save.
-     * @param requirementDTO the requirementDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirementDTO,
-     * or with status {@code 400 (Bad Request)} if the requirementDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the requirementDTO couldn't be updated.
+     * @param id the id of the requirement to save.
+     * @param requirement the requirement to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirement,
+     * or with status {@code 400 (Bad Request)} if the requirement is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the requirement couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<RequirementDTO>> updateRequirement(
+    public Mono<ResponseEntity<Requirement>> updateRequirement(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody RequirementDTO requirementDTO
+        @Valid @RequestBody Requirement requirement
     ) throws URISyntaxException {
-        LOG.debug("REST request to update Requirement : {}, {}", id, requirementDTO);
-        if (requirementDTO.getId() == null) {
+        LOG.debug("REST request to update Requirement : {}, {}", id, requirement);
+        if (requirement.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, requirementDTO.getId())) {
+        if (!Objects.equals(id, requirement.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -109,7 +108,7 @@ public class RequirementResource {
                 }
 
                 return requirementService
-                    .update(requirementDTO)
+                    .update(requirement)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -122,24 +121,24 @@ public class RequirementResource {
     /**
      * {@code PATCH  /requirements/:id} : Partial updates given fields of an existing requirement, field will ignore if it is null
      *
-     * @param id the id of the requirementDTO to save.
-     * @param requirementDTO the requirementDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirementDTO,
-     * or with status {@code 400 (Bad Request)} if the requirementDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the requirementDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the requirementDTO couldn't be updated.
+     * @param id the id of the requirement to save.
+     * @param requirement the requirement to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated requirement,
+     * or with status {@code 400 (Bad Request)} if the requirement is not valid,
+     * or with status {@code 404 (Not Found)} if the requirement is not found,
+     * or with status {@code 500 (Internal Server Error)} if the requirement couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<RequirementDTO>> partialUpdateRequirement(
+    public Mono<ResponseEntity<Requirement>> partialUpdateRequirement(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody RequirementDTO requirementDTO
+        @NotNull @RequestBody Requirement requirement
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Requirement partially : {}, {}", id, requirementDTO);
-        if (requirementDTO.getId() == null) {
+        LOG.debug("REST request to partial update Requirement partially : {}, {}", id, requirement);
+        if (requirement.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, requirementDTO.getId())) {
+        if (!Objects.equals(id, requirement.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -150,7 +149,7 @@ public class RequirementResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<RequirementDTO> result = requirementService.partialUpdate(requirementDTO);
+                Mono<Requirement> result = requirementService.partialUpdate(requirement);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -171,7 +170,7 @@ public class RequirementResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requirements in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<RequirementDTO>>> getAllRequirements(
+    public Mono<ResponseEntity<List<Requirement>>> getAllRequirements(
         RequirementCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -207,20 +206,20 @@ public class RequirementResource {
     /**
      * {@code GET  /requirements/:id} : get the "id" requirement.
      *
-     * @param id the id of the requirementDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the requirementDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the requirement to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the requirement, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<RequirementDTO>> getRequirement(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Requirement>> getRequirement(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Requirement : {}", id);
-        Mono<RequirementDTO> requirementDTO = requirementService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(requirementDTO);
+        Mono<Requirement> requirement = requirementService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(requirement);
     }
 
     /**
      * {@code DELETE  /requirements/:id} : delete the "id" requirement.
      *
-     * @param id the id of the requirementDTO to delete.
+     * @param id the id of the requirement to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

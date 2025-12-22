@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.criteria.DisputeCriteria;
 import com.freelance.app.repository.DisputeRepository;
-import com.freelance.app.service.dto.DisputeDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,50 @@ public class DisputeService {
     /**
      * Save a dispute.
      *
-     * @param disputeDTO the entity to save.
+     * @param dispute the entity to save.
      * @return the persisted entity.
      */
-    public Mono<DisputeDTO> save(DisputeDTO disputeDTO) {
-        LOG.debug("Request to save Dispute : {}", disputeDTO);
-        return null;
+    public Mono<Dispute> save(Dispute dispute) {
+        LOG.debug("Request to save Dispute : {}", dispute);
+        return disputeRepository.save(dispute);
     }
 
     /**
      * Update a dispute.
      *
-     * @param disputeDTO the entity to save.
+     * @param dispute the entity to save.
      * @return the persisted entity.
      */
-    public Mono<DisputeDTO> update(DisputeDTO disputeDTO) {
-        LOG.debug("Request to update Dispute : {}", disputeDTO);
-        return null;
+    public Mono<Dispute> update(Dispute dispute) {
+        LOG.debug("Request to update Dispute : {}", dispute);
+        return disputeRepository.save(dispute);
     }
 
     /**
      * Partially update a dispute.
      *
-     * @param disputeDTO the entity to update partially.
+     * @param dispute the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<DisputeDTO> partialUpdate(DisputeDTO disputeDTO) {
-        LOG.debug("Request to partially update Dispute : {}", disputeDTO);
+    public Mono<Dispute> partialUpdate(Dispute dispute) {
+        LOG.debug("Request to partially update Dispute : {}", dispute);
 
-        return null;
+        return disputeRepository
+            .findById(dispute.getId())
+            .map(existingDispute -> {
+                if (dispute.getReason() != null) {
+                    existingDispute.setReason(dispute.getReason());
+                }
+                if (dispute.getOpenedAt() != null) {
+                    existingDispute.setOpenedAt(dispute.getOpenedAt());
+                }
+                if (dispute.getClosedAt() != null) {
+                    existingDispute.setClosedAt(dispute.getClosedAt());
+                }
+
+                return existingDispute;
+            })
+            .flatMap(disputeRepository::save);
     }
 
     /**
@@ -67,9 +82,9 @@ public class DisputeService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<DisputeDTO> findByCriteria(DisputeCriteria criteria, Pageable pageable) {
+    public Flux<Dispute> findByCriteria(DisputeCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Disputes by Criteria");
-        return null;
+        return disputeRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -98,9 +113,9 @@ public class DisputeService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<DisputeDTO> findOne(Long id) {
+    public Mono<Dispute> findOne(Long id) {
         LOG.debug("Request to get Dispute : {}", id);
-        return null;
+        return disputeRepository.findById(id);
     }
 
     /**

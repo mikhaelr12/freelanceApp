@@ -1,7 +1,7 @@
 logging:
   level:
-    ROOT: DEBUG
-    tech.jhipster: DEBUG
+    ROOT: INFO
+    tech.jhipster: INFO
     org.hibernate.SQL: DEBUG
     com.freelance.app: DEBUG
 

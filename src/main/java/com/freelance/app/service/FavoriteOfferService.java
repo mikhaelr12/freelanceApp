@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.criteria.FavoriteOfferCriteria;
 import com.freelance.app.repository.FavoriteOfferRepository;
-import com.freelance.app.service.dto.FavoriteOfferDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,34 +29,44 @@ public class FavoriteOfferService {
     /**
      * Save a favoriteOffer.
      *
-     * @param favoriteOfferDTO the entity to save.
+     * @param favoriteOffer the entity to save.
      * @return the persisted entity.
      */
-    public Mono<FavoriteOfferDTO> save(FavoriteOfferDTO favoriteOfferDTO) {
-        LOG.debug("Request to save FavoriteOffer : {}", favoriteOfferDTO);
-        return null;
+    public Mono<FavoriteOffer> save(FavoriteOffer favoriteOffer) {
+        LOG.debug("Request to save FavoriteOffer : {}", favoriteOffer);
+        return favoriteOfferRepository.save(favoriteOffer);
     }
 
     /**
      * Update a favoriteOffer.
      *
-     * @param favoriteOfferDTO the entity to save.
+     * @param favoriteOffer the entity to save.
      * @return the persisted entity.
      */
-    public Mono<FavoriteOfferDTO> update(FavoriteOfferDTO favoriteOfferDTO) {
-        LOG.debug("Request to update FavoriteOffer : {}", favoriteOfferDTO);
-        return null;
+    public Mono<FavoriteOffer> update(FavoriteOffer favoriteOffer) {
+        LOG.debug("Request to update FavoriteOffer : {}", favoriteOffer);
+        return favoriteOfferRepository.save(favoriteOffer);
     }
 
     /**
      * Partially update a favoriteOffer.
      *
-     * @param favoriteOfferDTO the entity to update partially.
+     * @param favoriteOffer the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<FavoriteOfferDTO> partialUpdate(FavoriteOfferDTO favoriteOfferDTO) {
-        LOG.debug("Request to partially update FavoriteOffer : {}", favoriteOfferDTO);
-        return null;
+    public Mono<FavoriteOffer> partialUpdate(FavoriteOffer favoriteOffer) {
+        LOG.debug("Request to partially update FavoriteOffer : {}", favoriteOffer);
+
+        return favoriteOfferRepository
+            .findById(favoriteOffer.getId())
+            .map(existingFavoriteOffer -> {
+                if (favoriteOffer.getCreatedAt() != null) {
+                    existingFavoriteOffer.setCreatedAt(favoriteOffer.getCreatedAt());
+                }
+
+                return existingFavoriteOffer;
+            })
+            .flatMap(favoriteOfferRepository::save);
     }
 
     /**
@@ -66,9 +76,9 @@ public class FavoriteOfferService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<FavoriteOfferDTO> findByCriteria(FavoriteOfferCriteria criteria, Pageable pageable) {
+    public Flux<FavoriteOffer> findByCriteria(FavoriteOfferCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all FavoriteOffers by Criteria");
-        return null;
+        return favoriteOfferRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -97,9 +107,9 @@ public class FavoriteOfferService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<FavoriteOfferDTO> findOne(Long id) {
+    public Mono<FavoriteOffer> findOne(Long id) {
         LOG.debug("Request to get FavoriteOffer : {}", id);
-        return null;
+        return favoriteOfferRepository.findById(id);
     }
 
     /**

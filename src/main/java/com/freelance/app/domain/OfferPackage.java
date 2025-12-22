@@ -2,10 +2,7 @@ package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freelance.app.domain.enumeration.PackageTier;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -20,7 +17,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class OfferPackage extends AbstractAuditingEntity<Long> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -170,26 +166,6 @@ public class OfferPackage extends AbstractAuditingEntity<Long> implements Serial
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public OfferPackage createdDate(Instant createdDate) {
-        this.setCreatedDate(createdDate);
-        return this;
-    }
-
-    public OfferPackage lastModifiedDate(Instant lastModifiedDate) {
-        this.setLastModifiedDate(lastModifiedDate);
-        return this;
-    }
-
-    public OfferPackage createdBy(String createdBy) {
-        this.setCreatedBy(createdBy);
-        return this;
-    }
-
-    public OfferPackage lastModifiedBy(String lastModifiedBy) {
-        this.setLastModifiedBy(lastModifiedBy);
-        return this;
     }
 
     public Offer getOffer() {

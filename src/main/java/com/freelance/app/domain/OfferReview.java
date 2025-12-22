@@ -1,11 +1,7 @@
 package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
@@ -19,7 +15,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class OfferReview extends AbstractAuditingEntity<Long> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -89,26 +84,6 @@ public class OfferReview extends AbstractAuditingEntity<Long> implements Seriali
 
     public void setRating(Double rating) {
         this.rating = rating;
-    }
-
-    public OfferReview createdDate(Instant createdDate) {
-        this.setCreatedDate(createdDate);
-        return this;
-    }
-
-    public OfferReview lastModifiedDate(Instant lastModifiedDate) {
-        this.setLastModifiedDate(lastModifiedDate);
-        return this;
-    }
-
-    public OfferReview createdBy(String createdBy) {
-        this.setCreatedBy(createdBy);
-        return this;
-    }
-
-    public OfferReview lastModifiedBy(String lastModifiedBy) {
-        this.setLastModifiedBy(lastModifiedBy);
-        return this;
     }
 
     public Offer getOffer() {

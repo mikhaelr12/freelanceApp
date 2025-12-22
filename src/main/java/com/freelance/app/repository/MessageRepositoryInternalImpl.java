@@ -6,8 +6,6 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ConversationRowMapper;
 import com.freelance.app.repository.rowmapper.MessageRowMapper;
 import com.freelance.app.repository.rowmapper.UserRowMapper;
-import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
-import com.freelance.app.repository.sqlhelper.MessageSqlHelper;
 import com.freelance.app.repository.sqlhelper.UserSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
@@ -18,8 +16,14 @@ import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.*;
+import org.springframework.data.relational.core.sql.Column;
+import org.springframework.data.relational.core.sql.Comparison;
+import org.springframework.data.relational.core.sql.Condition;
+import org.springframework.data.relational.core.sql.Conditions;
+import org.springframework.data.relational.core.sql.Expression;
+import org.springframework.data.relational.core.sql.Select;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoinCondition;
+import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -79,10 +83,6 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
         List<Expression> columns = MessageSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(ConversationSqlHelper.getColumns(conversationTable, "conversation"));
         columns.addAll(UserSqlHelper.getColumns(senderTable, "sender"));
-        return createQuery(pageable, whereClause, columns).map(this::process);
-    }
-
-    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
@@ -92,8 +92,9 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
             .leftOuterJoin(senderTable)
             .on(Column.create("sender_id", entityTable))
             .equals(Column.create("id", senderTable));
+        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, Message.class, pageable, whereClause);
-        return db.sql(select);
+        return db.sql(select).map(this::process);
     }
 
     @Override
@@ -141,13 +142,9 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
 
     @Override
     public Mono<Long> countByCriteria(MessageCriteria criteria) {
-        return createCountQuery(buildConditions(criteria)).one();
-    }
-
-    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
-        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
-            row.get(0, Long.class)
-        );
+        return findByCriteria(criteria, null)
+            .collectList()
+            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
     }
 
     private Condition buildConditions(MessageCriteria criteria) {

@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.criteria.ConversationCriteria;
 import com.freelance.app.repository.ConversationRepository;
-import com.freelance.app.service.dto.ConversationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,34 +29,44 @@ public class ConversationService {
     /**
      * Save a conversation.
      *
-     * @param conversationDTO the entity to save.
+     * @param conversation the entity to save.
      * @return the persisted entity.
      */
-    public Mono<ConversationDTO> save(ConversationDTO conversationDTO) {
-        LOG.debug("Request to save Conversation : {}", conversationDTO);
-        return null;
+    public Mono<Conversation> save(Conversation conversation) {
+        LOG.debug("Request to save Conversation : {}", conversation);
+        return conversationRepository.save(conversation);
     }
 
     /**
      * Update a conversation.
      *
-     * @param conversationDTO the entity to save.
+     * @param conversation the entity to save.
      * @return the persisted entity.
      */
-    public Mono<ConversationDTO> update(ConversationDTO conversationDTO) {
-        LOG.debug("Request to update Conversation : {}", conversationDTO);
-        return null;
+    public Mono<Conversation> update(Conversation conversation) {
+        LOG.debug("Request to update Conversation : {}", conversation);
+        return conversationRepository.save(conversation);
     }
 
     /**
      * Partially update a conversation.
      *
-     * @param conversationDTO the entity to update partially.
+     * @param conversation the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<ConversationDTO> partialUpdate(ConversationDTO conversationDTO) {
-        LOG.debug("Request to partially update Conversation : {}", conversationDTO);
-        return null;
+    public Mono<Conversation> partialUpdate(Conversation conversation) {
+        LOG.debug("Request to partially update Conversation : {}", conversation);
+
+        return conversationRepository
+            .findById(conversation.getId())
+            .map(existingConversation -> {
+                if (conversation.getCreatedAt() != null) {
+                    existingConversation.setCreatedAt(conversation.getCreatedAt());
+                }
+
+                return existingConversation;
+            })
+            .flatMap(conversationRepository::save);
     }
 
     /**
@@ -66,7 +76,7 @@ public class ConversationService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<ConversationDTO> findByCriteria(ConversationCriteria criteria, Pageable pageable) {
+    public Flux<Conversation> findByCriteria(ConversationCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Conversations by Criteria");
         return conversationRepository.findByCriteria(criteria, pageable);
     }
@@ -97,9 +107,9 @@ public class ConversationService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<ConversationDTO> findOne(Long id) {
+    public Mono<Conversation> findOne(Long id) {
         LOG.debug("Request to get Conversation : {}", id);
-        return conversationRepository.findDTOById(id);
+        return conversationRepository.findById(id);
     }
 
     /**

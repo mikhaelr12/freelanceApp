@@ -2,9 +2,7 @@ package com.freelance.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freelance.app.domain.enumeration.MediaKind;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
@@ -18,7 +16,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class OfferMedia extends AbstractAuditingEntity<Long> implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -42,6 +39,7 @@ public class OfferMedia extends AbstractAuditingEntity<Long> implements Serializ
     private Offer offer;
 
     @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "verificationRequest" }, allowSetters = true)
     private FileObject file;
 
     @Column("offer_id")
@@ -102,26 +100,6 @@ public class OfferMedia extends AbstractAuditingEntity<Long> implements Serializ
 
     public void setCaption(String caption) {
         this.caption = caption;
-    }
-
-    public OfferMedia createdDate(Instant createdDate) {
-        this.setCreatedDate(createdDate);
-        return this;
-    }
-
-    public OfferMedia lastModifiedDate(Instant lastModifiedDate) {
-        this.setLastModifiedDate(lastModifiedDate);
-        return this;
-    }
-
-    public OfferMedia createdBy(String createdBy) {
-        this.setCreatedBy(createdBy);
-        return this;
-    }
-
-    public OfferMedia lastModifiedBy(String lastModifiedBy) {
-        this.setLastModifiedBy(lastModifiedBy);
-        return this;
     }
 
     public Offer getOffer() {
@@ -195,10 +173,6 @@ public class OfferMedia extends AbstractAuditingEntity<Long> implements Serializ
             ", mediaKind='" + getMediaKind() + "'" +
             ", isPrimary='" + getIsPrimary() + "'" +
             ", caption='" + getCaption() + "'" +
-            ", createdDate='" + getCreatedDate() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             "}";
     }
 }

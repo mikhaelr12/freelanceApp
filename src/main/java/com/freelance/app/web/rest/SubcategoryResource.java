@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.Subcategory;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
 import com.freelance.app.repository.SubcategoryRepository;
 import com.freelance.app.service.SubcategoryService;
-import com.freelance.app.service.dto.SubcategoryDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,19 +54,18 @@ public class SubcategoryResource {
     /**
      * {@code POST  /subcategories} : Create a new subcategory.
      *
-     * @param subcategoryDTO the subcategoryDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new subcategoryDTO, or with status {@code 400 (Bad Request)} if the subcategory has already an ID.
+     * @param subcategory the subcategory to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new subcategory, or with status {@code 400 (Bad Request)} if the subcategory has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<SubcategoryDTO>> createSubcategory(@Valid @RequestBody SubcategoryDTO subcategoryDTO)
-        throws URISyntaxException {
-        LOG.debug("REST request to save Subcategory : {}", subcategoryDTO);
-        if (subcategoryDTO.getId() != null) {
+    public Mono<ResponseEntity<Subcategory>> createSubcategory(@Valid @RequestBody Subcategory subcategory) throws URISyntaxException {
+        LOG.debug("REST request to save Subcategory : {}", subcategory);
+        if (subcategory.getId() != null) {
             throw new BadRequestAlertException("A new subcategory cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return subcategoryService
-            .save(subcategoryDTO)
+            .save(subcategory)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/subcategories/" + result.getId()))
@@ -81,23 +80,23 @@ public class SubcategoryResource {
     /**
      * {@code PUT  /subcategories/:id} : Updates an existing subcategory.
      *
-     * @param id the id of the subcategoryDTO to save.
-     * @param subcategoryDTO the subcategoryDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subcategoryDTO,
-     * or with status {@code 400 (Bad Request)} if the subcategoryDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the subcategoryDTO couldn't be updated.
+     * @param id the id of the subcategory to save.
+     * @param subcategory the subcategory to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subcategory,
+     * or with status {@code 400 (Bad Request)} if the subcategory is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the subcategory couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<SubcategoryDTO>> updateSubcategory(
+    public Mono<ResponseEntity<Subcategory>> updateSubcategory(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody SubcategoryDTO subcategoryDTO
+        @Valid @RequestBody Subcategory subcategory
     ) throws URISyntaxException {
-        LOG.debug("REST request to update Subcategory : {}, {}", id, subcategoryDTO);
-        if (subcategoryDTO.getId() == null) {
+        LOG.debug("REST request to update Subcategory : {}, {}", id, subcategory);
+        if (subcategory.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, subcategoryDTO.getId())) {
+        if (!Objects.equals(id, subcategory.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -109,7 +108,7 @@ public class SubcategoryResource {
                 }
 
                 return subcategoryService
-                    .update(subcategoryDTO)
+                    .update(subcategory)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -122,24 +121,24 @@ public class SubcategoryResource {
     /**
      * {@code PATCH  /subcategories/:id} : Partial updates given fields of an existing subcategory, field will ignore if it is null
      *
-     * @param id the id of the subcategoryDTO to save.
-     * @param subcategoryDTO the subcategoryDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subcategoryDTO,
-     * or with status {@code 400 (Bad Request)} if the subcategoryDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the subcategoryDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the subcategoryDTO couldn't be updated.
+     * @param id the id of the subcategory to save.
+     * @param subcategory the subcategory to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subcategory,
+     * or with status {@code 400 (Bad Request)} if the subcategory is not valid,
+     * or with status {@code 404 (Not Found)} if the subcategory is not found,
+     * or with status {@code 500 (Internal Server Error)} if the subcategory couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<SubcategoryDTO>> partialUpdateSubcategory(
+    public Mono<ResponseEntity<Subcategory>> partialUpdateSubcategory(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody SubcategoryDTO subcategoryDTO
+        @NotNull @RequestBody Subcategory subcategory
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Subcategory partially : {}, {}", id, subcategoryDTO);
-        if (subcategoryDTO.getId() == null) {
+        LOG.debug("REST request to partial update Subcategory partially : {}, {}", id, subcategory);
+        if (subcategory.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, subcategoryDTO.getId())) {
+        if (!Objects.equals(id, subcategory.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -150,7 +149,7 @@ public class SubcategoryResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<SubcategoryDTO> result = subcategoryService.partialUpdate(subcategoryDTO);
+                Mono<Subcategory> result = subcategoryService.partialUpdate(subcategory);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -171,7 +170,7 @@ public class SubcategoryResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subcategories in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<SubcategoryDTO>>> getAllSubcategories(
+    public Mono<ResponseEntity<List<Subcategory>>> getAllSubcategories(
         SubcategoryCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -207,20 +206,20 @@ public class SubcategoryResource {
     /**
      * {@code GET  /subcategories/:id} : get the "id" subcategory.
      *
-     * @param id the id of the subcategoryDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subcategoryDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the subcategory to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subcategory, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<SubcategoryDTO>> getSubcategory(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Subcategory>> getSubcategory(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Subcategory : {}", id);
-        Mono<SubcategoryDTO> subcategoryDTO = subcategoryService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(subcategoryDTO);
+        Mono<Subcategory> subcategory = subcategoryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(subcategory);
     }
 
     /**
      * {@code DELETE  /subcategories/:id} : delete the "id" subcategory.
      *
-     * @param id the id of the subcategoryDTO to delete.
+     * @param id the id of the subcategory to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.OfferReview;
 import com.freelance.app.domain.criteria.OfferReviewCriteria;
 import com.freelance.app.repository.OfferReviewRepository;
-import com.freelance.app.service.dto.OfferReviewDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,35 +29,59 @@ public class OfferReviewService {
     /**
      * Save a offerReview.
      *
-     * @param offerReviewDTO the entity to save.
+     * @param offerReview the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferReviewDTO> save(OfferReviewDTO offerReviewDTO) {
-        LOG.debug("Request to save OfferReview : {}", offerReviewDTO);
-        return null;
+    public Mono<OfferReview> save(OfferReview offerReview) {
+        LOG.debug("Request to save OfferReview : {}", offerReview);
+        return offerReviewRepository.save(offerReview);
     }
 
     /**
      * Update a offerReview.
      *
-     * @param offerReviewDTO the entity to save.
+     * @param offerReview the entity to save.
      * @return the persisted entity.
      */
-    public Mono<OfferReviewDTO> update(OfferReviewDTO offerReviewDTO) {
-        LOG.debug("Request to update OfferReview : {}", offerReviewDTO);
-        return null;
+    public Mono<OfferReview> update(OfferReview offerReview) {
+        LOG.debug("Request to update OfferReview : {}", offerReview);
+        return offerReviewRepository.save(offerReview);
     }
 
     /**
      * Partially update a offerReview.
      *
-     * @param offerReviewDTO the entity to update partially.
+     * @param offerReview the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<OfferReviewDTO> partialUpdate(OfferReviewDTO offerReviewDTO) {
-        LOG.debug("Request to partially update OfferReview : {}", offerReviewDTO);
+    public Mono<OfferReview> partialUpdate(OfferReview offerReview) {
+        LOG.debug("Request to partially update OfferReview : {}", offerReview);
 
-        return null;
+        return offerReviewRepository
+            .findById(offerReview.getId())
+            .map(existingOfferReview -> {
+                if (offerReview.getText() != null) {
+                    existingOfferReview.setText(offerReview.getText());
+                }
+                if (offerReview.getRating() != null) {
+                    existingOfferReview.setRating(offerReview.getRating());
+                }
+                if (offerReview.getCreatedDate() != null) {
+                    existingOfferReview.setCreatedDate(offerReview.getCreatedDate());
+                }
+                if (offerReview.getLastModifiedDate() != null) {
+                    existingOfferReview.setLastModifiedDate(offerReview.getLastModifiedDate());
+                }
+                if (offerReview.getCreatedBy() != null) {
+                    existingOfferReview.setCreatedBy(offerReview.getCreatedBy());
+                }
+                if (offerReview.getLastModifiedBy() != null) {
+                    existingOfferReview.setLastModifiedBy(offerReview.getLastModifiedBy());
+                }
+
+                return existingOfferReview;
+            })
+            .flatMap(offerReviewRepository::save);
     }
 
     /**
@@ -67,9 +91,9 @@ public class OfferReviewService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<OfferReviewDTO> findByCriteria(OfferReviewCriteria criteria, Pageable pageable) {
+    public Flux<OfferReview> findByCriteria(OfferReviewCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all OfferReviews by Criteria");
-        return null;
+        return offerReviewRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -87,8 +111,8 @@ public class OfferReviewService {
      *
      * @return the list of entities.
      */
-    public Flux<OfferReviewDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return null;
+    public Flux<OfferReview> findAllWithEagerRelationships(Pageable pageable) {
+        return offerReviewRepository.findAllWithEagerRelationships(pageable);
     }
 
     /**
@@ -107,9 +131,9 @@ public class OfferReviewService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<OfferReviewDTO> findOne(Long id) {
+    public Mono<OfferReview> findOne(Long id) {
         LOG.debug("Request to get OfferReview : {}", id);
-        return null;
+        return offerReviewRepository.findOneWithEagerRelationships(id);
     }
 
     /**

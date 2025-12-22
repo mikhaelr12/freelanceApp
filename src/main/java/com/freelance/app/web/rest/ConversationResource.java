@@ -1,9 +1,9 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.criteria.ConversationCriteria;
 import com.freelance.app.repository.ConversationRepository;
 import com.freelance.app.service.ConversationService;
-import com.freelance.app.service.dto.ConversationDTO;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -54,19 +54,18 @@ public class ConversationResource {
     /**
      * {@code POST  /conversations} : Create a new conversation.
      *
-     * @param conversationDTO the conversationDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new conversationDTO, or with status {@code 400 (Bad Request)} if the conversation has already an ID.
+     * @param conversation the conversation to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new conversation, or with status {@code 400 (Bad Request)} if the conversation has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public Mono<ResponseEntity<ConversationDTO>> createConversation(@Valid @RequestBody ConversationDTO conversationDTO)
-        throws URISyntaxException {
-        LOG.debug("REST request to save Conversation : {}", conversationDTO);
-        if (conversationDTO.getId() != null) {
+    public Mono<ResponseEntity<Conversation>> createConversation(@Valid @RequestBody Conversation conversation) throws URISyntaxException {
+        LOG.debug("REST request to save Conversation : {}", conversation);
+        if (conversation.getId() != null) {
             throw new BadRequestAlertException("A new conversation cannot already have an ID", ENTITY_NAME, "idexists");
         }
         return conversationService
-            .save(conversationDTO)
+            .save(conversation)
             .map(result -> {
                 try {
                     return ResponseEntity.created(new URI("/api/conversations/" + result.getId()))
@@ -81,23 +80,23 @@ public class ConversationResource {
     /**
      * {@code PUT  /conversations/:id} : Updates an existing conversation.
      *
-     * @param id the id of the conversationDTO to save.
-     * @param conversationDTO the conversationDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated conversationDTO,
-     * or with status {@code 400 (Bad Request)} if the conversationDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the conversationDTO couldn't be updated.
+     * @param id the id of the conversation to save.
+     * @param conversation the conversation to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated conversation,
+     * or with status {@code 400 (Bad Request)} if the conversation is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the conversation couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<ConversationDTO>> updateConversation(
+    public Mono<ResponseEntity<Conversation>> updateConversation(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody ConversationDTO conversationDTO
+        @Valid @RequestBody Conversation conversation
     ) throws URISyntaxException {
-        LOG.debug("REST request to update Conversation : {}, {}", id, conversationDTO);
-        if (conversationDTO.getId() == null) {
+        LOG.debug("REST request to update Conversation : {}, {}", id, conversation);
+        if (conversation.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, conversationDTO.getId())) {
+        if (!Objects.equals(id, conversation.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -109,7 +108,7 @@ public class ConversationResource {
                 }
 
                 return conversationService
-                    .update(conversationDTO)
+                    .update(conversation)
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
                     .map(result ->
                         ResponseEntity.ok()
@@ -122,24 +121,24 @@ public class ConversationResource {
     /**
      * {@code PATCH  /conversations/:id} : Partial updates given fields of an existing conversation, field will ignore if it is null
      *
-     * @param id the id of the conversationDTO to save.
-     * @param conversationDTO the conversationDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated conversationDTO,
-     * or with status {@code 400 (Bad Request)} if the conversationDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the conversationDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the conversationDTO couldn't be updated.
+     * @param id the id of the conversation to save.
+     * @param conversation the conversation to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated conversation,
+     * or with status {@code 400 (Bad Request)} if the conversation is not valid,
+     * or with status {@code 404 (Not Found)} if the conversation is not found,
+     * or with status {@code 500 (Internal Server Error)} if the conversation couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public Mono<ResponseEntity<ConversationDTO>> partialUpdateConversation(
+    public Mono<ResponseEntity<Conversation>> partialUpdateConversation(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody ConversationDTO conversationDTO
+        @NotNull @RequestBody Conversation conversation
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Conversation partially : {}, {}", id, conversationDTO);
-        if (conversationDTO.getId() == null) {
+        LOG.debug("REST request to partial update Conversation partially : {}, {}", id, conversation);
+        if (conversation.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, conversationDTO.getId())) {
+        if (!Objects.equals(id, conversation.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -150,7 +149,7 @@ public class ConversationResource {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
-                Mono<ConversationDTO> result = conversationService.partialUpdate(conversationDTO);
+                Mono<Conversation> result = conversationService.partialUpdate(conversation);
 
                 return result
                     .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
@@ -171,7 +170,7 @@ public class ConversationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of conversations in body.
      */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<ConversationDTO>>> getAllConversations(
+    public Mono<ResponseEntity<List<Conversation>>> getAllConversations(
         ConversationCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
         ServerHttpRequest request
@@ -207,20 +206,20 @@ public class ConversationResource {
     /**
      * {@code GET  /conversations/:id} : get the "id" conversation.
      *
-     * @param id the id of the conversationDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the conversationDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the conversation to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the conversation, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<ConversationDTO>> getConversation(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Conversation>> getConversation(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Conversation : {}", id);
-        Mono<ConversationDTO> conversationDTO = conversationService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(conversationDTO);
+        Mono<Conversation> conversation = conversationService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(conversation);
     }
 
     /**
      * {@code DELETE  /conversations/:id} : delete the "id" conversation.
      *
-     * @param id the id of the conversationDTO to delete.
+     * @param id the id of the conversation to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

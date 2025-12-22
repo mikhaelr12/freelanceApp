@@ -238,6 +238,5 @@ relationship OneToOne{
 }
 
 paginate * with pagination
-dto * with mapstruct
 service * with serviceClass
 filter *

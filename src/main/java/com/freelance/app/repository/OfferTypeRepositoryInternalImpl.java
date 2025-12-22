@@ -5,8 +5,6 @@ import com.freelance.app.domain.criteria.OfferTypeCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.OfferTypeRowMapper;
 import com.freelance.app.repository.rowmapper.SubcategoryRowMapper;
-import com.freelance.app.repository.sqlhelper.OfferTypeSqlHelper;
-import com.freelance.app.repository.sqlhelper.SubcategorySqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -16,8 +14,14 @@ import org.springframework.data.r2dbc.convert.R2dbcConverter;
 import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.r2dbc.repository.support.SimpleR2dbcRepository;
-import org.springframework.data.relational.core.sql.*;
+import org.springframework.data.relational.core.sql.Column;
+import org.springframework.data.relational.core.sql.Comparison;
+import org.springframework.data.relational.core.sql.Condition;
+import org.springframework.data.relational.core.sql.Conditions;
+import org.springframework.data.relational.core.sql.Expression;
+import org.springframework.data.relational.core.sql.Select;
 import org.springframework.data.relational.core.sql.SelectBuilder.SelectFromAndJoinCondition;
+import org.springframework.data.relational.core.sql.Table;
 import org.springframework.data.relational.repository.support.MappingRelationalEntityInformation;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.RowsFetchSpec;
@@ -72,18 +76,15 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
     RowsFetchSpec<OfferType> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = OfferTypeSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(SubcategorySqlHelper.getColumns(subcategoryTable, "subcategory"));
-        return createQuery(pageable, whereClause, columns).map(this::process);
-    }
-
-    DatabaseClient.GenericExecuteSpec createQuery(Pageable pageable, Condition whereClause, List<Expression> columns) {
         SelectFromAndJoinCondition selectFrom = Select.builder()
             .select(columns)
             .from(entityTable)
             .leftOuterJoin(subcategoryTable)
             .on(Column.create("subcategory_id", entityTable))
             .equals(Column.create("id", subcategoryTable));
+        // we do not support Criteria here for now as of https://github.com/jhipster/generator-jhipster/issues/18269
         String select = entityManager.createSelect(selectFrom, OfferType.class, pageable, whereClause);
-        return db.sql(select);
+        return db.sql(select).map(this::process);
     }
 
     @Override
@@ -130,13 +131,9 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
 
     @Override
     public Mono<Long> countByCriteria(OfferTypeCriteria criteria) {
-        return createCountQuery(buildConditions(criteria)).one();
-    }
-
-    private RowsFetchSpec<Long> createCountQuery(Condition whereClause) {
-        return createQuery(null, whereClause, List.of(Functions.count(Expressions.asterisk()))).map((row, metadata) ->
-            row.get(0, Long.class)
-        );
+        return findByCriteria(criteria, null)
+            .collectList()
+            .map(collectedList -> collectedList != null ? (long) collectedList.size() : (long) 0);
     }
 
     private Condition buildConditions(OfferTypeCriteria criteria) {

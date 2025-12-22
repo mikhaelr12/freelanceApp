@@ -1,9 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.FileObject;
 import com.freelance.app.domain.criteria.FileObjectCriteria;
 import com.freelance.app.repository.FileObjectRepository;
-import com.freelance.app.service.dto.FileObjectDTO;
-import com.freelance.app.util.MinioUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -23,45 +22,78 @@ public class FileObjectService {
 
     private final FileObjectRepository fileObjectRepository;
 
-    private final MinioUtil minioUtil;
-
-    public FileObjectService(FileObjectRepository fileObjectRepository, MinioUtil minioUtil) {
+    public FileObjectService(FileObjectRepository fileObjectRepository) {
         this.fileObjectRepository = fileObjectRepository;
-        this.minioUtil = minioUtil;
     }
 
     /**
      * Save a fileObject.
      *
-     * @param fileObjectDTO the entity to save.
+     * @param fileObject the entity to save.
      * @return the persisted entity.
      */
-    public Mono<FileObjectDTO> save(FileObjectDTO fileObjectDTO) {
-        LOG.debug("Request to save FileObject : {}", fileObjectDTO);
-        return null;
+    public Mono<FileObject> save(FileObject fileObject) {
+        LOG.debug("Request to save FileObject : {}", fileObject);
+        return fileObjectRepository.save(fileObject);
     }
 
     /**
      * Update a fileObject.
      *
-     * @param fileObjectDTO the entity to save.
+     * @param fileObject the entity to save.
      * @return the persisted entity.
      */
-    public Mono<FileObjectDTO> update(FileObjectDTO fileObjectDTO) {
-        LOG.debug("Request to update FileObject : {}", fileObjectDTO);
-        return null;
+    public Mono<FileObject> update(FileObject fileObject) {
+        LOG.debug("Request to update FileObject : {}", fileObject);
+        return fileObjectRepository.save(fileObject);
     }
 
     /**
      * Partially update a fileObject.
      *
-     * @param fileObjectDTO the entity to update partially.
+     * @param fileObject the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<FileObjectDTO> partialUpdate(FileObjectDTO fileObjectDTO) {
-        LOG.debug("Request to partially update FileObject : {}", fileObjectDTO);
+    public Mono<FileObject> partialUpdate(FileObject fileObject) {
+        LOG.debug("Request to partially update FileObject : {}", fileObject);
 
-        return null;
+        return fileObjectRepository
+            .findById(fileObject.getId())
+            .map(existingFileObject -> {
+                if (fileObject.getBucket() != null) {
+                    existingFileObject.setBucket(fileObject.getBucket());
+                }
+                if (fileObject.getObjectKey() != null) {
+                    existingFileObject.setObjectKey(fileObject.getObjectKey());
+                }
+                if (fileObject.getContentType() != null) {
+                    existingFileObject.setContentType(fileObject.getContentType());
+                }
+                if (fileObject.getFileSize() != null) {
+                    existingFileObject.setFileSize(fileObject.getFileSize());
+                }
+                if (fileObject.getChecksum() != null) {
+                    existingFileObject.setChecksum(fileObject.getChecksum());
+                }
+                if (fileObject.getDurationSeconds() != null) {
+                    existingFileObject.setDurationSeconds(fileObject.getDurationSeconds());
+                }
+                if (fileObject.getCreatedDate() != null) {
+                    existingFileObject.setCreatedDate(fileObject.getCreatedDate());
+                }
+                if (fileObject.getLastModifiedDate() != null) {
+                    existingFileObject.setLastModifiedDate(fileObject.getLastModifiedDate());
+                }
+                if (fileObject.getCreatedBy() != null) {
+                    existingFileObject.setCreatedBy(fileObject.getCreatedBy());
+                }
+                if (fileObject.getLastModifiedBy() != null) {
+                    existingFileObject.setLastModifiedBy(fileObject.getLastModifiedBy());
+                }
+
+                return existingFileObject;
+            })
+            .flatMap(fileObjectRepository::save);
     }
 
     /**
@@ -71,9 +103,9 @@ public class FileObjectService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<FileObjectDTO> findByCriteria(FileObjectCriteria criteria, Pageable pageable) {
+    public Flux<FileObject> findByCriteria(FileObjectCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all FileObjects by Criteria");
-        return null;
+        return fileObjectRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -84,6 +116,16 @@ public class FileObjectService {
     public Mono<Long> countByCriteria(FileObjectCriteria criteria) {
         LOG.debug("Request to get the count of all FileObjects by Criteria");
         return fileObjectRepository.countByCriteria(criteria);
+    }
+
+    /**
+     *  Get all the fileObjects where VerificationRequest is {@code null}.
+     *  @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Flux<FileObject> findAllWhereVerificationRequestIsNull() {
+        LOG.debug("Request to get all fileObjects where VerificationRequest is null");
+        return fileObjectRepository.findAllWhereVerificationRequestIsNull();
     }
 
     /**
@@ -102,9 +144,9 @@ public class FileObjectService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<FileObjectDTO> findOne(Long id) {
+    public Mono<FileObject> findOne(Long id) {
         LOG.debug("Request to get FileObject : {}", id);
-        return null;
+        return fileObjectRepository.findById(id);
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.Country;
 import com.freelance.app.domain.criteria.CountryCriteria;
 import com.freelance.app.repository.CountryRepository;
-import com.freelance.app.service.dto.CountryDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -29,34 +29,68 @@ public class CountryService {
     /**
      * Save a country.
      *
-     * @param countryDTO the entity to save.
+     * @param country the entity to save.
      * @return the persisted entity.
      */
-    public Mono<CountryDTO> save(CountryDTO countryDTO) {
-        LOG.debug("Request to save Country : {}", countryDTO);
-        return null;
+    public Mono<Country> save(Country country) {
+        LOG.debug("Request to save Country : {}", country);
+        return countryRepository.save(country);
     }
 
     /**
      * Update a country.
      *
-     * @param countryDTO the entity to save.
+     * @param country the entity to save.
      * @return the persisted entity.
      */
-    public Mono<CountryDTO> update(CountryDTO countryDTO) {
-        LOG.debug("Request to update Country : {}", countryDTO);
-        return null;
+    public Mono<Country> update(Country country) {
+        LOG.debug("Request to update Country : {}", country);
+        return countryRepository.save(country);
     }
 
     /**
      * Partially update a country.
      *
-     * @param countryDTO the entity to update partially.
+     * @param country the entity to update partially.
      * @return the persisted entity.
      */
-    public Mono<CountryDTO> partialUpdate(CountryDTO countryDTO) {
-        LOG.debug("Request to partially update Country : {}", countryDTO);
-        return null;
+    public Mono<Country> partialUpdate(Country country) {
+        LOG.debug("Request to partially update Country : {}", country);
+
+        return countryRepository
+            .findById(country.getId())
+            .map(existingCountry -> {
+                if (country.getName() != null) {
+                    existingCountry.setName(country.getName());
+                }
+                if (country.getIso2() != null) {
+                    existingCountry.setIso2(country.getIso2());
+                }
+                if (country.getIso3() != null) {
+                    existingCountry.setIso3(country.getIso3());
+                }
+                if (country.getRegion() != null) {
+                    existingCountry.setRegion(country.getRegion());
+                }
+                if (country.getCreatedDate() != null) {
+                    existingCountry.setCreatedDate(country.getCreatedDate());
+                }
+                if (country.getLastModifiedDate() != null) {
+                    existingCountry.setLastModifiedDate(country.getLastModifiedDate());
+                }
+                if (country.getCreatedBy() != null) {
+                    existingCountry.setCreatedBy(country.getCreatedBy());
+                }
+                if (country.getLastModifiedBy() != null) {
+                    existingCountry.setLastModifiedBy(country.getLastModifiedBy());
+                }
+                if (country.getActive() != null) {
+                    existingCountry.setActive(country.getActive());
+                }
+
+                return existingCountry;
+            })
+            .flatMap(countryRepository::save);
     }
 
     /**
@@ -66,9 +100,9 @@ public class CountryService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Flux<CountryDTO> findByCriteria(CountryCriteria criteria, Pageable pageable) {
+    public Flux<Country> findByCriteria(CountryCriteria criteria, Pageable pageable) {
         LOG.debug("Request to get all Countries by Criteria");
-        return null;
+        return countryRepository.findByCriteria(criteria, pageable);
     }
 
     /**
@@ -97,9 +131,9 @@ public class CountryService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Mono<CountryDTO> findOne(Long id) {
+    public Mono<Country> findOne(Long id) {
         LOG.debug("Request to get Country : {}", id);
-        return null;
+        return countryRepository.findById(id);
     }
 
     /**
