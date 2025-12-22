@@ -89,7 +89,7 @@ public class VerificationRequestResource {
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/update-status/{id}/{status}")
     public Mono<ResponseEntity<Void>> updateStatus(
-        @PathVariable("id") final Long id,
+        @PathVariable final Long id,
         @PathVariable VerificationRequestStatus status,
         @RequestBody(required = false) String message
     ) {
@@ -102,7 +102,7 @@ public class VerificationRequestResource {
      * @param id the id of the request to be canceled.
      * */
     @PatchMapping("/cancel-request/{id}")
-    public Mono<ResponseEntity<Void>> cancelRequest(@PathVariable("id") final Long id) {
+    public Mono<ResponseEntity<Void>> cancelRequest(@PathVariable final Long id) {
         return verificationRequestService.cancelRequest(id).then(Mono.just(ResponseEntity.ok().build()));
     }
 }
