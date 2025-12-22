@@ -72,7 +72,7 @@ public class ProfileResource {
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<Void>> updateProfile(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(required = false) final Long id,
         @Valid @RequestBody ProfileEditDTO profileDTO
     ) {
         LOG.debug("REST request to update Profile : {}, {}", id, profileDTO);
@@ -128,7 +128,7 @@ public class ProfileResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the profileDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<ProfileDTO>> getProfile(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<ProfileDTO>> getProfile(@PathVariable Long id) {
         LOG.debug("REST request to get Profile : {}", id);
         Mono<ProfileDTO> profileDTO = profileService.findOne(id);
         return ResponseUtil.wrapOrNotFound(profileDTO);
@@ -141,7 +141,7 @@ public class ProfileResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteProfile(@PathVariable("id") Long id) {
+    public Mono<ResponseEntity<Void>> deleteProfile(@PathVariable Long id) {
         LOG.debug("REST request to delete Profile : {}", id);
         return profileService
             .delete(id)
