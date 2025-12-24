@@ -5,6 +5,7 @@ import com.freelance.app.domain.criteria.OfferMediaCriteria;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -53,6 +54,9 @@ public interface OfferMediaRepository extends ReactiveCrudRepository<OfferMedia,
     @Override
     @NotNull
     Mono<Void> deleteById(@NotNull Long id);
+
+    @Query("DELETE FROM offer_media entity WHERE entity.offer_id = :offerId")
+    Mono<Void> deleteAllByOffer(@Param("offerId") Long offerId);
 }
 
 interface OfferMediaRepositoryInternal {

@@ -49,6 +49,9 @@ public class OfferReview extends AbstractAuditingEntity<Long> implements Seriali
     @Column("reviewer_id")
     private Long reviewerId;
 
+    @Column("checked")
+    private Boolean checked;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -132,6 +135,19 @@ public class OfferReview extends AbstractAuditingEntity<Long> implements Seriali
 
     public void setReviewerId(Long profile) {
         this.reviewerId = profile;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
+
+    public OfferReview createdBy(String login) {
+        this.setCreatedBy(login);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -2,8 +2,8 @@ logging:
   level:
     ROOT: INFO
     tech.jhipster: INFO
-    org.hibernate.SQL: DEBUG
-    com.freelance.app: DEBUG
+    org.hibernate.SQL: INFO
+    com.freelance.app: INFO
 
 spring:
   devtools:

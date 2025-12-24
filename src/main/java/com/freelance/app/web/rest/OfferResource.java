@@ -7,11 +7,8 @@ import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferShortDTO;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -53,8 +50,8 @@ public class OfferResource {
         return offerService.updateOffer(dto, offerId).map(ResponseEntity::ok);
     }
 
-    @PostMapping(value = "/upload-images/{offerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Mono<ResponseEntity<Void>> uploadOfferImages(@RequestPart Flux<FilePart> images, @PathVariable Long offerId) {
-        return offerService.uploadOfferImages(images, offerId).map(ResponseEntity::ok);
+    @DeleteMapping("/{offerId}")
+    public Mono<ResponseEntity<Void>> deleteOffer(@PathVariable Long offerId) {
+        return offerService.deleteOffer(offerId).map(ResponseEntity::ok);
     }
 }

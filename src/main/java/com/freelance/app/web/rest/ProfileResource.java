@@ -1,29 +1,22 @@
 package com.freelance.app.web.rest;
 
 import com.freelance.app.domain.Profile;
-import com.freelance.app.domain.criteria.ProfileCriteria;
 import com.freelance.app.service.ProfileService;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.ForwardedHeaderUtils;
 import reactor.core.publisher.Mono;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.reactive.ResponseUtil;
 
 /**
@@ -77,48 +70,6 @@ public class ProfileResource {
     ) {
         LOG.debug("REST request to update Profile : {}, {}", id, profileDTO);
         return profileService.update(profileDTO, id).then(Mono.just(ResponseEntity.ok().build()));
-    }
-
-    /**
-     * {@code GET  /profiles} : get all the profiles.
-     *
-     * @param pageable the pagination information.
-     * @param request  a {@link ServerHttpRequest} request.
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of profiles in body.
-     */
-    //    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<ProfileDTO>>> getAllProfiles(
-        ProfileCriteria criteria,
-        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
-        ServerHttpRequest request
-    ) {
-        LOG.debug("REST request to get Profiles by criteria: {}", criteria);
-        return profileService
-            .countByCriteria(criteria)
-            .zipWith(profileService.findByCriteria(criteria, pageable).collectList())
-            .map(countWithEntities ->
-                ResponseEntity.ok()
-                    .headers(
-                        PaginationUtil.generatePaginationHttpHeaders(
-                            ForwardedHeaderUtils.adaptFromForwardedHeaders(request.getURI(), request.getHeaders()),
-                            new PageImpl<>(countWithEntities.getT2(), pageable, countWithEntities.getT1())
-                        )
-                    )
-                    .body(countWithEntities.getT2())
-            );
-    }
-
-    /**
-     * {@code GET  /profiles/count} : count all the profiles.
-     *
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-     */
-    //    @GetMapping("/count")
-    public Mono<ResponseEntity<Long>> countProfiles(ProfileCriteria criteria) {
-        LOG.debug("REST request to count Profiles by criteria: {}", criteria);
-        return profileService.countByCriteria(criteria).map(count -> ResponseEntity.status(HttpStatus.OK).body(count));
     }
 
     /**
