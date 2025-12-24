@@ -4,7 +4,7 @@ import com.freelance.app.domain.OfferReview;
 import com.freelance.app.repository.OfferRepository;
 import com.freelance.app.repository.OfferReviewRepository;
 import com.freelance.app.service.dto.OfferReviewCreateDTO;
-import com.freelance.app.service.dto.OfferReviewShortDTO;
+import com.freelance.app.service.dto.ReviewShortDTO;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
@@ -93,7 +93,7 @@ public class OfferReviewService {
      * @param pageable the pagination information.
      * @return tje list of reviews.
      * */
-    public Mono<List<OfferReviewShortDTO>> getAllOfferReviews(Long offerId, Pageable pageable) {
+    public Mono<List<ReviewShortDTO>> getAllOfferReviews(Long offerId, Pageable pageable) {
         return offerReviewRepository
             .findByOfferPaged(offerId, pageable.getPageSize(), ((long) pageable.getPageNumber() * pageable.getPageSize()))
             .collectList();
@@ -105,7 +105,7 @@ public class OfferReviewService {
      * @param offerId the id of the offer.
      * @return the review created by the current user for the given offer.
      */
-    public Mono<OfferReviewShortDTO> getMyOfferReview(Long offerId) {
+    public Mono<ReviewShortDTO> getMyOfferReview(Long offerId) {
         return profileHelper.getCurrentProfile().flatMap(profile -> offerReviewRepository.findMyOfferReview(offerId, profile.getId()));
     }
 

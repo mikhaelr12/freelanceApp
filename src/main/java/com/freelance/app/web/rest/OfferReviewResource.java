@@ -4,7 +4,7 @@ import com.freelance.app.domain.OfferReview;
 import com.freelance.app.security.AuthoritiesConstants;
 import com.freelance.app.service.OfferReviewService;
 import com.freelance.app.service.dto.OfferReviewCreateDTO;
-import com.freelance.app.service.dto.OfferReviewShortDTO;
+import com.freelance.app.service.dto.ReviewShortDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -57,7 +57,7 @@ public class OfferReviewResource {
      * */
     @GetMapping("/{offerId}")
     @Operation(summary = "Get all reviews of an offer")
-    public Mono<ResponseEntity<List<OfferReviewShortDTO>>> getAllOfferReviews(
+    public Mono<ResponseEntity<List<ReviewShortDTO>>> getAllOfferReviews(
         @PathVariable Long offerId,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
@@ -73,7 +73,7 @@ public class OfferReviewResource {
      * */
     @GetMapping("/my/{offerId}")
     @Operation(summary = "Get the user's review of an offer")
-    public Mono<ResponseEntity<OfferReviewShortDTO>> getMyOfferReview(@PathVariable Long offerId) {
+    public Mono<ResponseEntity<ReviewShortDTO>> getMyOfferReview(@PathVariable Long offerId) {
         LOG.debug("REST request to get offer review : {}", offerId);
         return offerReviewService.getMyOfferReview(offerId).map(ResponseEntity::ok);
     }

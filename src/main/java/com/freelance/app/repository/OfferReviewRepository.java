@@ -2,7 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.OfferReview;
 import com.freelance.app.domain.criteria.OfferReviewCriteria;
-import com.freelance.app.service.dto.OfferReviewShortDTO;
+import com.freelance.app.service.dto.ReviewShortDTO;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
@@ -72,6 +72,7 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
                 r.id AS id,
                 r.text AS text,
                 r.rating AS rating,
+                r.created_date,
                 p.id AS "profile_id",
                 concat(p.first_name, ' ', p.last_name) AS "profile_full_name"
             FROM offer_review r
@@ -81,7 +82,7 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
             LIMIT :limit OFFSET :offset
         """
     )
-    Flux<OfferReviewShortDTO> findByOfferPaged(@Param("offerId") Long offerId, @Param("limit") long limit, @Param("offset") long offset);
+    Flux<ReviewShortDTO> findByOfferPaged(@Param("offerId") Long offerId, @Param("limit") long limit, @Param("offset") long offset);
 
     @Query(
         """
@@ -96,7 +97,7 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
             WHERE r.offer_id = :offerId
         """
     )
-    Mono<OfferReviewShortDTO> findMyOfferReview(@Param("offerId") Long offerId, @Param("reviewerId") Long reviewerId);
+    Mono<ReviewShortDTO> findMyOfferReview(@Param("offerId") Long offerId, @Param("reviewerId") Long reviewerId);
 
     @Query(
         """
