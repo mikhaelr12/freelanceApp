@@ -1,14 +1,20 @@
 package com.freelance.app.service;
 
 import com.freelance.app.domain.OfferReview;
-import com.freelance.app.domain.criteria.OfferReviewCriteria;
+import com.freelance.app.repository.OfferRepository;
 import com.freelance.app.repository.OfferReviewRepository;
+import com.freelance.app.service.dto.OfferReviewCreateDTO;
+import com.freelance.app.service.dto.OfferReviewShortDTO;
+import com.freelance.app.util.ProfileHelper;
+import com.freelance.app.web.rest.errors.BadRequestAlertException;
+import com.freelance.app.web.rest.errors.NotFoundAlertException;
+import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -19,131 +25,123 @@ import reactor.core.publisher.Mono;
 public class OfferReviewService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OfferReviewService.class);
+    private static final String ENTITY_NAME = "offerReview";
 
     private final OfferReviewRepository offerReviewRepository;
+    private final ProfileHelper profileHelper;
+    private final OfferRepository offerRepository;
 
-    public OfferReviewService(OfferReviewRepository offerReviewRepository) {
+    public OfferReviewService(OfferReviewRepository offerReviewRepository, ProfileHelper profileHelper, OfferRepository offerRepository) {
         this.offerReviewRepository = offerReviewRepository;
+        this.profileHelper = profileHelper;
+        this.offerRepository = offerRepository;
     }
 
     /**
-     * Save a offerReview.
+     * Create new offer review.
      *
-     * @param offerReview the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<OfferReview> save(OfferReview offerReview) {
-        LOG.debug("Request to save OfferReview : {}", offerReview);
-        return offerReviewRepository.save(offerReview);
+     * @param offerId id of the offer.
+     * @param dto the dto of the new review.
+     * @return the persistent entity.
+     * */
+    public Mono<OfferReview> createOfferReview(Long offerId, OfferReviewCreateDTO dto) {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile ->
+                offerRepository
+                    .findById(offerId)
+                    .switchIfEmpty(
+                        Mono.error(new NotFoundAlertException("Offer not found with id: " + offerId, ENTITY_NAME, "offerNotFound"))
+                    )
+                    .flatMap(offer ->
+                        offerReviewRepository
+                            .existsByReviewerId(profile.getId())
+                            .flatMap(exists -> {
+                                if (exists) {
+                                    return Mono.error(
+                                        new BadRequestAlertException("User already has a review", ENTITY_NAME, "userAlreadyHasReview")
+                                    );
+                                }
+
+                                OfferReview review = new OfferReview()
+                                    .reviewer(profile)
+                                    .text(dto.getText() != null ? dto.getText() : null)
+                                    .rating(dto.getRating())
+                                    .offer(offer)
+                                    .createdBy(profile.getUser().getLogin());
+
+                                return offerReviewRepository
+                                    .save(review)
+                                    .flatMap(saved ->
+                                        offerReviewRepository
+                                            .getAverageRatingOffer(offerId)
+                                            .defaultIfEmpty(0.0)
+                                            .flatMap(avg -> {
+                                                offer.setRating(avg);
+                                                return offerRepository.save(offer).thenReturn(saved);
+                                            })
+                                    );
+                            })
+                    )
+            );
     }
 
     /**
-     * Update a offerReview.
+     * Get all offer reviews.
      *
-     * @param offerReview the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<OfferReview> update(OfferReview offerReview) {
-        LOG.debug("Request to update OfferReview : {}", offerReview);
-        return offerReviewRepository.save(offerReview);
-    }
-
-    /**
-     * Partially update a offerReview.
-     *
-     * @param offerReview the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Mono<OfferReview> partialUpdate(OfferReview offerReview) {
-        LOG.debug("Request to partially update OfferReview : {}", offerReview);
-
-        return offerReviewRepository
-            .findById(offerReview.getId())
-            .map(existingOfferReview -> {
-                if (offerReview.getText() != null) {
-                    existingOfferReview.setText(offerReview.getText());
-                }
-                if (offerReview.getRating() != null) {
-                    existingOfferReview.setRating(offerReview.getRating());
-                }
-                if (offerReview.getCreatedDate() != null) {
-                    existingOfferReview.setCreatedDate(offerReview.getCreatedDate());
-                }
-                if (offerReview.getLastModifiedDate() != null) {
-                    existingOfferReview.setLastModifiedDate(offerReview.getLastModifiedDate());
-                }
-                if (offerReview.getCreatedBy() != null) {
-                    existingOfferReview.setCreatedBy(offerReview.getCreatedBy());
-                }
-                if (offerReview.getLastModifiedBy() != null) {
-                    existingOfferReview.setLastModifiedBy(offerReview.getLastModifiedBy());
-                }
-
-                return existingOfferReview;
-            })
-            .flatMap(offerReviewRepository::save);
-    }
-
-    /**
-     * Find offerReviews by Criteria.
-     *
+     * @param offerId id of the offer.
      * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Flux<OfferReview> findByCriteria(OfferReviewCriteria criteria, Pageable pageable) {
-        LOG.debug("Request to get all OfferReviews by Criteria");
-        return offerReviewRepository.findByCriteria(criteria, pageable);
+     * @return tje list of reviews.
+     * */
+    public Mono<List<OfferReviewShortDTO>> getAllOfferReviews(Long offerId, Pageable pageable) {
+        return offerReviewRepository
+            .findByOfferPaged(offerId, pageable.getPageSize(), ((long) pageable.getPageNumber() * pageable.getPageSize()))
+            .collectList();
     }
 
     /**
-     * Find the count of offerReviews by criteria.
-     * @param criteria filtering criteria
-     * @return the count of offerReviews
-     */
-    public Mono<Long> countByCriteria(OfferReviewCriteria criteria) {
-        LOG.debug("Request to get the count of all OfferReviews by Criteria");
-        return offerReviewRepository.countByCriteria(criteria);
-    }
-
-    /**
-     * Get all the offerReviews with eager load of many-to-many relationships.
+     * Get the current user's review for a specific offer.
      *
-     * @return the list of entities.
+     * @param offerId the id of the offer.
+     * @return the review created by the current user for the given offer.
      */
-    public Flux<OfferReview> findAllWithEagerRelationships(Pageable pageable) {
-        return offerReviewRepository.findAllWithEagerRelationships(pageable);
+    public Mono<OfferReviewShortDTO> getMyOfferReview(Long offerId) {
+        return profileHelper.getCurrentProfile().flatMap(profile -> offerReviewRepository.findMyOfferReview(offerId, profile.getId()));
     }
 
     /**
-     * Returns the number of offerReviews available.
-     * @return the number of entities in the database.
+     * Delete an offer review by its id.
      *
+     * @param reviewId the id of the review to delete.
+     * @return an empty Mono indicating completion.
      */
-    public Mono<Long> countAll() {
-        return offerReviewRepository.count();
+    public Mono<Void> deleteOfferReview(Long reviewId) {
+        return offerReviewRepository.deleteById(reviewId).then();
     }
 
     /**
-     * Get one offerReview by id.
+     * Delete the current user's review.
      *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Mono<OfferReview> findOne(Long id) {
-        LOG.debug("Request to get OfferReview : {}", id);
-        return offerReviewRepository.findOneWithEagerRelationships(id);
-    }
-
-    /**
-     * Delete the offerReview by id.
+     * <p>
+     * This method verifies that the review belongs to the currently authenticated user
+     * before performing the deletion.
+     * </p>
      *
-     * @param id the id of the entity.
-     * @return a Mono to signal the deletion
+     * @param reviewId the id of the review to delete.
+     * @return an empty Mono indicating completion.
+     * @throws NotFoundAlertException if the review does not belong to the current user.
      */
-    public Mono<Void> delete(Long id) {
-        LOG.debug("Request to delete OfferReview : {}", id);
-        return offerReviewRepository.deleteById(id);
+    public Mono<Void> deleteMyReview(Long reviewId) {
+        return profileHelper
+            .getCurrentProfile()
+            .zipWith(offerReviewRepository.findById(reviewId))
+            .flatMap(tuple -> {
+                if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getReviewerId())) {
+                    return Mono.error(
+                        new NotFoundAlertException("Review does not belong to current user", ENTITY_NAME, "reviewDoesNotBelongToThisUser")
+                    );
+                }
+                return offerReviewRepository.deleteById(reviewId).then();
+            });
     }
 }

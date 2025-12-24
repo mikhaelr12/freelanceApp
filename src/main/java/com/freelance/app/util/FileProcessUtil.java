@@ -8,12 +8,14 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -77,5 +79,46 @@ public class FileProcessUtil {
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public Mono<Void> deleteFiles(List<Long> fileIds) {
+        if (fileIds == null || fileIds.isEmpty()) {
+            return Mono.empty();
+        }
+
+        return fileObjectRepository
+            .findAllById(fileIds)
+            .collectList()
+            .flatMap(files -> {
+                if (files.isEmpty()) {
+                    return Mono.empty();
+                }
+
+                Mono<Void> deleteFromMinio = Flux.fromIterable(files)
+                    .flatMap(
+                        file ->
+                            Mono.fromRunnable(() -> {
+                                try {
+                                    minioUtil.delete(file.getBucket(), file.getObjectKey());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(
+                                        "MinIO delete failed for id=" +
+                                        file.getId() +
+                                        " bucket=" +
+                                        file.getBucket() +
+                                        " key=" +
+                                        file.getObjectKey(),
+                                        e
+                                    );
+                                }
+                            }).subscribeOn(Schedulers.boundedElastic()),
+                        8
+                    )
+                    .then();
+
+                Mono<Void> deleteFromDb = fileObjectRepository.deleteAll(files);
+
+                return deleteFromMinio.then(deleteFromDb);
+            });
     }
 }

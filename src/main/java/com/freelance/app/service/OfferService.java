@@ -6,17 +6,16 @@ import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.Tag;
 import com.freelance.app.domain.criteria.OfferCriteria;
-import com.freelance.app.domain.enumeration.MediaKind;
 import com.freelance.app.domain.enumeration.OfferStatus;
 import com.freelance.app.repository.*;
-import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferShortDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.util.FileProcessUtil;
-import com.freelance.app.util.MinioUtil;
+import com.freelance.app.util.ImageHelper;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
+import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,10 +23,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -41,34 +38,34 @@ public class OfferService {
 
     private final OfferRepository offerRepository;
     private final OfferTypeRepository offerTypeRepository;
-    private final MinioUtil minioUtil;
-    private final FileObjectRepository fileObjectRepository;
     private final OfferMediaRepository offerMediaRepository;
     private final ProfileService profileService;
     private final ProfileHelper profileHelper;
     private final TagRepository tagRepository;
     private final FileProcessUtil fileProcessUtil;
+    private final ImageHelper imageHelper;
+    private final FileObjectRepository fileObjectRepository;
 
     public OfferService(
         OfferRepository offerRepository,
         OfferTypeRepository offerTypeRepository,
-        MinioUtil minioUtil,
-        FileObjectRepository fileObjectRepository,
         OfferMediaRepository offerMediaRepository,
         ProfileService profileService,
         ProfileHelper profileHelper,
         TagRepository tagRepository,
-        FileProcessUtil fileProcessUtil
+        FileProcessUtil fileProcessUtil,
+        ImageHelper imageHelper,
+        FileObjectRepository fileObjectRepository
     ) {
         this.offerRepository = offerRepository;
         this.offerTypeRepository = offerTypeRepository;
-        this.minioUtil = minioUtil;
-        this.fileObjectRepository = fileObjectRepository;
         this.offerMediaRepository = offerMediaRepository;
         this.profileService = profileService;
         this.profileHelper = profileHelper;
         this.tagRepository = tagRepository;
         this.fileProcessUtil = fileProcessUtil;
+        this.imageHelper = imageHelper;
+        this.fileObjectRepository = fileObjectRepository;
     }
 
     /**
@@ -83,7 +80,11 @@ public class OfferService {
         return offerRepository
             .findByCriteria(criteria, pageable)
             .flatMap(offer ->
-                Mono.zip(Mono.just(offer), profileService.findOne(offer.getOwnerId()), fetchImages(offer.getId())).map(tuple -> {
+                Mono.zip(
+                    Mono.just(offer),
+                    profileService.findOne(offer.getOwnerId()),
+                    imageHelper.fetchOfferMediaImages(offer.getId())
+                ).map(tuple -> {
                     Offer o = tuple.getT1();
                     ProfileDTO owner = tuple.getT2();
                     List<String> images = tuple.getT3();
@@ -154,45 +155,35 @@ public class OfferService {
             });
     }
 
-    public Mono<Void> uploadOfferImages(Flux<FilePart> images, Long offerId) {
-        return SecurityUtils.getCurrentUserLogin()
-            .zipWith(offerRepository.findById(offerId))
-            .flatMapMany(tuple -> {
-                String login = tuple.getT1();
-                Offer offer = tuple.getT2();
-                return images.flatMap(image ->
-                    fileProcessUtil
-                        .processFile(image, login, "offer-media")
-                        .flatMap(file ->
-                            offerMediaRepository.save(
-                                new OfferMedia()
-                                    .mediaKind(
-                                        file.getContentType() != null && file.getContentType().contains("image")
-                                            ? MediaKind.IMAGE
-                                            : MediaKind.VIDEO
-                                    )
-                                    .isPrimary(false)
-                                    .offer(offer)
-                                    .file(file)
-                            )
-                        )
-                );
-            })
-            .then();
-    }
-
-    /**
-     * Helper method for fetching images for an offer.
-     *
-     * @param offerId id of the offer to find the images.
-     * @return list of images in base64.
-     */
-    private Mono<List<String>> fetchImages(Long offerId) {
-        return offerMediaRepository
-            .findByOffer(offerId)
-            .flatMap(media -> fileObjectRepository.findById(media.getFileId()))
-            .map(fileObject -> minioUtil.getImageAsBase64(fileObject.getBucket(), fileObject.getObjectKey()))
-            .collectList();
+    public Mono<Void> deleteOffer(Long offerId) {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile ->
+                offerRepository
+                    .findById(offerId)
+                    .flatMap(offer -> {
+                        if (!offer.getOwnerId().equals(profile.getId())) {
+                            return Mono.error(
+                                new NotFoundAlertException(
+                                    "Offer does not belong to current user",
+                                    "OfferMedia",
+                                    "offerDoesNotBelongToThisUser"
+                                )
+                            );
+                        }
+                        return offerMediaRepository
+                            .findByOffer(offerId)
+                            .map(OfferMedia::getFileId)
+                            .distinct()
+                            .collectList()
+                            .flatMap(fileIds ->
+                                fileObjectRepository
+                                    .deleteAllById(fileIds)
+                                    .then(offerMediaRepository.deleteAllByOffer(offerId))
+                                    .then(offerRepository.deleteById(offerId))
+                            );
+                    })
+            );
     }
 
     private Set<Tag> fetchTags(Set<Long> tagIds) {
