@@ -24,10 +24,10 @@ public class ImageHelper {
     }
 
     /**
-     * Helper method for fetching images for an offer.
+     * Helper method for fetching images for an offer with its id from file object entity.
      *
      * @param offerId id of the offer to find the images.
-     * @return list of images in base64.
+     * @return list of images in base64 along with id from file object entity.
      */
     public Mono<Map<Long, String>> fetchOfferMediaImagesWithId(Long offerId) {
         return offerMediaRepository
@@ -41,6 +41,12 @@ public class ImageHelper {
             .collectMap(Tuple2::getT1, Tuple2::getT2);
     }
 
+    /**
+     * Helper method for fetching offer images.
+     *
+     * @param offerId id of the offer to fetch the images.
+     * @return list of images in base64.
+     */
     public Mono<List<String>> fetchOfferMediaImages(Long offerId) {
         return offerMediaRepository
             .findByOffer(offerId)

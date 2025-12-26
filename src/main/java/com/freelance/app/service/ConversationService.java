@@ -5,10 +5,8 @@ import com.freelance.app.domain.criteria.ConversationCriteria;
 import com.freelance.app.repository.ConversationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -35,50 +33,6 @@ public class ConversationService {
     public Mono<Conversation> save(Conversation conversation) {
         LOG.debug("Request to save Conversation : {}", conversation);
         return conversationRepository.save(conversation);
-    }
-
-    /**
-     * Update a conversation.
-     *
-     * @param conversation the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<Conversation> update(Conversation conversation) {
-        LOG.debug("Request to update Conversation : {}", conversation);
-        return conversationRepository.save(conversation);
-    }
-
-    /**
-     * Partially update a conversation.
-     *
-     * @param conversation the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Mono<Conversation> partialUpdate(Conversation conversation) {
-        LOG.debug("Request to partially update Conversation : {}", conversation);
-
-        return conversationRepository
-            .findById(conversation.getId())
-            .map(existingConversation -> {
-                if (conversation.getCreatedAt() != null) {
-                    existingConversation.setCreatedAt(conversation.getCreatedAt());
-                }
-
-                return existingConversation;
-            })
-            .flatMap(conversationRepository::save);
-    }
-
-    /**
-     * Find conversations by Criteria.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Flux<Conversation> findByCriteria(ConversationCriteria criteria, Pageable pageable) {
-        LOG.debug("Request to get all Conversations by Criteria");
-        return conversationRepository.findByCriteria(criteria, pageable);
     }
 
     /**

@@ -37,49 +37,6 @@ public class FavoriteOfferService {
     }
 
     /**
-     * Save a favoriteOffer.
-     *
-     * @param favoriteOffer the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<FavoriteOffer> save(FavoriteOffer favoriteOffer) {
-        LOG.debug("Request to save FavoriteOffer : {}", favoriteOffer);
-        return favoriteOfferRepository.save(favoriteOffer);
-    }
-
-    /**
-     * Update a favoriteOffer.
-     *
-     * @param favoriteOffer the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<FavoriteOffer> update(FavoriteOffer favoriteOffer) {
-        LOG.debug("Request to update FavoriteOffer : {}", favoriteOffer);
-        return favoriteOfferRepository.save(favoriteOffer);
-    }
-
-    /**
-     * Partially update a favoriteOffer.
-     *
-     * @param favoriteOffer the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Mono<FavoriteOffer> partialUpdate(FavoriteOffer favoriteOffer) {
-        LOG.debug("Request to partially update FavoriteOffer : {}", favoriteOffer);
-
-        return favoriteOfferRepository
-            .findById(favoriteOffer.getId())
-            .map(existingFavoriteOffer -> {
-                if (favoriteOffer.getCreatedAt() != null) {
-                    existingFavoriteOffer.setCreatedAt(favoriteOffer.getCreatedAt());
-                }
-
-                return existingFavoriteOffer;
-            })
-            .flatMap(favoriteOfferRepository::save);
-    }
-
-    /**
      * Find favoriteOffers by Criteria.
      *
      * @param pageable the pagination information.
@@ -99,15 +56,6 @@ public class FavoriteOfferService {
     public Mono<Long> countByCriteria(FavoriteOfferCriteria criteria) {
         LOG.debug("Request to get the count of all FavoriteOffers by Criteria");
         return favoriteOfferRepository.countByCriteria(criteria);
-    }
-
-    /**
-     * Returns the number of favoriteOffers available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return favoriteOfferRepository.count();
     }
 
     /**
@@ -133,6 +81,12 @@ public class FavoriteOfferService {
         return favoriteOfferRepository.deleteById(id);
     }
 
+    /**
+     * Create new favorite offer.
+     *
+     * @param offerId the id of offer to be added to favorites.
+     * @return the entity created.
+     */
     public Mono<FavoriteOffer> createFavoriteOffer(Long offerId) {
         return profileHelper
             .getCurrentProfile()

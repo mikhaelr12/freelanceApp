@@ -17,7 +17,6 @@ import org.springframework.web.util.ForwardedHeaderUtils;
 import reactor.core.publisher.Mono;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.reactive.ResponseUtil;
 
 /**
  * REST controller for managing {@link com.freelance.app.domain.FavoriteOffer}.
@@ -79,19 +78,6 @@ public class FavoriteOfferResource {
                     )
                     .body(countWithEntities.getT2())
             );
-    }
-
-    /**
-     * {@code GET  /favorite-offers/:id} : get the "id" favoriteOffer.
-     *
-     * @param id the id of the favoriteOffer to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the favoriteOffer, or with status {@code 404 (Not Found)}.
-     */
-    @GetMapping("/{id}")
-    public Mono<ResponseEntity<FavoriteOffer>> getFavoriteOffer(@PathVariable Long id) {
-        LOG.debug("REST request to get FavoriteOffer : {}", id);
-        Mono<FavoriteOffer> favoriteOffer = favoriteOfferService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(favoriteOffer);
     }
 
     /**
