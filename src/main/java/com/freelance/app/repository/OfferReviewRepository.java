@@ -90,6 +90,7 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
                 r.id AS id,
                 r.text AS text,
                 r.rating AS rating,
+                r.created_date,
                 p.id AS "profile_id",
                 concat(p.first_name, ' ', p.last_name) AS "profile_full_name"
             FROM offer_review r
@@ -104,9 +105,10 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
         SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END
         FROM offer_review r
         WHERE r.reviewer_id = :reviewerId
+        AND r.offer_id = :offerId
         """
     )
-    Mono<Boolean> existsByReviewerId(@Param("reviewerId") Long reviewerId);
+    Mono<Boolean> existsByReviewerId(@Param("reviewerId") Long reviewerId, @Param("offerId") Long offerId);
 }
 
 interface OfferReviewRepositoryInternal {

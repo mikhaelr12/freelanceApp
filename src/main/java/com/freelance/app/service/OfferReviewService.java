@@ -3,7 +3,7 @@ package com.freelance.app.service;
 import com.freelance.app.domain.OfferReview;
 import com.freelance.app.repository.OfferRepository;
 import com.freelance.app.repository.OfferReviewRepository;
-import com.freelance.app.service.dto.OfferReviewCreateDTO;
+import com.freelance.app.service.dto.ReviewCreateDTO;
 import com.freelance.app.service.dto.ReviewShortDTO;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
@@ -41,10 +41,10 @@ public class OfferReviewService {
      * Create new offer review.
      *
      * @param offerId id of the offer.
-     * @param dto the dto of the new review.
+     * @param dto     the dto of the new review.
      * @return the persistent entity.
-     * */
-    public Mono<OfferReview> createOfferReview(Long offerId, OfferReviewCreateDTO dto) {
+     */
+    public Mono<OfferReview> createOfferReview(Long offerId, ReviewCreateDTO dto) {
         return profileHelper
             .getCurrentProfile()
             .flatMap(profile ->
@@ -55,11 +55,15 @@ public class OfferReviewService {
                     )
                     .flatMap(offer ->
                         offerReviewRepository
-                            .existsByReviewerId(profile.getId())
+                            .existsByReviewerId(profile.getId(), offerId)
                             .flatMap(exists -> {
                                 if (exists) {
                                     return Mono.error(
-                                        new BadRequestAlertException("User already has a review", ENTITY_NAME, "userAlreadyHasReview")
+                                        new BadRequestAlertException(
+                                            "User already has a review for this offer",
+                                            ENTITY_NAME,
+                                            "userAlreadyHasAReviewForThisOffer"
+                                        )
                                     );
                                 }
 
@@ -89,10 +93,10 @@ public class OfferReviewService {
     /**
      * Get all offer reviews.
      *
-     * @param offerId id of the offer.
+     * @param offerId  id of the offer.
      * @param pageable the pagination information.
      * @return tje list of reviews.
-     * */
+     */
     public Mono<List<ReviewShortDTO>> getAllOfferReviews(Long offerId, Pageable pageable) {
         return offerReviewRepository
             .findByOfferPaged(offerId, pageable.getPageSize(), ((long) pageable.getPageNumber() * pageable.getPageSize()))
@@ -116,7 +120,22 @@ public class OfferReviewService {
      * @return an empty Mono indicating completion.
      */
     public Mono<Void> deleteOfferReview(Long reviewId) {
-        return offerReviewRepository.deleteById(reviewId).then();
+        return offerReviewRepository
+            .findById(reviewId)
+            .flatMap(review ->
+                offerReviewRepository
+                    .delete(review)
+                    .doOnNext(_ ->
+                        offerReviewRepository
+                            .getAverageRatingOffer(review.getOfferId())
+                            .defaultIfEmpty(0.0)
+                            .zipWith(offerRepository.findById(review.getOfferId()))
+                            .flatMap(tuple -> {
+                                tuple.getT2().setRating(tuple.getT1());
+                                return offerRepository.save(tuple.getT2()).then();
+                            })
+                    )
+            );
     }
 
     /**
@@ -134,14 +153,31 @@ public class OfferReviewService {
     public Mono<Void> deleteMyReview(Long reviewId) {
         return profileHelper
             .getCurrentProfile()
-            .zipWith(offerReviewRepository.findById(reviewId))
+            .zipWith(
+                offerReviewRepository
+                    .findById(reviewId)
+                    .switchIfEmpty(
+                        Mono.error(new NotFoundAlertException("Review not found with id: " + reviewId, ENTITY_NAME, "reviewNotFound"))
+                    )
+            )
             .flatMap(tuple -> {
                 if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getReviewerId())) {
                     return Mono.error(
                         new NotFoundAlertException("Review does not belong to current user", ENTITY_NAME, "reviewDoesNotBelongToThisUser")
                     );
                 }
-                return offerReviewRepository.deleteById(reviewId).then();
+                return offerReviewRepository
+                    .deleteById(reviewId)
+                    .doOnNext(_ ->
+                        offerReviewRepository
+                            .getAverageRatingOffer(tuple.getT2().getOfferId())
+                            .defaultIfEmpty(0.0)
+                            .zipWith(offerRepository.findById(tuple.getT2().getOfferId()))
+                            .flatMap(tuple2 -> {
+                                tuple2.getT2().setRating(tuple2.getT1());
+                                return offerRepository.save(tuple2.getT2()).then();
+                            })
+                    );
             });
     }
 }

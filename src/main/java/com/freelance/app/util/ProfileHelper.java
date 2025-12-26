@@ -5,11 +5,14 @@ import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.repository.UserRepository;
 import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
+import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
 public class ProfileHelper {
+
+    private static final String ENTITY_NAME = "User";
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
@@ -22,7 +25,7 @@ public class ProfileHelper {
     public Mono<Profile> getCurrentProfile() {
         return SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
-            .switchIfEmpty(Mono.error(new RuntimeException("Login not found")))
+            .switchIfEmpty(Mono.error(new NotFoundAlertException("User not found", ENTITY_NAME, "userNotFound")))
             .flatMap(user ->
                 profileRepository
                     .findByUserId(user.getId())

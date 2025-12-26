@@ -57,27 +57,43 @@ public interface ProfileReviewRepository extends ReactiveCrudRepository<ProfileR
                 p.id AS "profile_id",
                 concat(p.first_name, ' ', p.last_name) AS "profile_full_name"
             FROM profile_review r
-            JOIN public.profile p ON :reviewerId = p.id
+            JOIN profile p ON p.id = r.reviewer_id
+            WHERE r.reviewee_id = :revieweeId
             ORDER BY r.id DESC
             LIMIT :limit OFFSET :offset
         """
     )
-    Flux<ReviewShortDTO> findByOfferPaged(@Param("reviewerId") Long reviewerId, @Param("limit") long limit, @Param("offset") long offset);
+    Flux<ReviewShortDTO> findReviewsShort(@Param("revieweeId") Long revieweeId, @Param("limit") long limit, @Param("offset") long offset);
 
     @Query(
         """
+
         SELECT
-                r.id AS id,
-                r.text AS text,
-                r.rating AS rating,
-                p.id AS "profile_id",
-                concat(p.first_name, ' ', p.last_name) AS "profile_full_name"
-            FROM profile_review r
-            JOIN public.profile p ON p.id = :reviewerId
-            WHERE r.reviewee_id = :revieweeId
+            r.id AS id,
+            r.text AS text,
+            r.rating AS rating,
+            p.id AS profile_id,
+            concat(p.first_name, ' ', p.last_name) AS profile_full_name
+        FROM profile_review r
+                 JOIN public.profile p ON p.id = r.reviewee_id
+        WHERE r.reviewer_id = :reviewerId
+          AND r.reviewee_id = :revieweeId;
         """
     )
-    Mono<ReviewShortDTO> findMyOfferReview(@Param("revieweeId") Long revieweeId, @Param("reviewerId") Long reviewerId);
+    Mono<ReviewShortDTO> findMyProfileReview(@Param("revieweeId") Long revieweeId, @Param("reviewerId") Long reviewerId);
+
+    @Query(
+        """
+        SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END
+        FROM profile_review r
+        WHERE r.reviewer_id = :reviewerId
+        AND r.reviewee_id = :revieweeId
+        """
+    )
+    Mono<Boolean> existsByReviewerId(@Param("reviewerId") Long reviewerId, @Param("revieweeId") Long revieweeId);
+
+    @Query("SELECT AVG(entity.rating) FROM profile_review entity WHERE entity.reviewee_id = :revieweeId")
+    Mono<Double> getAverageRatingOffer(@Param("revieweeId") Long revieweeId);
 }
 
 interface ProfileReviewRepositoryInternal {

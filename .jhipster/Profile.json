@@ -47,6 +47,11 @@
       "fieldName": "profileType",
       "fieldType": "ProfileType",
       "fieldValues": "CLIENT,FREELANCER"
+    },
+    {
+      "fieldName": "rating",
+      "fieldType": "Double",
+      "fieldValidateRules": []
     }
   ],
   "jpaMetamodelFiltering": true,

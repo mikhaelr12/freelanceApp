@@ -18,7 +18,7 @@ import org.springframework.data.relational.core.mapping.Table;
  */
 @Table("profile")
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Profile implements Serializable {
+public class Profile extends AbstractAuditingEntity<Long> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -41,20 +41,8 @@ public class Profile implements Serializable {
     @Column("description")
     private String description;
 
-    @NotNull(message = "must not be null")
-    @Column("created_date")
-    private Instant createdDate;
-
-    @Column("last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 50)
-    @Column("created_by")
-    private String createdBy;
-
-    @Size(max = 50)
-    @Column("last_modified_by")
-    private String lastModifiedBy;
+    @Column("rating")
+    private Double rating;
 
     @Column("profile_type")
     private ProfileType profileType;
@@ -132,21 +120,9 @@ public class Profile implements Serializable {
         this.description = description;
     }
 
-    public Instant getCreatedDate() {
-        return this.createdDate;
-    }
-
     public Profile createdDate(Instant createdDate) {
         this.setCreatedDate(createdDate);
         return this;
-    }
-
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Instant getLastModifiedDate() {
-        return this.lastModifiedDate;
     }
 
     public Profile lastModifiedDate(Instant lastModifiedDate) {
@@ -154,34 +130,14 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public Profile createdBy(String createdBy) {
         this.setCreatedBy(createdBy);
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getLastModifiedBy() {
-        return this.lastModifiedBy;
-    }
-
     public Profile lastModifiedBy(String lastModifiedBy) {
         this.setLastModifiedBy(lastModifiedBy);
         return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
     }
 
     public ProfileType getProfileType() {
@@ -273,6 +229,14 @@ public class Profile implements Serializable {
     public Profile verified(Boolean verified) {
         this.setVerified(verified);
         return this;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

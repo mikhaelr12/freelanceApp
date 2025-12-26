@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * Service Implementation for managing {@link com.freelance.app.domain.Profile}.
@@ -127,20 +128,27 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public Mono<ProfileDTO> findOne(Long id) {
         LOG.debug("Request to get Profile : {}", id);
+
         return profileRepository
             .findOne(id)
-            .flatMap(profile ->
-                fileObjectRepository
-                    .findById(profile.getProfilePictureId())
-                    .flatMap(fileObject -> {
-                        try {
-                            profile.setImageBase64(minioUtil.getImageAsBase64(fileObject.getBucket(), fileObject.getObjectKey()));
-                        } catch (Exception e) {
-                            return Mono.error(new RuntimeException(e));
-                        }
-                        return Mono.just(profile);
-                    })
-            );
+            .flatMap(profile -> {
+                Long picId = profile.getProfilePictureId();
+                if (picId == null) {
+                    return Mono.just(profile);
+                }
+
+                return fileObjectRepository
+                    .findById(picId)
+                    .flatMap(fileObject ->
+                        Mono.fromCallable(() -> minioUtil.getImageAsBase64(fileObject.getBucket(), fileObject.getObjectKey()))
+                            .subscribeOn(Schedulers.boundedElastic())
+                            .map(base64 -> {
+                                profile.setImageBase64(base64);
+                                return profile;
+                            })
+                    )
+                    .switchIfEmpty(Mono.just(profile));
+            });
     }
 
     /**

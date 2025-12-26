@@ -3,7 +3,7 @@ package com.freelance.app.web.rest;
 import com.freelance.app.domain.OfferReview;
 import com.freelance.app.security.AuthoritiesConstants;
 import com.freelance.app.service.OfferReviewService;
-import com.freelance.app.service.dto.OfferReviewCreateDTO;
+import com.freelance.app.service.dto.ReviewCreateDTO;
 import com.freelance.app.service.dto.ReviewShortDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -40,10 +40,7 @@ public class OfferReviewResource {
      * */
     @PostMapping("/{offerId}")
     @Operation(summary = "Create a review for an offer")
-    public Mono<ResponseEntity<OfferReview>> createOfferReview(
-        @Valid @RequestBody OfferReviewCreateDTO reviewDTO,
-        @PathVariable Long offerId
-    ) {
+    public Mono<ResponseEntity<OfferReview>> createOfferReview(@Valid @RequestBody ReviewCreateDTO reviewDTO, @PathVariable Long offerId) {
         LOG.debug("REST request to create offer review : {}", reviewDTO);
         return offerReviewService.createOfferReview(offerId, reviewDTO).map(ResponseEntity::ok);
     }
