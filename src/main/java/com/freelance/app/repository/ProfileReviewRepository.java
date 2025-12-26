@@ -2,9 +2,11 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.ProfileReview;
 import com.freelance.app.domain.criteria.ProfileReviewCriteria;
+import com.freelance.app.service.dto.ReviewShortDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -44,6 +46,54 @@ public interface ProfileReviewRepository extends ReactiveCrudRepository<ProfileR
     @Override
     @NotNull
     Mono<Void> deleteById(@NotNull Long id);
+
+    @Query(
+        """
+            SELECT
+                r.id AS id,
+                r.text AS text,
+                r.rating AS rating,
+                r.created_date,
+                p.id AS "profile_id",
+                concat(p.first_name, ' ', p.last_name) AS "profile_full_name"
+            FROM profile_review r
+            JOIN profile p ON p.id = r.reviewer_id
+            WHERE r.reviewee_id = :revieweeId
+            ORDER BY r.id DESC
+            LIMIT :limit OFFSET :offset
+        """
+    )
+    Flux<ReviewShortDTO> findReviewsShort(@Param("revieweeId") Long revieweeId, @Param("limit") long limit, @Param("offset") long offset);
+
+    @Query(
+        """
+
+        SELECT
+            r.id AS id,
+            r.text AS text,
+            r.rating AS rating,
+            p.id AS profile_id,
+            concat(p.first_name, ' ', p.last_name) AS profile_full_name
+        FROM profile_review r
+                 JOIN public.profile p ON p.id = r.reviewee_id
+        WHERE r.reviewer_id = :reviewerId
+          AND r.reviewee_id = :revieweeId;
+        """
+    )
+    Mono<ReviewShortDTO> findMyProfileReview(@Param("revieweeId") Long revieweeId, @Param("reviewerId") Long reviewerId);
+
+    @Query(
+        """
+        SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END
+        FROM profile_review r
+        WHERE r.reviewer_id = :reviewerId
+        AND r.reviewee_id = :revieweeId
+        """
+    )
+    Mono<Boolean> existsByReviewerId(@Param("reviewerId") Long reviewerId, @Param("revieweeId") Long revieweeId);
+
+    @Query("SELECT AVG(entity.rating) FROM profile_review entity WHERE entity.reviewee_id = :revieweeId")
+    Mono<Double> getAverageRatingOffer(@Param("revieweeId") Long revieweeId);
 }
 
 interface ProfileReviewRepositoryInternal {

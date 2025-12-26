@@ -3,7 +3,7 @@ package com.freelance.app.service.dto;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 
-public class OfferReviewCreateDTO {
+public class ReviewCreateDTO {
 
     private String text;
 

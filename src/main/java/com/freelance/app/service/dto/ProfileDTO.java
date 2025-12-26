@@ -13,6 +13,7 @@ public class ProfileDTO {
     private Instant createdDate;
     private ProfileType profileType;
     private Boolean verified;
+    private Double rating;
     private Set<SkillShortDTO> skills;
     private String imageBase64;
     private Long profilePictureId;
@@ -95,5 +96,13 @@ public class ProfileDTO {
 
     public void setProfilePictureId(Long profilePictureId) {
         this.profilePictureId = profilePictureId;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }

@@ -1,14 +1,20 @@
 package com.freelance.app.service;
 
 import com.freelance.app.domain.ProfileReview;
-import com.freelance.app.domain.criteria.ProfileReviewCriteria;
+import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.repository.ProfileReviewRepository;
+import com.freelance.app.service.dto.ReviewCreateDTO;
+import com.freelance.app.service.dto.ReviewShortDTO;
+import com.freelance.app.util.ProfileHelper;
+import com.freelance.app.web.rest.errors.BadRequestAlertException;
+import com.freelance.app.web.rest.errors.NotFoundAlertException;
+import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -18,123 +24,166 @@ import reactor.core.publisher.Mono;
 @Transactional
 public class ProfileReviewService {
 
+    private static final String ENTITY_NAME = "profileReview";
     private static final Logger LOG = LoggerFactory.getLogger(ProfileReviewService.class);
 
     private final ProfileReviewRepository profileReviewRepository;
+    private final ProfileHelper profileHelper;
+    private final ProfileRepository profileRepository;
 
-    public ProfileReviewService(ProfileReviewRepository profileReviewRepository) {
+    public ProfileReviewService(
+        ProfileReviewRepository profileReviewRepository,
+        ProfileHelper profileHelper,
+        ProfileRepository profileRepository
+    ) {
         this.profileReviewRepository = profileReviewRepository;
+        this.profileHelper = profileHelper;
+        this.profileRepository = profileRepository;
     }
 
     /**
-     * Save a profileReview.
+     * Create new profile review.
      *
-     * @param profileReview the entity to save.
-     * @return the persisted entity.
+     * @param revieweeId id of the profile reviewed.
+     * @param dto the dto of the new review.
+     * @return the persistent entity.
      */
-    public Mono<ProfileReview> save(ProfileReview profileReview) {
-        LOG.debug("Request to save ProfileReview : {}", profileReview);
-        return profileReviewRepository.save(profileReview);
+    public Mono<ProfileReview> createProfileReview(ReviewCreateDTO dto, Long revieweeId) {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(reviewer ->
+                profileRepository
+                    .findById(revieweeId)
+                    .switchIfEmpty(
+                        Mono.error(new NotFoundAlertException("Profile not found with id: " + revieweeId, ENTITY_NAME, "offerNotFound"))
+                    )
+                    .flatMap(reviewee ->
+                        profileReviewRepository
+                            .existsByReviewerId(reviewer.getId(), revieweeId)
+                            .flatMap(exists -> {
+                                if (exists) {
+                                    return Mono.error(
+                                        new BadRequestAlertException(
+                                            "User already has a review for this profile",
+                                            ENTITY_NAME,
+                                            "userAlreadyHasAReviewForThisProfile"
+                                        )
+                                    );
+                                }
+
+                                ProfileReview review = new ProfileReview()
+                                    .reviewer(reviewer)
+                                    .text(dto.getText() != null ? dto.getText() : null)
+                                    .rating(dto.getRating())
+                                    .reviewee(reviewee)
+                                    .createdBy(reviewer.getUser().getLogin());
+
+                                return profileReviewRepository
+                                    .save(review)
+                                    .flatMap(saved ->
+                                        profileReviewRepository
+                                            .getAverageRatingOffer(revieweeId)
+                                            .defaultIfEmpty(0.0)
+                                            .flatMap(avg -> {
+                                                reviewee.setRating(avg);
+                                                return profileRepository.save(reviewee).thenReturn(saved);
+                                            })
+                                    );
+                            })
+                    )
+            );
     }
 
     /**
-     * Update a profileReview.
+     * Get all profile reviews.
      *
-     * @param profileReview the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<ProfileReview> update(ProfileReview profileReview) {
-        LOG.debug("Request to update ProfileReview : {}", profileReview);
-        return profileReviewRepository.save(profileReview);
-    }
-
-    /**
-     * Partially update a profileReview.
-     *
-     * @param profileReview the entity to update partially.
-     * @return the persisted entity.
-     */
-    public Mono<ProfileReview> partialUpdate(ProfileReview profileReview) {
-        LOG.debug("Request to partially update ProfileReview : {}", profileReview);
-
-        return profileReviewRepository
-            .findById(profileReview.getId())
-            .map(existingProfileReview -> {
-                if (profileReview.getText() != null) {
-                    existingProfileReview.setText(profileReview.getText());
-                }
-                if (profileReview.getRating() != null) {
-                    existingProfileReview.setRating(profileReview.getRating());
-                }
-                if (profileReview.getCreatedDate() != null) {
-                    existingProfileReview.setCreatedDate(profileReview.getCreatedDate());
-                }
-                if (profileReview.getLastModifiedDate() != null) {
-                    existingProfileReview.setLastModifiedDate(profileReview.getLastModifiedDate());
-                }
-                if (profileReview.getCreatedBy() != null) {
-                    existingProfileReview.setCreatedBy(profileReview.getCreatedBy());
-                }
-                if (profileReview.getLastModifiedBy() != null) {
-                    existingProfileReview.setLastModifiedBy(profileReview.getLastModifiedBy());
-                }
-
-                return existingProfileReview;
-            })
-            .flatMap(profileReviewRepository::save);
-    }
-
-    /**
-     * Find profileReviews by Criteria.
-     *
+     * @param revieweeId id of the profile reviewed.
      * @param pageable the pagination information.
-     * @return the list of entities.
+     * @return tje list of reviews.
      */
-    @Transactional(readOnly = true)
-    public Flux<ProfileReview> findByCriteria(ProfileReviewCriteria criteria, Pageable pageable) {
-        LOG.debug("Request to get all ProfileReviews by Criteria");
-        return profileReviewRepository.findByCriteria(criteria, pageable);
+    public Mono<List<ReviewShortDTO>> getAllProfileReviews(Long revieweeId, Pageable pageable) {
+        return profileReviewRepository
+            .findReviewsShort(revieweeId, pageable.getPageSize(), ((long) pageable.getPageNumber() * pageable.getPageSize()))
+            .collectList();
     }
 
     /**
-     * Find the count of profileReviews by criteria.
-     * @param criteria filtering criteria
-     * @return the count of profileReviews
-     */
-    public Mono<Long> countByCriteria(ProfileReviewCriteria criteria) {
-        LOG.debug("Request to get the count of all ProfileReviews by Criteria");
-        return profileReviewRepository.countByCriteria(criteria);
-    }
-
-    /**
-     * Returns the number of profileReviews available.
-     * @return the number of entities in the database.
+     * Get the current user's review for a specific profile.
      *
+     * @param revieweeId the id of the reviewed profile.
+     * @return the review created by the current user for the profile.
      */
-    public Mono<Long> countAll() {
-        return profileReviewRepository.count();
+    public Mono<ReviewShortDTO> getMyProfileReview(Long revieweeId) {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(profile -> profileReviewRepository.findMyProfileReview(revieweeId, profile.getId()));
     }
 
     /**
-     * Get one profileReview by id.
+     * Delete a profile review by its id.
      *
-     * @param id the id of the entity.
-     * @return the entity.
+     * @param profileReviewId the id of the review to delete.
+     * @return an empty Mono indicating completion.
      */
-    @Transactional(readOnly = true)
-    public Mono<ProfileReview> findOne(Long id) {
-        LOG.debug("Request to get ProfileReview : {}", id);
-        return profileReviewRepository.findById(id);
+    public Mono<Void> deleteProfileReview(Long profileReviewId) {
+        return profileReviewRepository
+            .findById(profileReviewId)
+            .flatMap(review ->
+                profileReviewRepository
+                    .delete(review)
+                    .doOnNext(_ ->
+                        profileReviewRepository
+                            .getAverageRatingOffer(review.getRevieweeId())
+                            .defaultIfEmpty(0.0)
+                            .zipWith(profileRepository.findById(review.getRevieweeId()))
+                            .flatMap(tuple -> {
+                                tuple.getT2().setRating(tuple.getT1());
+                                return profileRepository.save(tuple.getT2()).then();
+                            })
+                    )
+            );
     }
 
     /**
-     * Delete the profileReview by id.
+     * Delete the current user's review.
      *
-     * @param id the id of the entity.
-     * @return a Mono to signal the deletion
+     * <p>
+     * This method verifies that the review belongs to the currently authenticated user
+     * before performing the deletion.
+     * </p>
+     *
+     * @param reviewId the id of the review to delete.
+     * @return an empty Mono indicating completion.
+     * @throws NotFoundAlertException if the review does not belong to the current user.
      */
-    public Mono<Void> delete(Long id) {
-        LOG.debug("Request to delete ProfileReview : {}", id);
-        return profileReviewRepository.deleteById(id);
+    public Mono<Void> deleteMyReview(Long reviewId) {
+        return profileHelper
+            .getCurrentProfile()
+            .zipWith(
+                profileReviewRepository
+                    .findById(reviewId)
+                    .switchIfEmpty(
+                        Mono.error(new NotFoundAlertException("Review not found with id: " + reviewId, ENTITY_NAME, "reviewNotFound"))
+                    )
+            )
+            .flatMap(tuple -> {
+                if (!Objects.equals(tuple.getT1().getId(), tuple.getT2().getReviewerId())) {
+                    return Mono.error(
+                        new NotFoundAlertException("Review does not belong to current user", ENTITY_NAME, "reviewDoesNotBelongToThisUser")
+                    );
+                }
+                return profileReviewRepository
+                    .deleteById(reviewId)
+                    .doOnNext(_ ->
+                        profileReviewRepository
+                            .getAverageRatingOffer(tuple.getT2().getRevieweeId())
+                            .defaultIfEmpty(0.0)
+                            .zipWith(profileRepository.findById(tuple.getT2().getRevieweeId()))
+                            .flatMap(tuple2 -> {
+                                tuple2.getT2().setRating(tuple2.getT1());
+                                return profileRepository.save(tuple2.getT2()).then();
+                            })
+                    );
+            });
     }
 }

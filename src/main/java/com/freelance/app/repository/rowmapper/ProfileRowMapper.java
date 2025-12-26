@@ -32,6 +32,7 @@ public class ProfileRowMapper implements BiFunction<Row, String, Profile> {
         entity.setFirstName(converter.fromRow(row, prefix + "_first_name", String.class));
         entity.setLastName(converter.fromRow(row, prefix + "_last_name", String.class));
         entity.setDescription(converter.fromRow(row, prefix + "_description", String.class));
+        entity.setRating(converter.fromRow(row, prefix + "_rating", Double.class));
         entity.setCreatedDate(converter.fromRow(row, prefix + "_created_date", Instant.class));
         entity.setLastModifiedDate(converter.fromRow(row, prefix + "_last_modified_date", Instant.class));
         entity.setCreatedBy(converter.fromRow(row, prefix + "_created_by", String.class));
@@ -48,6 +49,7 @@ public class ProfileRowMapper implements BiFunction<Row, String, Profile> {
         entity.setFirstName(converter.fromRow(row, prefix + "_first_name", String.class));
         entity.setLastName(converter.fromRow(row, prefix + "_last_name", String.class));
         entity.setDescription(converter.fromRow(row, prefix + "_description", String.class));
+        entity.setRating(converter.fromRow(row, prefix + "_rating", Double.class));
         entity.setCreatedDate(converter.fromRow(row, prefix + "_created_date", Instant.class));
         entity.setProfileType(converter.fromRow(row, prefix + "_profile_type", ProfileType.class));
         entity.setVerified(converter.fromRow(row, prefix + "_verified", Boolean.class));
