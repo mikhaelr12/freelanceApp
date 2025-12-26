@@ -7,10 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import org.springdoc.core.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.Filter;
-import tech.jhipster.service.filter.InstantFilter;
-import tech.jhipster.service.filter.LongFilter;
-import tech.jhipster.service.filter.StringFilter;
+import tech.jhipster.service.filter.*;
 
 /**
  * Criteria class for the {@link com.freelance.app.domain.Profile} entity. This class is used
@@ -52,6 +49,8 @@ public class ProfileCriteria implements Serializable, Criteria {
     private StringFilter lastName;
 
     private StringFilter description;
+
+    private DoubleFilter rating;
 
     private InstantFilter createdDate;
 
@@ -319,6 +318,25 @@ public class ProfileCriteria implements Serializable, Criteria {
         this.distinct = distinct;
     }
 
+    public Optional<DoubleFilter> optionalRating() {
+        return Optional.ofNullable(rating);
+    }
+
+    public DoubleFilter rating() {
+        if (rating == null) {
+            setRating(new DoubleFilter());
+        }
+        return rating;
+    }
+
+    public DoubleFilter getRating() {
+        return rating;
+    }
+
+    public void setRating(DoubleFilter rating) {
+        this.rating = rating;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -340,7 +358,8 @@ public class ProfileCriteria implements Serializable, Criteria {
             Objects.equals(profileType, that.profileType) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(profilePictureId, that.profilePictureId) &&
-            Objects.equals(distinct, that.distinct)
+            Objects.equals(distinct, that.distinct) &&
+            Objects.equals(rating, that.rating)
         );
     }
 
@@ -358,7 +377,8 @@ public class ProfileCriteria implements Serializable, Criteria {
             profileType,
             userId,
             profilePictureId,
-            distinct
+            distinct,
+            rating
         );
     }
 
@@ -378,6 +398,7 @@ public class ProfileCriteria implements Serializable, Criteria {
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalProfilePictureId().map(f -> "profilePictureId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
+            optionalRating().map(f -> "rating=" + f + ", ").orElse("") +
         "}";
     }
 }

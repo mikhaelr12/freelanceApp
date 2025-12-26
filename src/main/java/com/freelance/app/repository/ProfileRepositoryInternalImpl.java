@@ -216,6 +216,9 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
             if (criteria.getDescription() != null) {
                 builder.buildFilterConditionForField(criteria.getDescription(), entityTable.column("description"));
             }
+            if (criteria.getRating() != null) {
+                builder.buildFilterConditionForField(criteria.getRating(), entityTable.column("rating"));
+            }
             if (criteria.getCreatedDate() != null) {
                 builder.buildFilterConditionForField(criteria.getCreatedDate(), entityTable.column("created_date"));
             }
