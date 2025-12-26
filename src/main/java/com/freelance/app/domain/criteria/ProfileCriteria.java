@@ -82,6 +82,7 @@ public class ProfileCriteria implements Serializable, Criteria {
         this.profileType = other.optionalProfileType().map(ProfileTypeFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.profilePictureId = other.optionalProfilePictureId().map(LongFilter::copy).orElse(null);
+        this.rating = other.optionalRating().map(DoubleFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
