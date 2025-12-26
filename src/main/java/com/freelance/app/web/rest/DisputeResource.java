@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.criteria.DisputeCriteria;
-import com.freelance.app.repository.DisputeRepository;
 import com.freelance.app.service.DisputeService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class DisputeResource {
 
     private final DisputeService disputeService;
 
-    private final DisputeRepository disputeRepository;
-
-    public DisputeResource(DisputeService disputeService, DisputeRepository disputeRepository) {
+    public DisputeResource(DisputeService disputeService) {
         this.disputeService = disputeService;
-        this.disputeRepository = disputeRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class DisputeResource {
     public Mono<ResponseEntity<Dispute>> createDispute(@Valid @RequestBody Dispute dispute) {
         LOG.debug("REST request to save Dispute : {}", dispute);
         if (dispute.getId() != null) {
-            throw new BadRequestAlertException("A new dispute cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new dispute cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return disputeService
             .save(dispute)
@@ -89,16 +87,16 @@ public class DisputeResource {
     public Mono<ResponseEntity<Dispute>> updateDispute(@PathVariable(required = false) final Long id, @Valid @RequestBody Dispute dispute) {
         LOG.debug("REST request to update Dispute : {}, {}", id, dispute);
         if (dispute.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, dispute.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return disputeRepository
-            .existsById(id)
+        return disputeService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -130,16 +128,16 @@ public class DisputeResource {
     ) {
         LOG.debug("REST request to partial update Dispute partially : {}, {}", id, dispute);
         if (dispute.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, dispute.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return disputeRepository
-            .existsById(id)
+        return disputeService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

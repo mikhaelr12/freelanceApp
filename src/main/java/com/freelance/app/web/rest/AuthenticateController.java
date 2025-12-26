@@ -89,7 +89,6 @@ public class AuthenticateController {
             validity = now.plus(this.tokenValidityInSeconds, ChronoUnit.SECONDS);
         }
 
-        // @formatter:off
         JwtClaimsSet.Builder builder = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)

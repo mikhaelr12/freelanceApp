@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.OfferPackage;
 import com.freelance.app.domain.criteria.OfferPackageCriteria;
-import com.freelance.app.repository.OfferPackageRepository;
 import com.freelance.app.service.OfferPackageService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class OfferPackageResource {
 
     private final OfferPackageService offerPackageService;
 
-    private final OfferPackageRepository offerPackageRepository;
-
-    public OfferPackageResource(OfferPackageService offerPackageService, OfferPackageRepository offerPackageRepository) {
+    public OfferPackageResource(OfferPackageService offerPackageService) {
         this.offerPackageService = offerPackageService;
-        this.offerPackageRepository = offerPackageRepository;
     }
 
     /**
@@ -92,16 +90,16 @@ public class OfferPackageResource {
     ) {
         LOG.debug("REST request to update OfferPackage : {}, {}", id, offerPackage);
         if (offerPackage.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, offerPackage.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return offerPackageRepository
-            .existsById(id)
+        return offerPackageService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -133,16 +131,16 @@ public class OfferPackageResource {
     ) {
         LOG.debug("REST request to partial update OfferPackage partially : {}, {}", id, offerPackage);
         if (offerPackage.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, offerPackage.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return offerPackageRepository
-            .existsById(id)
+        return offerPackageService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

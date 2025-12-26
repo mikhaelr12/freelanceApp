@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Tag;
 import com.freelance.app.domain.criteria.TagCriteria;
-import com.freelance.app.repository.TagRepository;
 import com.freelance.app.service.TagService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class TagResource {
 
     private final TagService tagService;
 
-    private final TagRepository tagRepository;
-
-    public TagResource(TagService tagService, TagRepository tagRepository) {
+    public TagResource(TagService tagService) {
         this.tagService = tagService;
-        this.tagRepository = tagRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class TagResource {
     public Mono<ResponseEntity<Tag>> createTag(@Valid @RequestBody Tag tag) {
         LOG.debug("REST request to save Tag : {}", tag);
         if (tag.getId() != null) {
-            throw new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return tagService
             .save(tag)
@@ -89,16 +87,16 @@ public class TagResource {
     public Mono<ResponseEntity<Tag>> updateTag(@PathVariable(required = false) final Long id, @Valid @RequestBody Tag tag) {
         LOG.debug("REST request to update Tag : {}, {}", id, tag);
         if (tag.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, tag.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return tagRepository
-            .existsById(id)
+        return tagService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -127,16 +125,16 @@ public class TagResource {
     public Mono<ResponseEntity<Tag>> partialUpdateTag(@PathVariable(required = false) final Long id, @NotNull @RequestBody Tag tag) {
         LOG.debug("REST request to partial update Tag partially : {}, {}", id, tag);
         if (tag.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, tag.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return tagRepository
-            .existsById(id)
+        return tagService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

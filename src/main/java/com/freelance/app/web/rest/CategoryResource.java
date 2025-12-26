@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Category;
 import com.freelance.app.domain.criteria.CategoryCriteria;
-import com.freelance.app.repository.CategoryRepository;
 import com.freelance.app.service.CategoryService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class CategoryResource {
 
     private final CategoryService categoryService;
 
-    private final CategoryRepository categoryRepository;
-
-    public CategoryResource(CategoryService categoryService, CategoryRepository categoryRepository) {
+    public CategoryResource(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class CategoryResource {
     public Mono<ResponseEntity<Category>> createCategory(@Valid @RequestBody Category category) {
         LOG.debug("REST request to save Category : {}", category);
         if (category.getId() != null) {
-            throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return categoryService
             .save(category)
@@ -92,16 +90,16 @@ public class CategoryResource {
     ) {
         LOG.debug("REST request to update Category : {}, {}", id, category);
         if (category.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, category.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return categoryRepository
-            .existsById(id)
+        return categoryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -133,16 +131,16 @@ public class CategoryResource {
     ) {
         LOG.debug("REST request to partial update Category partially : {}, {}", id, category);
         if (category.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, category.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return categoryRepository
-            .existsById(id)
+        return categoryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -186,18 +184,6 @@ public class CategoryResource {
                     )
                     .body(countWithEntities.getT2())
             );
-    }
-
-    /**
-     * {@code GET  /categories/count} : count all the categories.
-     *
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-     */
-    @GetMapping("/count")
-    public Mono<ResponseEntity<Long>> countCategories(CategoryCriteria criteria) {
-        LOG.debug("REST request to count Categories by criteria: {}", criteria);
-        return categoryService.countByCriteria(criteria).map(count -> ResponseEntity.status(HttpStatus.OK).body(count));
     }
 
     /**

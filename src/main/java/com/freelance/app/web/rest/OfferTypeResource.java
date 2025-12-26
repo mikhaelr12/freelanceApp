@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.OfferType;
 import com.freelance.app.domain.criteria.OfferTypeCriteria;
-import com.freelance.app.repository.OfferTypeRepository;
 import com.freelance.app.service.OfferTypeService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class OfferTypeResource {
 
     private final OfferTypeService offerTypeService;
 
-    private final OfferTypeRepository offerTypeRepository;
-
-    public OfferTypeResource(OfferTypeService offerTypeService, OfferTypeRepository offerTypeRepository) {
+    public OfferTypeResource(OfferTypeService offerTypeService) {
         this.offerTypeService = offerTypeService;
-        this.offerTypeRepository = offerTypeRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class OfferTypeResource {
     public Mono<ResponseEntity<OfferType>> createOfferType(@Valid @RequestBody OfferType offerType) {
         LOG.debug("REST request to save OfferType : {}", offerType);
         if (offerType.getId() != null) {
-            throw new BadRequestAlertException("A new offerType cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new offerType cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return offerTypeService
             .save(offerType)
@@ -98,10 +96,10 @@ public class OfferTypeResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        return offerTypeRepository
-            .existsById(id)
+        return offerTypeService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -139,10 +137,10 @@ public class OfferTypeResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        return offerTypeRepository
-            .existsById(id)
+        return offerTypeService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

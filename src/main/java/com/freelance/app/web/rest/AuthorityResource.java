@@ -46,11 +46,10 @@ public class AuthorityResource {
      *
      * @param authority the authority to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new authority, or with status {@code 400 (Bad Request)} if the authority has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public Mono<ResponseEntity<Authority>> createAuthority(@Valid @RequestBody Authority authority) throws URISyntaxException {
+    public Mono<ResponseEntity<Authority>> createAuthority(@Valid @RequestBody Authority authority) {
         LOG.debug("REST request to save Authority : {}", authority);
         return authorityRepository
             .existsById(authority.getName())
@@ -105,7 +104,7 @@ public class AuthorityResource {
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public Mono<ResponseEntity<Authority>> getAuthority(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<Authority>> getAuthority(@PathVariable String id) {
         LOG.debug("REST request to get Authority : {}", id);
         Mono<Authority> authority = authorityRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(authority);
@@ -119,7 +118,7 @@ public class AuthorityResource {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public Mono<ResponseEntity<Void>> deleteAuthority(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<Void>> deleteAuthority(@PathVariable String id) {
         LOG.debug("REST request to delete Authority : {}", id);
         return authorityRepository
             .deleteById(id)

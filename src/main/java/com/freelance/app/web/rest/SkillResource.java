@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.SkillCriteria;
-import com.freelance.app.repository.SkillRepository;
 import com.freelance.app.service.SkillService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class SkillResource {
 
     private final SkillService skillService;
 
-    private final SkillRepository skillRepository;
-
-    public SkillResource(SkillService skillService, SkillRepository skillRepository) {
+    public SkillResource(SkillService skillService) {
         this.skillService = skillService;
-        this.skillRepository = skillRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class SkillResource {
     public Mono<ResponseEntity<Skill>> createSkill(@Valid @RequestBody Skill skill) {
         LOG.debug("REST request to save Skill : {}", skill);
         if (skill.getId() != null) {
-            throw new BadRequestAlertException("A new skill cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new skill cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return skillService
             .save(skill)
@@ -89,16 +87,16 @@ public class SkillResource {
     public Mono<ResponseEntity<Skill>> updateSkill(@PathVariable(required = false) final Long id, @Valid @RequestBody Skill skill) {
         LOG.debug("REST request to update Skill : {}, {}", id, skill);
         if (skill.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, skill.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return skillRepository
-            .existsById(id)
+        return skillService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -130,16 +128,16 @@ public class SkillResource {
     ) {
         LOG.debug("REST request to partial update Skill partially : {}, {}", id, skill);
         if (skill.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, skill.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return skillRepository
-            .existsById(id)
+        return skillService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

@@ -155,8 +155,6 @@ public class AccountResource {
                 if (Objects.nonNull(user)) {
                     mailService.sendPasswordResetMail(user);
                 } else {
-                    // Pretend the request has been successful to prevent checking which emails really exist
-                    // but log that an invalid attempt has been made
                     LOG.warn("Password reset requested for non existing mail");
                 }
             })

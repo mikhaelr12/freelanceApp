@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Country;
 import com.freelance.app.domain.criteria.CountryCriteria;
-import com.freelance.app.repository.CountryRepository;
 import com.freelance.app.service.CountryService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class CountryResource {
 
     private final CountryService countryService;
 
-    private final CountryRepository countryRepository;
-
-    public CountryResource(CountryService countryService, CountryRepository countryRepository) {
+    public CountryResource(CountryService countryService) {
         this.countryService = countryService;
-        this.countryRepository = countryRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class CountryResource {
     public Mono<ResponseEntity<Country>> createCountry(@Valid @RequestBody Country country) {
         LOG.debug("REST request to save Country : {}", country);
         if (country.getId() != null) {
-            throw new BadRequestAlertException("A new country cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A) new country cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return countryService
             .save(country)
@@ -89,16 +87,16 @@ public class CountryResource {
     public Mono<ResponseEntity<Country>> updateCountry(@PathVariable(required = false) final Long id, @Valid @RequestBody Country country) {
         LOG.debug("REST request to update Country : {}, {}", id, country);
         if (country.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, country.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return countryRepository
-            .existsById(id)
+        return countryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -130,16 +128,16 @@ public class CountryResource {
     ) {
         LOG.debug("REST request to partial update Country partially : {}, {}", id, country);
         if (country.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid) id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, country.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid) ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return countryRepository
-            .existsById(id)
+        return countryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

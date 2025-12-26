@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Order;
 import com.freelance.app.domain.criteria.OrderCriteria;
-import com.freelance.app.repository.OrderRepository;
 import com.freelance.app.service.OrderService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class OrderResource {
 
     private final OrderService orderService;
 
-    private final OrderRepository orderRepository;
-
-    public OrderResource(OrderService orderService, OrderRepository orderRepository) {
+    public OrderResource(OrderService orderService) {
         this.orderService = orderService;
-        this.orderRepository = orderRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class OrderResource {
     public Mono<ResponseEntity<Order>> createOrder(@Valid @RequestBody Order order) {
         LOG.debug("REST request to save Order : {}", order);
         if (order.getId() != null) {
-            throw new BadRequestAlertException("A new order cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new order cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return orderService
             .save(order)
@@ -89,16 +87,16 @@ public class OrderResource {
     public Mono<ResponseEntity<Order>> updateOrder(@PathVariable(required = false) final Long id, @Valid @RequestBody Order order) {
         LOG.debug("REST request to update Order : {}, {}", id, order);
         if (order.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, order.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return orderRepository
-            .existsById(id)
+        return orderService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -130,16 +128,16 @@ public class OrderResource {
     ) {
         LOG.debug("REST request to partial update Order partially : {}, {}", id, order);
         if (order.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, order.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return orderRepository
-            .existsById(id)
+        return orderService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

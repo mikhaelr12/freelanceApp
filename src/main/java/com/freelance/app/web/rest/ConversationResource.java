@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Conversation;
 import com.freelance.app.domain.criteria.ConversationCriteria;
-import com.freelance.app.repository.ConversationRepository;
 import com.freelance.app.service.ConversationService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class ConversationResource {
 
     private final ConversationService conversationService;
 
-    private final ConversationRepository conversationRepository;
-
-    public ConversationResource(ConversationService conversationService, ConversationRepository conversationRepository) {
+    public ConversationResource(ConversationService conversationService) {
         this.conversationService = conversationService;
-        this.conversationRepository = conversationRepository;
     }
 
     /**
@@ -98,10 +96,10 @@ public class ConversationResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        return conversationRepository
-            .existsById(id)
+        return conversationService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -139,10 +137,10 @@ public class ConversationResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        return conversationRepository
-            .existsById(id)
+        return conversationService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

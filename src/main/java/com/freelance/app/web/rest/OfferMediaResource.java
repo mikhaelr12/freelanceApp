@@ -27,17 +27,17 @@ public class OfferMediaResource {
         this.offerMediaService = offerMediaService;
     }
 
-    @PostMapping(value = "/upload-media/{offerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload/{offerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity<Void>> uploadOfferMedia(@RequestPart Flux<FilePart> images, @PathVariable Long offerId) {
         return offerMediaService.uploadOfferMedia(images, offerId).map(ResponseEntity::ok);
     }
 
-    @DeleteMapping(value = "/delete-media/{offerId}")
+    @DeleteMapping(value = "/delete/{offerId}")
     public Mono<ResponseEntity<Void>> deleteOfferMedia(@PathVariable Long offerId, @RequestBody List<Long> mediaIds) {
         return offerMediaService.deleteOfferMedia(offerId, mediaIds).map(ResponseEntity::ok);
     }
 
-    @GetMapping("/retreive-images/{offerId}")
+    @GetMapping("/retreive/{offerId}")
     public Mono<ResponseEntity<List<OfferMediaDTO>>> getAllOfferMedias(@PathVariable Long offerId) {
         return offerMediaService.getAllOfferMedia(offerId).map(ResponseEntity::ok);
     }

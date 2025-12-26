@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Delivery;
 import com.freelance.app.domain.criteria.DeliveryCriteria;
-import com.freelance.app.repository.DeliveryRepository;
 import com.freelance.app.service.DeliveryService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class DeliveryResource {
 
     private final DeliveryService deliveryService;
 
-    private final DeliveryRepository deliveryRepository;
-
-    public DeliveryResource(DeliveryService deliveryService, DeliveryRepository deliveryRepository) {
+    public DeliveryResource(DeliveryService deliveryService) {
         this.deliveryService = deliveryService;
-        this.deliveryRepository = deliveryRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class DeliveryResource {
     public Mono<ResponseEntity<Delivery>> createDelivery(@Valid @RequestBody Delivery delivery) {
         LOG.debug("REST request to save Delivery : {}", delivery);
         if (delivery.getId() != null) {
-            throw new BadRequestAlertException("A new delivery cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new delivery cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return deliveryService
             .save(delivery)
@@ -92,16 +90,16 @@ public class DeliveryResource {
     ) {
         LOG.debug("REST request to update Delivery : {}, {}", id, delivery);
         if (delivery.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, delivery.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return deliveryRepository
-            .existsById(id)
+        return deliveryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -133,16 +131,16 @@ public class DeliveryResource {
     ) {
         LOG.debug("REST request to partial update Delivery partially : {}, {}", id, delivery);
         if (delivery.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, delivery.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return deliveryRepository
-            .existsById(id)
+        return deliveryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

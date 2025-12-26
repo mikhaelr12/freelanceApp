@@ -4,8 +4,8 @@ package com.freelance.app.domain.enumeration;
  * The ProfileType enumeration.
  */
 public enum ProfileType {
-    CLIENT("Client"),
-    FREELANCER("Freelancer");
+    FREELANCER("Freelancer"),
+    CLIENT("Client");
 
     private final String value;
 

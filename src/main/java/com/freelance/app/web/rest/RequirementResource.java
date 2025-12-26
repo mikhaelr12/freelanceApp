@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Requirement;
 import com.freelance.app.domain.criteria.RequirementCriteria;
-import com.freelance.app.repository.RequirementRepository;
 import com.freelance.app.service.RequirementService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class RequirementResource {
 
     private final RequirementService requirementService;
 
-    private final RequirementRepository requirementRepository;
-
-    public RequirementResource(RequirementService requirementService, RequirementRepository requirementRepository) {
+    public RequirementResource(RequirementService requirementService) {
         this.requirementService = requirementService;
-        this.requirementRepository = requirementRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class RequirementResource {
     public Mono<ResponseEntity<Requirement>> createRequirement(@Valid @RequestBody Requirement requirement) {
         LOG.debug("REST request to save Requirement : {}", requirement);
         if (requirement.getId() != null) {
-            throw new BadRequestAlertException("A new requirement cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new requirement cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return requirementService
             .save(requirement)
@@ -92,16 +90,16 @@ public class RequirementResource {
     ) {
         LOG.debug("REST request to update Requirement : {}, {}", id, requirement);
         if (requirement.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, requirement.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return requirementRepository
-            .existsById(id)
+        return requirementService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -133,16 +131,16 @@ public class RequirementResource {
     ) {
         LOG.debug("REST request to partial update Requirement partially : {}, {}", id, requirement);
         if (requirement.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, requirement.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return requirementRepository
-            .existsById(id)
+        return requirementService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 

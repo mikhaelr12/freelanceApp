@@ -1,8 +1,9 @@
 package com.freelance.app.web.rest;
 
+import static java.util.Objects.nonNull;
+
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
-import com.freelance.app.repository.SubcategoryRepository;
 import com.freelance.app.service.SubcategoryService;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -44,11 +45,8 @@ public class SubcategoryResource {
 
     private final SubcategoryService subcategoryService;
 
-    private final SubcategoryRepository subcategoryRepository;
-
-    public SubcategoryResource(SubcategoryService subcategoryService, SubcategoryRepository subcategoryRepository) {
+    public SubcategoryResource(SubcategoryService subcategoryService) {
         this.subcategoryService = subcategoryService;
-        this.subcategoryRepository = subcategoryRepository;
     }
 
     /**
@@ -61,7 +59,7 @@ public class SubcategoryResource {
     public Mono<ResponseEntity<Subcategory>> createSubcategory(@Valid @RequestBody Subcategory subcategory) {
         LOG.debug("REST request to save Subcategory : {}", subcategory);
         if (subcategory.getId() != null) {
-            throw new BadRequestAlertException("A new subcategory cannot already have an ID", ENTITY_NAME, "idexists");
+            return Mono.error(new BadRequestAlertException("A new subcategory cannot already have an ID", ENTITY_NAME, "idexists"));
         }
         return subcategoryService
             .save(subcategory)
@@ -92,16 +90,16 @@ public class SubcategoryResource {
     ) {
         LOG.debug("REST request to update Subcategory : {}, {}", id, subcategory);
         if (subcategory.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, subcategory.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return subcategoryRepository
-            .existsById(id)
+        return subcategoryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
@@ -133,16 +131,16 @@ public class SubcategoryResource {
     ) {
         LOG.debug("REST request to partial update Subcategory partially : {}, {}", id, subcategory);
         if (subcategory.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
         }
         if (!Objects.equals(id, subcategory.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return subcategoryRepository
-            .existsById(id)
+        return subcategoryService
+            .findOne(id)
             .flatMap(exists -> {
-                if (!exists) {
+                if (!nonNull(exists)) {
                     return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
                 }
 
