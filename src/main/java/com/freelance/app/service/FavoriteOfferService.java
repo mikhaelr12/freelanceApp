@@ -3,6 +3,8 @@ package com.freelance.app.service;
 import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.criteria.FavoriteOfferCriteria;
 import com.freelance.app.repository.FavoriteOfferRepository;
+import com.freelance.app.repository.OfferRepository;
+import com.freelance.app.util.ProfileHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +23,17 @@ public class FavoriteOfferService {
     private static final Logger LOG = LoggerFactory.getLogger(FavoriteOfferService.class);
 
     private final FavoriteOfferRepository favoriteOfferRepository;
+    private final ProfileHelper profileHelper;
+    private final OfferRepository offerRepository;
 
-    public FavoriteOfferService(FavoriteOfferRepository favoriteOfferRepository) {
+    public FavoriteOfferService(
+        FavoriteOfferRepository favoriteOfferRepository,
+        ProfileHelper profileHelper,
+        OfferRepository offerRepository
+    ) {
         this.favoriteOfferRepository = favoriteOfferRepository;
+        this.profileHelper = profileHelper;
+        this.offerRepository = offerRepository;
     }
 
     /**
@@ -121,5 +131,12 @@ public class FavoriteOfferService {
     public Mono<Void> delete(Long id) {
         LOG.debug("Request to delete FavoriteOffer : {}", id);
         return favoriteOfferRepository.deleteById(id);
+    }
+
+    public Mono<FavoriteOffer> createFavoriteOffer(Long offerId) {
+        return profileHelper
+            .getCurrentProfile()
+            .zipWith(offerRepository.findById(offerId))
+            .flatMap(tuple -> favoriteOfferRepository.save(new FavoriteOffer().offer(tuple.getT2()).profile(tuple.getT1())));
     }
 }
