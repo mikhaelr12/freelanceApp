@@ -25,5 +25,29 @@
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
+  <changeSet id="20251009121211-2" author="mihairusu">
+    <addColumn tableName="conversation">
+      <column name="participant_a_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="conversation">
+      <column name="participant_b_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+    <addForeignKeyConstraint baseTableName="conversation"
+                             baseColumnNames="participant_a_id"
+                             constraintName="fk_conversation__participant_a_id"
+                             referencedTableName="profile"
+                             referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint baseTableName="conversation"
+                             baseColumnNames="participant_b_id"
+                             constraintName="fk_conversation__participant_b_id"
+                             referencedTableName="profile"
+                             referencedColumnNames="id"/>
+  </changeSet>
 
 </databaseChangeLog>

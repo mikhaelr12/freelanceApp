@@ -12,7 +12,8 @@ public class ConversationSqlHelper {
         List<Expression> columns = new ArrayList<>();
         columns.add(Column.aliased("id", table, columnPrefix + "_id"));
         columns.add(Column.aliased("created_at", table, columnPrefix + "_created_at"));
-        columns.add(Column.aliased("order_id", table, columnPrefix + "_order_id"));
+        columns.add(Column.aliased("participant_a_id", table, columnPrefix + "_participant_a_id"));
+        columns.add(Column.aliased("participant_b_id", table, columnPrefix + "_participant_b_id"));
         return columns;
     }
 }

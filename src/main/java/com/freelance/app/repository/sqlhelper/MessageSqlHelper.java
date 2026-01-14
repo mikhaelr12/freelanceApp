@@ -13,9 +13,9 @@ public class MessageSqlHelper {
         columns.add(Column.aliased("id", table, columnPrefix + "_id"));
         columns.add(Column.aliased("body", table, columnPrefix + "_body"));
         columns.add(Column.aliased("sent_at", table, columnPrefix + "_sent_at"));
-
         columns.add(Column.aliased("conversation_id", table, columnPrefix + "_conversation_id"));
         columns.add(Column.aliased("sender_id", table, columnPrefix + "_sender_id"));
+        columns.add(Column.aliased("receiver_id", table, columnPrefix + "_receiver_id"));
         return columns;
     }
 }

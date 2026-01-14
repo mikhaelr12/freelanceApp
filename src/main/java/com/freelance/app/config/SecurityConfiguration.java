@@ -75,6 +75,7 @@ public class SecurityConfiguration {
                 authz
                     .pathMatchers("/").permitAll()
                     .pathMatchers("/*.*").permitAll()
+                    .pathMatchers("/api/ws/**").permitAll()
                     .pathMatchers("/api/authenticate").permitAll()
                     .pathMatchers("/api/register").permitAll()
                     .pathMatchers("/api/activate").permitAll()

@@ -5,6 +5,7 @@ import com.freelance.app.domain.criteria.ConversationCriteria;
 import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.ConversationRowMapper;
 import com.freelance.app.repository.rowmapper.OrderRowMapper;
+import com.freelance.app.repository.rowmapper.ProfileRowMapper;
 import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
 import com.freelance.app.repository.sqlhelper.OrderSqlHelper;
 import io.r2dbc.spi.Row;
@@ -34,7 +35,6 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
 
     private final DatabaseClient db;
     private final EntityManager entityManager;
-    private final OrderRowMapper orderMapper;
     private final ConversationRowMapper conversationMapper;
     private final ColumnConverter columnConverter;
 
@@ -48,7 +48,8 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
         ConversationRowMapper conversationMapper,
         R2dbcEntityOperations entityOperations,
         R2dbcConverter converter,
-        ColumnConverter columnConverter
+        ColumnConverter columnConverter,
+        ProfileRowMapper profileRowMapper
     ) {
         super(
             new MappingRelationalEntityInformation(converter.getMappingContext().getRequiredPersistentEntity(Conversation.class)),
@@ -57,7 +58,6 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
         );
         this.db = template.getDatabaseClient();
         this.entityManager = entityManager;
-        this.orderMapper = orderMapper;
         this.conversationMapper = conversationMapper;
         this.columnConverter = columnConverter;
     }
@@ -96,9 +96,7 @@ class ConversationRepositoryInternalImpl extends SimpleR2dbcRepository<Conversat
     }
 
     private Conversation process(Row row, RowMetadata metadata) {
-        Conversation entity = conversationMapper.apply(row, "e");
-        entity.setOrder(orderMapper.apply(row, "order"));
-        return entity;
+        return conversationMapper.apply(row, "e");
     }
 
     @Override

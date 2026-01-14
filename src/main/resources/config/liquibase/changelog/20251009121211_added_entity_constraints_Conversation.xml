@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
-                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <!--
         Added the constraints for entity Conversation.
     -->
@@ -17,4 +15,16 @@
                                  referencedTableName="jhi_order"
                                  />
     </changeSet>
+
+  <changeSet id="20251009121211-3" author="mihairusu">
+    <dropForeignKeyConstraint baseTableName="conversation"
+                              constraintName="fk_conversation__order_id"/>
+
+  </changeSet>
+
+  <changeSet id="20251009121211-4" author="mihairusu">
+    <dropColumn tableName="conversation"
+                columnName="order_id"/>
+  </changeSet>
+
 </databaseChangeLog>

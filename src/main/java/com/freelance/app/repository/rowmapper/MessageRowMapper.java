@@ -30,6 +30,7 @@ public class MessageRowMapper implements BiFunction<Row, String, Message> {
         entity.setSentAt(converter.fromRow(row, prefix + "_sent_at", Instant.class));
         entity.setConversationId(converter.fromRow(row, prefix + "_conversation_id", Long.class));
         entity.setSenderId(converter.fromRow(row, prefix + "_sender_id", Long.class));
+        entity.setReceiverId(converter.fromRow(row, prefix + "_receiver_id", Long.class));
         return entity;
     }
 }

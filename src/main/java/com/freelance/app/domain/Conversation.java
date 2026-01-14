@@ -1,6 +1,5 @@
 package com.freelance.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
@@ -27,12 +26,11 @@ public class Conversation implements Serializable {
     @Column("created_at")
     private Instant createdAt;
 
-    @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "buyer", "seller", "offerpackage" }, allowSetters = true)
-    private Order order;
+    @Column("participant_a_id")
+    private Long participantAId;
 
-    @Column("order_id")
-    private Long orderId;
+    @Column("participant_b_id")
+    private Long participantBId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -62,26 +60,30 @@ public class Conversation implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Order getOrder() {
-        return this.order;
+    public Long getParticipantAId() {
+        return participantAId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-        this.orderId = order != null ? order.getId() : null;
+    public void setParticipantAId(Long participantAId) {
+        this.participantAId = participantAId;
     }
 
-    public Conversation order(Order order) {
-        this.setOrder(order);
+    public Long getParticipantBId() {
+        return participantBId;
+    }
+
+    public void setParticipantBId(Long participantBId) {
+        this.participantBId = participantBId;
+    }
+
+    public Conversation participantAId(Long participantAId) {
+        this.setParticipantAId(participantAId);
         return this;
     }
 
-    public Long getOrderId() {
-        return this.orderId;
-    }
-
-    public void setOrderId(Long order) {
-        this.orderId = order;
+    public Conversation participantBId(Long participantBId) {
+        this.setParticipantBId(participantBId);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
