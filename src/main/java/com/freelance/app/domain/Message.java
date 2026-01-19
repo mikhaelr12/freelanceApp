@@ -38,13 +38,19 @@ public class Message implements Serializable {
     private Conversation conversation;
 
     @org.springframework.data.annotation.Transient
-    private User sender;
+    private Profile sender;
+
+    @org.springframework.data.annotation.Transient
+    private Profile receiver;
 
     @Column("conversation_id")
     private Long conversationId;
 
     @Column("sender_id")
     private Long senderId;
+
+    @Column("receiver_id")
+    private Long receiverId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -101,17 +107,30 @@ public class Message implements Serializable {
         return this;
     }
 
-    public User getSender() {
+    public Profile getSender() {
         return this.sender;
     }
 
-    public void setSender(User user) {
+    public void setSender(Profile user) {
         this.sender = user;
         this.senderId = user != null ? user.getId() : null;
     }
 
-    public Message sender(User user) {
+    public Message sender(Profile user) {
         this.setSender(user);
+        return this;
+    }
+
+    public Profile getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Profile receiver) {
+        this.receiver = receiver;
+    }
+
+    public Message receiver(Profile receiver) {
+        this.setReceiver(receiver);
         return this;
     }
 
@@ -129,6 +148,29 @@ public class Message implements Serializable {
 
     public void setSenderId(Long user) {
         this.senderId = user;
+    }
+
+    public Message conversationId(Long conversationId) {
+        this.setConversationId(conversationId);
+        return this;
+    }
+
+    public Message senderId(Long senderId) {
+        this.setSenderId(senderId);
+        return this;
+    }
+
+    public Long getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(Long receiverId) {
+        this.receiverId = receiverId;
+    }
+
+    public Message receiverId(Long receiverId) {
+        this.setReceiverId(receiverId);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

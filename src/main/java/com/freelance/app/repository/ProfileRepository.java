@@ -5,6 +5,7 @@ import com.freelance.app.domain.criteria.ProfileCriteria;
 import com.freelance.app.service.dto.ProfileDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -37,6 +38,9 @@ public interface ProfileRepository extends ReactiveCrudRepository<Profile, Long>
     Mono<Void> deleteById(@NotNull Long id);
 
     Mono<Profile> findByUserId(Long id);
+
+    @Query("SELECT * FROM profile WHERE id = ANY(:ids)")
+    Flux<Profile> findAllByIds(Long[] ids);
 }
 
 interface ProfileRepositoryInternal {

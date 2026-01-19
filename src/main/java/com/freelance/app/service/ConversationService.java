@@ -1,8 +1,18 @@
 package com.freelance.app.service;
 
 import com.freelance.app.domain.Conversation;
-import com.freelance.app.domain.criteria.ConversationCriteria;
+import com.freelance.app.domain.Message;
+import com.freelance.app.domain.Profile;
 import com.freelance.app.repository.ConversationRepository;
+import com.freelance.app.repository.MessageRepository;
+import com.freelance.app.repository.ProfileRepository;
+import com.freelance.app.service.dto.ConversationDTO;
+import com.freelance.app.util.ProfileHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,61 +29,98 @@ public class ConversationService {
     private static final Logger LOG = LoggerFactory.getLogger(ConversationService.class);
 
     private final ConversationRepository conversationRepository;
+    private final ProfileHelper profileHelper;
+    private final MessageRepository messageRepository;
+    private final ProfileRepository profileRepository;
 
-    public ConversationService(ConversationRepository conversationRepository) {
+    public ConversationService(
+        ConversationRepository conversationRepository,
+        ProfileHelper profileHelper,
+        MessageRepository messageRepository,
+        ProfileRepository profileRepository
+    ) {
         this.conversationRepository = conversationRepository;
+        this.profileHelper = profileHelper;
+        this.messageRepository = messageRepository;
+        this.profileRepository = profileRepository;
     }
 
-    /**
-     * Save a conversation.
-     *
-     * @param conversation the entity to save.
-     * @return the persisted entity.
-     */
-    public Mono<Conversation> save(Conversation conversation) {
-        LOG.debug("Request to save Conversation : {}", conversation);
-        return conversationRepository.save(conversation);
+    public Mono<List<ConversationDTO>> getAllMyConversations() {
+        return profileHelper
+            .getCurrentProfile()
+            .flatMap(me ->
+                conversationRepository
+                    .findConversations(me.getId())
+                    .collectList()
+                    .flatMap(convos -> {
+                        if (convos.isEmpty()) return Mono.just(List.of());
+
+                        Long[] convoIds = convos.stream().map(Conversation::getId).toArray(Long[]::new);
+
+                        Long[] otherIds = convos
+                            .stream()
+                            .map(c -> otherParticipantId(c, me.getId()))
+                            .filter(Objects::nonNull)
+                            .distinct()
+                            .toArray(Long[]::new);
+
+                        Mono<List<Message>> lastMsgsMono = messageRepository.findLatestForEachConversation(convoIds).collectList();
+
+                        Mono<Map<Long, String>> namesMono = otherIds.length == 0
+                            ? Mono.just(Map.of())
+                            : profileRepository.findAllByIds(otherIds).collectMap(Profile::getId, this::displayNameSafe);
+
+                        return Mono.zip(lastMsgsMono, namesMono)
+                            .map(tuple -> processConversations(convos, tuple.getT1(), tuple.getT2(), me.getId()))
+                            .doOnError(e -> LOG.error("getAllMyConversations failed", e));
+                    })
+            );
     }
 
-    /**
-     * Find the count of conversations by criteria.
-     * @param criteria filtering criteria
-     * @return the count of conversations
-     */
-    public Mono<Long> countByCriteria(ConversationCriteria criteria) {
-        LOG.debug("Request to get the count of all Conversations by Criteria");
-        return conversationRepository.countByCriteria(criteria);
+    private List<ConversationDTO> processConversations(
+        List<Conversation> conversations,
+        List<Message> lastMessages,
+        Map<Long, String> namesById,
+        Long myId
+    ) {
+        Map<Long, Message> lastByConvoId = lastMessages
+            .stream()
+            .filter(m -> m.getConversationId() != null)
+            .collect(Collectors.toMap(Message::getConversationId, m -> m, (a, _) -> a));
+
+        List<ConversationDTO> out = new ArrayList<>(conversations.size());
+
+        for (Conversation c : conversations) {
+            Long otherId = otherParticipantId(c, myId);
+            Message last = lastByConvoId.get(c.getId());
+
+            ConversationDTO dto = new ConversationDTO();
+            dto.setConversationId(c.getId());
+            dto.setPersonal(true);
+            dto.setLastMessage(last != null ? last.getBody() : null);
+            dto.setReceiverName(otherId != null ? namesById.getOrDefault(otherId, "Unknown") : "Unknown");
+
+            out.add(dto);
+        }
+
+        return out;
     }
 
-    /**
-     * Returns the number of conversations available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return conversationRepository.count();
+    private Long otherParticipantId(Conversation c, Long myId) {
+        Long a = c.getParticipantAId();
+        Long b = c.getParticipantBId();
+        if (myId.equals(a)) return b;
+        if (myId.equals(b)) return a;
+        return null;
     }
 
-    /**
-     * Get one conversation by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    @Transactional(readOnly = true)
-    public Mono<Conversation> findOne(Long id) {
-        LOG.debug("Request to get Conversation : {}", id);
-        return conversationRepository.findById(id);
-    }
-
-    /**
-     * Delete the conversation by id.
-     *
-     * @param id the id of the entity.
-     * @return a Mono to signal the deletion
-     */
-    public Mono<Void> delete(Long id) {
-        LOG.debug("Request to delete Conversation : {}", id);
-        return conversationRepository.deleteById(id);
+    private String displayNameSafe(Profile p) {
+        // adjust based on your Profile fields
+        // examples: p.getDisplayName(), p.getFirstName() + " " + p.getLastName(), etc.
+        String first = p.getFirstName();
+        String last = p.getLastName();
+        String full = (first == null ? "" : first.trim()) + " " + (last == null ? "" : last.trim());
+        full = full.trim();
+        return full.isEmpty() ? "Unknown" : full;
     }
 }

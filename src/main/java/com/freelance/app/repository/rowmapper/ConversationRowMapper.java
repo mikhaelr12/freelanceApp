@@ -27,7 +27,8 @@ public class ConversationRowMapper implements BiFunction<Row, String, Conversati
         Conversation entity = new Conversation();
         entity.setId(converter.fromRow(row, prefix + "_id", Long.class));
         entity.setCreatedAt(converter.fromRow(row, prefix + "_created_at", Instant.class));
-        entity.setOrderId(converter.fromRow(row, prefix + "_order_id", Long.class));
+        entity.setParticipantAId(converter.fromRow(row, prefix + "_participant_a_id", Long.class));
+        entity.setParticipantBId(converter.fromRow(row, prefix + "_participant_b_id", Long.class));
         return entity;
     }
 }

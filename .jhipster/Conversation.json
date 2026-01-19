@@ -13,15 +13,7 @@
   "jpaMetamodelFiltering": true,
   "name": "Conversation",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityField": "id",
-      "otherEntityName": "order",
-      "relationshipName": "order",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
+  "relationships": [],
   "searchEngine": "no",
   "service": "serviceClass"
 }

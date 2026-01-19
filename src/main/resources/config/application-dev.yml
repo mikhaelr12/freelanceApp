@@ -4,8 +4,8 @@ logging:
     tech.jhipster: INFO
     org.hibernate.SQL: INFO
     com.freelance.app: INFO
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
+#    io.r2dbc.postgresql.QUERY: DEBUG
+#    io.r2dbc.postgresql.PARAM: DEBUG
 
 spring:
   devtools:

@@ -11,10 +11,8 @@ import com.freelance.app.repository.*;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferShortDTO;
 import com.freelance.app.service.dto.ProfileDTO;
-import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.ImageHelper;
 import com.freelance.app.util.ProfileHelper;
-import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +40,6 @@ public class OfferService {
     private final ProfileService profileService;
     private final ProfileHelper profileHelper;
     private final TagRepository tagRepository;
-    private final FileProcessUtil fileProcessUtil;
     private final ImageHelper imageHelper;
     private final FileObjectRepository fileObjectRepository;
 
@@ -53,7 +50,6 @@ public class OfferService {
         ProfileService profileService,
         ProfileHelper profileHelper,
         TagRepository tagRepository,
-        FileProcessUtil fileProcessUtil,
         ImageHelper imageHelper,
         FileObjectRepository fileObjectRepository
     ) {
@@ -63,7 +59,6 @@ public class OfferService {
         this.profileService = profileService;
         this.profileHelper = profileHelper;
         this.tagRepository = tagRepository;
-        this.fileProcessUtil = fileProcessUtil;
         this.imageHelper = imageHelper;
         this.fileObjectRepository = fileObjectRepository;
     }
@@ -113,7 +108,7 @@ public class OfferService {
             .flatMap(offer ->
                 tagRepository
                     .findAllById(dto.getTagIds())
-                    .switchIfEmpty(Mono.error(new BadRequestAlertException("No tags found", "Tags", "tagNotFound")))
+                    .switchIfEmpty(Mono.error(new NotFoundAlertException("No tags found", "Tags", "tagNotFound")))
                     .collect(Collectors.toSet())
                     .flatMap(tags ->
                         profileHelper

@@ -38,6 +38,24 @@ public interface ConversationRepository extends ReactiveCrudRepository<Conversat
     @Override
     @NotNull
     Mono<Void> deleteById(@NotNull Long id);
+
+    @Query(
+        """
+        SELECT * FROM conversation
+                WHERE (participant_a_id = :participantAId AND participant_b_id = :participantBId)
+                   OR (participant_a_id = :participantBId AND participant_b_id = :participantAId)
+                LIMIT 1
+        """
+    )
+    Mono<Conversation> findBetween(Long participantAId, Long participantBId);
+
+    @Query(
+        """
+        SELECT * FROM conversation c
+        WHERE c.participant_a_id = :participantId or c.participant_b_id = :participantId;
+        """
+    )
+    Flux<Conversation> findConversations(Long participantId);
 }
 
 interface ConversationRepositoryInternal {

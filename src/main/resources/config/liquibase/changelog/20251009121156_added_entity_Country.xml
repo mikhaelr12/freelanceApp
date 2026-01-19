@@ -2,7 +2,7 @@
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <!--
         Added the entity Country.
@@ -45,6 +45,9 @@
         <dropDefaultValue tableName="country" columnName="last_modified_date" columnDataType="${datetimeType}"/>
     </changeSet>
 
+  <changeSet id="20251009121156-2" author="mihairusu">
+    <dropTable tableName="country"/>
+  </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
 

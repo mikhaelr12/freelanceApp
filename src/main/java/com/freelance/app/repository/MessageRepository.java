@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Message;
 import com.freelance.app.domain.criteria.MessageCriteria;
+import com.freelance.app.service.dto.MessageShortDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
@@ -53,6 +54,16 @@ public interface MessageRepository extends ReactiveCrudRepository<Message, Long>
     @Override
     @NotNull
     Mono<Void> deleteById(@NotNull Long id);
+
+    @Query(
+        """
+        SELECT * FROM message m
+        WHERE m.conversation_id = ANY(:conversationIds)
+        ORDER BY m.sent_at DESC
+        LIMIT 1;
+        """
+    )
+    Flux<Message> findLatestForEachConversation(Long[] conversationIds);
 }
 
 interface MessageRepositoryInternal {
@@ -75,4 +86,6 @@ interface MessageRepositoryInternal {
     Flux<Message> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
+
+    Flux<MessageShortDTO> findAllConversationMessages(Long conversationId);
 }

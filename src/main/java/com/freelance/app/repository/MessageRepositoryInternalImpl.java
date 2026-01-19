@@ -2,13 +2,11 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Message;
 import com.freelance.app.domain.criteria.MessageCriteria;
-import com.freelance.app.repository.rowmapper.ColumnConverter;
-import com.freelance.app.repository.rowmapper.ConversationRowMapper;
-import com.freelance.app.repository.rowmapper.MessageRowMapper;
-import com.freelance.app.repository.rowmapper.UserRowMapper;
+import com.freelance.app.repository.rowmapper.*;
 import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
 import com.freelance.app.repository.sqlhelper.MessageSqlHelper;
-import com.freelance.app.repository.sqlhelper.UserSqlHelper;
+import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
+import com.freelance.app.service.dto.MessageShortDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -37,23 +35,24 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
     private final DatabaseClient db;
     private final EntityManager entityManager;
     private final ConversationRowMapper conversationMapper;
-    private final UserRowMapper userMapper;
     private final MessageRowMapper messageMapper;
     private final ColumnConverter columnConverter;
+    private final ProfileRowMapper profileMapper;
 
     private static final Table entityTable = Table.aliased("message", EntityManager.ENTITY_ALIAS);
     private static final Table conversationTable = Table.aliased("conversation", "conversation");
-    private static final Table senderTable = Table.aliased("jhi_user", "sender");
+    private static final Table senderTable = Table.aliased("profile", "sender");
+    private static final Table receiverTable = Table.aliased("profile", "receiver");
 
     public MessageRepositoryInternalImpl(
         R2dbcEntityTemplate template,
         EntityManager entityManager,
         ConversationRowMapper conversationMapper,
-        UserRowMapper userMapper,
         MessageRowMapper messageMapper,
         R2dbcEntityOperations entityOperations,
         R2dbcConverter converter,
-        ColumnConverter columnConverter
+        ColumnConverter columnConverter,
+        ProfileRowMapper profileMapper
     ) {
         super(
             new MappingRelationalEntityInformation(converter.getMappingContext().getRequiredPersistentEntity(Message.class)),
@@ -63,9 +62,9 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
         this.db = template.getDatabaseClient();
         this.entityManager = entityManager;
         this.conversationMapper = conversationMapper;
-        this.userMapper = userMapper;
         this.messageMapper = messageMapper;
         this.columnConverter = columnConverter;
+        this.profileMapper = profileMapper;
     }
 
     @Override
@@ -82,7 +81,11 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
             .equals(Column.create("id", conversationTable))
             .leftOuterJoin(senderTable)
             .on(Column.create("sender_id", entityTable))
-            .equals(Column.create("id", senderTable));
+            .equals(Column.create("id", senderTable))
+            .leftOuterJoin(receiverTable)
+            .on(Column.create("receiver_id", entityTable))
+            .equals(Column.create("id", receiverTable));
+
         String select = entityManager.createSelect(selectFrom, Message.class, pageable, condition);
         return db.sql(select);
     }
@@ -90,7 +93,8 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
     RowsFetchSpec<Message> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = MessageSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
         columns.addAll(ConversationSqlHelper.getColumns(conversationTable, "conversation"));
-        columns.addAll(UserSqlHelper.getColumns(senderTable, "sender"));
+        columns.addAll(ProfileSqlHelper.getColumns(senderTable, "sender"));
+        columns.addAll(ProfileSqlHelper.getColumns(receiverTable, "receiver"));
         return createQuery(pageable, whereClause, columns).map(this::process);
     }
 
@@ -120,10 +124,18 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
         return findAllBy(page);
     }
 
+    @Override
+    public Flux<MessageShortDTO> findAllConversationMessages(Long conversationId) {
+        Condition where = Conditions.isEqual(entityTable.column("conversation_id"), Conditions.just(conversationId.toString()));
+        List<Expression> columns = MessageSqlHelper.getColumnsShortDTO(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(null, where, columns).map((row, rowMetadata) -> messageMapper.applyShortDTO(row, "e")).all();
+    }
+
     private Message process(Row row, RowMetadata metadata) {
         Message entity = messageMapper.apply(row, "e");
         entity.setConversation(conversationMapper.apply(row, "conversation"));
-        entity.setSender(userMapper.apply(row, "sender"));
+        entity.setSender(profileMapper.apply(row, "sender"));
+        entity.setReceiver(profileMapper.apply(row, "receiver"));
         return entity;
     }
 
