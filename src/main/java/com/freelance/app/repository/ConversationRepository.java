@@ -48,6 +48,14 @@ public interface ConversationRepository extends ReactiveCrudRepository<Conversat
         """
     )
     Mono<Conversation> findBetween(Long participantAId, Long participantBId);
+
+    @Query(
+        """
+        SELECT * FROM conversation c
+        WHERE c.participant_a_id = :participantId or c.participant_b_id = :participantId;
+        """
+    )
+    Flux<Conversation> findConversations(Long participantId);
 }
 
 interface ConversationRepositoryInternal {

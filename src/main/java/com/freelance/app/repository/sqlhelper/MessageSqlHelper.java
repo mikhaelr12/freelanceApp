@@ -18,4 +18,13 @@ public class MessageSqlHelper {
         columns.add(Column.aliased("receiver_id", table, columnPrefix + "_receiver_id"));
         return columns;
     }
+
+    public static List<Expression> getColumnsShortDTO(Table table, String columnPrefix) {
+        return List.of(
+            Column.aliased("id", table, columnPrefix + "_id"),
+            Column.aliased("body", table, columnPrefix + "_body"),
+            Column.aliased("sender_id", table, columnPrefix + "_sender_id"),
+            Column.aliased("receiver_id", table, columnPrefix + "_receiver_id")
+        );
+    }
 }
