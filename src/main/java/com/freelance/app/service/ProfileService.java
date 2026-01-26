@@ -15,6 +15,8 @@ import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.MinioUtil;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
+import com.freelance.app.web.rest.errors.NotFoundAlertException;
+import com.freelance.app.web.rest.errors.UnauthorizedAlertException;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,7 @@ import reactor.core.scheduler.Schedulers;
 public class ProfileService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProfileService.class);
+    private static final String ENTITY_NAME = "profile";
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
@@ -76,12 +79,12 @@ public class ProfileService {
      * @return the persisted entity.
      */
     @Transactional
-    public Mono<Void> update(ProfileEditDTO dto, Long profileId) {
+    public Mono<Profile> update(ProfileEditDTO dto, Long profileId) {
         LOG.debug("Request to update Profile : {}", dto);
 
         return profileRepository
             .findById(profileId)
-            .switchIfEmpty(Mono.error(new IllegalStateException("Profile not found with id: " + profileId)))
+            .switchIfEmpty(Mono.error(new NotFoundAlertException("Profile not found", ENTITY_NAME, "profileNotFound")))
             .flatMap(profile -> {
                 if (dto.firstName() != null) profile.setFirstName(dto.firstName());
                 if (dto.lastName() != null) profile.setLastName(dto.lastName());
@@ -92,8 +95,7 @@ public class ProfileService {
                     : updateSkills(dto.skills(), profile).thenReturn(profile);
 
                 return afterSkills.flatMap(profileRepository::save);
-            })
-            .then();
+            });
     }
 
     /**
@@ -161,7 +163,23 @@ public class ProfileService {
         return profileRepository
             .findById(id)
             .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
-            .then(profileRepository.deleteById(id));
+            .zipWith(SecurityUtils.getCurrentUserLogin())
+            .flatMap(tuple ->
+                userRepository
+                    .findOneByLogin(tuple.getT2())
+                    .flatMap(user -> {
+                        if (!tuple.getT1().getUserId().equals(user.getId())) {
+                            return Mono.error(
+                                new UnauthorizedAlertException(
+                                    "Profile doesnt belong to current user",
+                                    ENTITY_NAME,
+                                    "profileNotBelongingToCurrentUser"
+                                )
+                            );
+                        }
+                        return profileRepository.delete(tuple.getT1());
+                    })
+            );
     }
 
     @Transactional
@@ -171,7 +189,7 @@ public class ProfileService {
             .flatMap(login ->
                 userRepository
                     .findOneByLogin(login)
-                    .switchIfEmpty(Mono.error(new IllegalStateException("User not found: " + login)))
+                    .switchIfEmpty(Mono.error(new BadRequestAlertException("User not found", "User", "userNotFound")))
                     .flatMap(user ->
                         skillRepository
                             .findAllById(dto.skillIds() == null ? List.of() : dto.skillIds())

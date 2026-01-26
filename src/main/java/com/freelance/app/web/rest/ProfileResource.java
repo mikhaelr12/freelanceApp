@@ -46,7 +46,7 @@ public class ProfileResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileDTO, or with status {@code 400 (Bad Request)} if the profile has already an ID.
      */
     @PostMapping(value = "")
-    public Mono<ResponseEntity<Profile>> createProfile(@RequestBody ProfileCreationDTO profileDTO) {
+    public Mono<ResponseEntity<Profile>> createProfile(@Valid @RequestBody ProfileCreationDTO profileDTO) {
         LOG.debug("REST request to save Profile : {}", profileDTO);
         return profileService
             .createProfile(profileDTO)
@@ -64,12 +64,9 @@ public class ProfileResource {
      * or with status {@code 500 (Internal Server Error)} if the profileDTO couldn't be updated.
      */
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Void>> updateProfile(
-        @PathVariable(required = false) final Long id,
-        @Valid @RequestBody ProfileEditDTO profileDTO
-    ) {
+    public Mono<ResponseEntity<Profile>> updateProfile(@PathVariable Long id, @Valid @RequestBody ProfileEditDTO profileDTO) {
         LOG.debug("REST request to update Profile : {}, {}", id, profileDTO);
-        return profileService.update(profileDTO, id).then(Mono.just(ResponseEntity.ok().build()));
+        return profileService.update(profileDTO, id).map(ResponseEntity::ok);
     }
 
     /**

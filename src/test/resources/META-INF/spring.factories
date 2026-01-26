@@ -1,2 +1,3 @@
-org.springframework.test.context.ContextCustomizerFactory = \
-    com.freelance.app.config.SqlTestContainersSpringContextCustomizerFactory
+org.springframework.test.context.ContextCustomizerFactory=\
+    com.freelance.app.config.SqlTestContainersSpringContextCustomizerFactory, \
+    com.freelance.app.config.embedded.minio.MinIOTestContainersSpringContextCustomizerFactory

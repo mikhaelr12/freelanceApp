@@ -8,7 +8,7 @@ import java.util.Set;
 public record ProfileCreationDTO(
     @NotBlank String firstName,
     @NotBlank String lastName,
-    @NotBlank String description,
+    String description,
     @NotNull ProfileType profileType,
 
     Set<Long> skillIds
