@@ -43,7 +43,8 @@ public class ProfileResource {
      * {@code POST  /profiles} : Create a new profile.
      *
      * @param profileDTO the profileDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileDTO, or with status {@code 400 (Bad Request)} if the profile has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new profileDTO,
+     * or with status {@code 400 (Bad Request)} if the profile has already an ID.
      */
     @PostMapping(value = "")
     public Mono<ResponseEntity<Profile>> createProfile(@Valid @RequestBody ProfileCreationDTO profileDTO) {

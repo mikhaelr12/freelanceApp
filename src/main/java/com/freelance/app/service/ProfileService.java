@@ -25,14 +25,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -96,18 +94,6 @@ public class ProfileService {
 
                 return afterSkills.flatMap(profileRepository::save);
             });
-    }
-
-    /**
-     * Find profiles by Criteria.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Flux<ProfileDTO> findByCriteria(ProfileCriteria criteria, Pageable pageable) {
-        LOG.debug("Request to get all Profiles by Criteria");
-        return null;
     }
 
     /**

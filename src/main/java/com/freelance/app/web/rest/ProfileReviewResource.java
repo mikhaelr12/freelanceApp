@@ -22,8 +22,6 @@ public class ProfileReviewResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProfileReviewResource.class);
 
-    private static final String ENTITY_NAME = "profileReview";
-
     private final ProfileReviewService profileReviewService;
 
     public ProfileReviewResource(ProfileReviewService profileReviewService) {

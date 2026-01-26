@@ -115,8 +115,6 @@ public class ConversationService {
     }
 
     private String displayNameSafe(Profile p) {
-        // adjust based on your Profile fields
-        // examples: p.getDisplayName(), p.getFirstName() + " " + p.getLastName(), etc.
         String first = p.getFirstName();
         String last = p.getLastName();
         String full = (first == null ? "" : first.trim()) + " " + (last == null ? "" : last.trim());

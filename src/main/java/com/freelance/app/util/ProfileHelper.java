@@ -26,17 +26,12 @@ public class ProfileHelper {
         return SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .switchIfEmpty(Mono.error(new NotFoundAlertException("User not found", ENTITY_NAME, "userNotFound")))
-            .flatMap(
-                user ->
-                    profileRepository
-                        .findByUserId(user.getId())
-                        .switchIfEmpty(
-                            Mono.error(new BadRequestAlertException("Profile not found", user.getId().toString(), "profileNotFound"))
-                        )
-                //                    .flatMap(profile -> {
-                //                        profile.setUser(user);
-                //                        return Mono.just(profile);
-                //                    })
+            .flatMap(user ->
+                profileRepository
+                    .findByUserId(user.getId())
+                    .switchIfEmpty(
+                        Mono.error(new BadRequestAlertException("Profile not found", user.getId().toString(), "profileNotFound"))
+                    )
             );
     }
 

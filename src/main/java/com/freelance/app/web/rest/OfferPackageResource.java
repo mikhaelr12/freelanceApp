@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -23,9 +22,6 @@ public class OfferPackageResource {
 
     private static final String ENTITY_NAME = "offerPackage";
 
-    @Value("${jhipster.clientApp.name}")
-    private String applicationName;
-
     private final OfferPackageService offerPackageService;
 
     public OfferPackageResource(OfferPackageService offerPackageService) {
@@ -37,16 +33,19 @@ public class OfferPackageResource {
         @PathVariable Long offerId,
         @Valid @RequestBody OfferPackageDTO offerPackage
     ) {
+        LOG.debug("REST request to save OfferPackage : {}", offerPackage);
         return offerPackageService.createOfferPackage(offerId, offerPackage).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{offerId}")
     public Mono<ResponseEntity<List<OfferPackageDTO>>> getOfferPackage(@PathVariable Long offerId) {
+        LOG.debug("REST request to get OfferPackage : {}", offerId);
         return offerPackageService.getAllOfferPackagesForOffer(offerId).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{offerId}")
     public Mono<ResponseEntity<Void>> deleteOfferPackage(@PathVariable Long offerId) {
+        LOG.debug("REST request to delete OfferPackage : {}", offerId);
         return offerPackageService.deleteOfferPackage(offerId).map(ResponseEntity::ok);
     }
 }
