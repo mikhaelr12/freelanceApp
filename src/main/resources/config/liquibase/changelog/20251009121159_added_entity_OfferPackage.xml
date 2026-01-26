@@ -56,5 +56,10 @@
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
+  <changeSet id="20251009121159-2" author="mihairusu">
+    <update tableName="offer_package">
+      <column name="currency" defaultValue="USD"/>
+    </update>
+  </changeSet>
 
 </databaseChangeLog>

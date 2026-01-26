@@ -222,7 +222,7 @@ public class ProfileService {
             .getCurrentProfile()
             .flatMap(profile -> {
                 if (
-                    Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_JPEG) &&
+                    Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_JPEG) ||
                     Objects.equals(profilePicture.headers().getContentType(), MediaType.IMAGE_PNG)
                 ) {
                     return fileProcessUtil

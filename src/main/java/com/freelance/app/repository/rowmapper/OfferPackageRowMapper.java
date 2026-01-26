@@ -2,6 +2,7 @@ package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.OfferPackage;
 import com.freelance.app.domain.enumeration.PackageTier;
+import com.freelance.app.service.dto.OfferPackageDTO;
 import io.r2dbc.spi.Row;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -41,5 +42,18 @@ public class OfferPackageRowMapper implements BiFunction<Row, String, OfferPacka
         entity.setLastModifiedBy(converter.fromRow(row, prefix + "_last_modified_by", String.class));
         entity.setOfferId(converter.fromRow(row, prefix + "_offer_id", Long.class));
         return entity;
+    }
+
+    public OfferPackageDTO applyDTO(Row row, String prefix) {
+        return new OfferPackageDTO(
+            converter.fromRow(row, prefix + "_id", Long.class),
+            converter.fromRow(row, prefix + "_name", String.class),
+            converter.fromRow(row, prefix + "_description", String.class),
+            converter.fromRow(row, prefix + "_currency", String.class),
+            converter.fromRow(row, prefix + "_price", BigDecimal.class),
+            converter.fromRow(row, prefix + "_delivery_days", Integer.class),
+            converter.fromRow(row, prefix + "_package_tier", PackageTier.class),
+            converter.fromRow(row, prefix + "_active", Boolean.class)
+        );
     }
 }

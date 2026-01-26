@@ -43,7 +43,7 @@ public class OfferPackage extends AbstractAuditingEntity<Long> implements Serial
     @NotNull(message = "must not be null")
     @Size(max = 3)
     @Column("currency")
-    private String currency;
+    private String currency = "USD";
 
     @NotNull(message = "must not be null")
     @Min(value = 1)
@@ -191,6 +191,11 @@ public class OfferPackage extends AbstractAuditingEntity<Long> implements Serial
 
     public void setOfferId(Long offer) {
         this.offerId = offer;
+    }
+
+    public OfferPackage createdBy(String createdBy) {
+        this.setCreatedBy(createdBy);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
