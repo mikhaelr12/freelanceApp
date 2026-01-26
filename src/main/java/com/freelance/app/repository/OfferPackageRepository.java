@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.OfferPackage;
 import com.freelance.app.domain.criteria.OfferPackageCriteria;
+import com.freelance.app.service.dto.OfferPackageDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
@@ -69,4 +70,6 @@ interface OfferPackageRepositoryInternal {
     Flux<OfferPackage> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
+
+    Flux<OfferPackageDTO> findAllByOfferId(Long offerId);
 }

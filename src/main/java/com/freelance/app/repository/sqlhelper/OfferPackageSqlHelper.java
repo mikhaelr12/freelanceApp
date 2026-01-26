@@ -26,4 +26,17 @@ public class OfferPackageSqlHelper {
         columns.add(Column.aliased("offer_id", table, columnPrefix + "_offer_id"));
         return columns;
     }
+
+    public static List<Expression> getColumnsDTO(Table table, String columnPrefix) {
+        return List.of(
+            Column.aliased("id", table, columnPrefix + "_id"),
+            Column.aliased("name", table, columnPrefix + "_name"),
+            Column.aliased("description", table, columnPrefix + "_description"),
+            Column.aliased("currency", table, columnPrefix + "_currency"),
+            Column.aliased("price", table, columnPrefix + "_price"),
+            Column.aliased("delivery_days", table, columnPrefix + "_delivery_days"),
+            Column.aliased("package_tier", table, columnPrefix + "_package_tier"),
+            Column.aliased("active", table, columnPrefix + "_active")
+        );
+    }
 }

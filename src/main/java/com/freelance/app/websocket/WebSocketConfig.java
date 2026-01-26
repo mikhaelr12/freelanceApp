@@ -16,8 +16,6 @@ public class WebSocketConfig {
 
     @Bean
     public HandlerMapping webSocketMapping(ChatWebSocketHandler handler) {
-        System.out.println(">>> WebSocket mapping registered");
-
         Map<String, org.springframework.web.reactive.socket.WebSocketHandler> map = Map.of("/api/ws/chat", handler);
 
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();

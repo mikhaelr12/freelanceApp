@@ -58,9 +58,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     ) {}
 
     @Override
-    public @NotNull Mono<Void> handle(WebSocketSession session) {
-        System.out.println(">>> WS HANDLE HIT: " + session.getHandshakeInfo().getUri());
-
+    public @NotNull Mono<Void> handle(@NotNull WebSocketSession session) {
         Mono<Long> senderIdMono = loginFromSession(session).flatMap(profileHelper::getProfileFromUserLogin).map(Profile::getId);
 
         return senderIdMono

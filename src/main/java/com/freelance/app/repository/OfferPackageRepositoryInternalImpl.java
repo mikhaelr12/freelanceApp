@@ -7,10 +7,12 @@ import com.freelance.app.repository.rowmapper.OfferPackageRowMapper;
 import com.freelance.app.repository.rowmapper.OfferRowMapper;
 import com.freelance.app.repository.sqlhelper.OfferPackageSqlHelper;
 import com.freelance.app.repository.sqlhelper.OfferSqlHelper;
+import com.freelance.app.service.dto.OfferPackageDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
@@ -108,6 +110,17 @@ class OfferPackageRepositoryInternalImpl extends SimpleR2dbcRepository<OfferPack
     @Override
     public Flux<OfferPackage> findAllWithEagerRelationships(Pageable page) {
         return findAllBy(page);
+    }
+
+    @Override
+    public Flux<OfferPackageDTO> findAllByOfferId(Long offerId) {
+        String columns = OfferPackageSqlHelper.getColumnsDTO(entityTable, "e")
+            .stream()
+            .map(Expression::toString)
+            .collect(Collectors.joining(", "));
+
+        String sql = "SELECT " + columns + " " + "FROM offer_package e WHERE e.offer_id = :offerId";
+        return db.sql(sql).bind("offerId", offerId).map((row, rowMetadata) -> offerpackageMapper.applyDTO(row, "e")).all();
     }
 
     private OfferPackage process(Row row, RowMetadata metadata) {
