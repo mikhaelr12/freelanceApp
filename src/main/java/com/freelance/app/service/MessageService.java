@@ -5,7 +5,7 @@ import com.freelance.app.domain.Profile;
 import com.freelance.app.repository.MessageRepository;
 import com.freelance.app.service.dto.MessageShortDTO;
 import com.freelance.app.util.ProfileHelper;
-import com.freelance.app.web.rest.errors.UnauthorizedAlertException;
+import com.freelance.app.web.rest.errors.ForbiddenAlertException;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class MessageService {
                 Profile profile = tuple.getT1();
                 if (!Objects.equals(profile.getId(), message.getSender().getId())) {
                     return Mono.error(
-                        new UnauthorizedAlertException(
+                        new ForbiddenAlertException(
                             "Message does not belong to current profile",
                             "Message",
                             "messageDoesNotBelogToCurrentProfile"

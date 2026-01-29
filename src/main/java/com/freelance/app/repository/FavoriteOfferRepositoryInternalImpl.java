@@ -27,6 +27,7 @@ import org.springframework.r2dbc.core.RowsFetchSpec;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tech.jhipster.service.ConditionBuilder;
+import tech.jhipster.service.filter.LongFilter;
 
 /**
  * Spring Data R2DBC custom repository implementation for the FavoriteOffer entity.
@@ -42,7 +43,7 @@ class FavoriteOfferRepositoryInternalImpl extends SimpleR2dbcRepository<Favorite
     private final ColumnConverter columnConverter;
 
     private static final Table entityTable = Table.aliased("favorite_offer", EntityManager.ENTITY_ALIAS);
-    private static final Table profileTable = Table.aliased("profile", "e_profile");
+    private static final Table profileTable = Table.aliased("profile", "profile");
     private static final Table offerTable = Table.aliased("offer", "offer");
 
     public FavoriteOfferRepositoryInternalImpl(
@@ -127,6 +128,15 @@ class FavoriteOfferRepositoryInternalImpl extends SimpleR2dbcRepository<Favorite
         return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
             .map((row, rowMetadata) -> row.get(0, Long.class))
             .one();
+    }
+
+    @Override
+    public Flux<FavoriteOffer> findAllByProfileId(Long profileId) {
+        LongFilter longFilter = new LongFilter();
+        longFilter.equals(profileId);
+        FavoriteOfferCriteria criteria = new FavoriteOfferCriteria();
+        criteria.setOfferId(longFilter);
+        return createQuery(null, buildConditions(criteria)).all();
     }
 
     private Condition buildConditions(FavoriteOfferCriteria criteria) {

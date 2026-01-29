@@ -15,8 +15,8 @@ import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.MinioUtil;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
+import com.freelance.app.web.rest.errors.ForbiddenAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
-import com.freelance.app.web.rest.errors.UnauthorizedAlertException;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -156,7 +156,7 @@ public class ProfileService {
                     .flatMap(user -> {
                         if (!tuple.getT1().getUserId().equals(user.getId())) {
                             return Mono.error(
-                                new UnauthorizedAlertException(
+                                new ForbiddenAlertException(
                                     "Profile doesnt belong to current user",
                                     ENTITY_NAME,
                                     "profileNotBelongingToCurrentUser"

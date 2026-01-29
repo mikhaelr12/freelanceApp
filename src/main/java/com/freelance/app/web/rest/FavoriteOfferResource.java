@@ -2,6 +2,8 @@ package com.freelance.app.web.rest;
 
 import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.service.FavoriteOfferService;
+import com.freelance.app.service.dto.FavoriteOfferDTO;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +37,15 @@ public class FavoriteOfferResource {
         return favoriteOfferService.createFavoriteOffer(offerId).map(ResponseEntity::ok);
     }
 
-    @DeleteMapping("/remove/{offerId}")
-    public Mono<ResponseEntity<Void>> deleteFavoriteOffer(@PathVariable Long offerId) {
-        LOG.debug("REST request to delete FavoriteOffer for Offer with id: {}", offerId);
-        return favoriteOfferService.deleteFavoriteOffer(offerId).map(ResponseEntity::ok);
+    @GetMapping("")
+    public Mono<ResponseEntity<List<FavoriteOfferDTO>>> getAllFavoriteOffers() {
+        LOG.debug("REST request to get all FavoriteOffers");
+        return favoriteOfferService.getAllFavoriteOffers().map(ResponseEntity::ok);
+    }
+
+    @DeleteMapping("/remove/{favoriteOfferId}")
+    public Mono<ResponseEntity<Void>> deleteFavoriteOffer(@PathVariable Long favoriteOfferId) {
+        LOG.debug("REST request to delete FavoriteOffer for Offer with id: {}", favoriteOfferId);
+        return favoriteOfferService.deleteFavoriteOffer(favoriteOfferId).thenReturn(ResponseEntity.ok().build());
     }
 }

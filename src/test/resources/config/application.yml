@@ -12,7 +12,12 @@
 # Full reference is available at:
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
-
+logging:
+  level:
+    ROOT: DEBUG
+    tech.jhipster: DEBUG
+    org.hibernate.SQL: DEBUG
+    com.freelance.app: DEBUG
 spring:
   application:
     name: freelanceApp
@@ -47,7 +52,10 @@ spring:
         size: 20
   thymeleaf:
     mode: HTML
-
+  output:
+    ansi:
+      console-available: true
+      enabled: ALWAYS
 server:
   port: 10344
   address: localhost

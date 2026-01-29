@@ -1,7 +1,7 @@
 package com.freelance.app.util;
 
-import com.freelance.app.domain.Profile;
-import com.freelance.app.domain.User;
+import com.freelance.app.domain.*;
+import com.freelance.app.domain.enumeration.OfferStatus;
 import com.freelance.app.domain.enumeration.ProfileType;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
@@ -38,9 +38,13 @@ public final class TestUtil {
     public static final String PROFILE_API_URL = "/api/profiles";
     public static final String PROFILE_ID_API_URL = PROFILE_API_URL + "/{id}";
 
+    public static final String FAVORITE_OFFER_API_URL = "/api/favorite-offers";
+    public static final String FAVORITE_OFFER_ID_API_URL = FAVORITE_OFFER_API_URL + "/{offerId}";
+    public static final String FAVORITE_OFFER_REMOVE_API_URL = FAVORITE_OFFER_API_URL + "/remove/{favoriteOfferId}";
+
     public static User createUser() {
         User user = new User();
-        user.setLogin("testUser");
+        user.setLogin("testuser");
         user.setEmail("testUser@test.com");
         user.setPassword("testPassword");
         user.setCreatedBy("testUser");
@@ -58,5 +62,19 @@ public final class TestUtil {
 
     public static ProfileEditDTO createProfileEditDTO() {
         return new ProfileEditDTO("newFirstName", null, null, null);
+    }
+
+    public static Offer createOffer(Profile owner, OfferType offerType) {
+        return new Offer()
+            .name("testName")
+            .description("testDescription")
+            .status(OfferStatus.ACTIVE)
+            .visibility(true)
+            .owner(owner)
+            .offertype(offerType);
+    }
+
+    public static FavoriteOffer createFavoriteOffer(Profile profile, Offer offer) {
+        return new FavoriteOffer().profile(profile).offer(offer);
     }
 }
