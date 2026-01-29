@@ -69,10 +69,6 @@ public class OfferShortDTO implements Serializable {
         this.tags = tags;
     }
 
-    public Set<String> getOfferImages() {
-        return offerImages;
-    }
-
     public void setOfferImages(Set<String> offerImages) {
         this.offerImages = offerImages;
     }

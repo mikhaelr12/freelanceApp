@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponseException;
-import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
 import tech.jhipster.web.rest.errors.ProblemDetailWithCause.ProblemDetailWithCauseBuilder;
 
 @SuppressWarnings("java:S110")
@@ -43,9 +42,5 @@ public class BadRequestAlertException extends ErrorResponseException {
 
     public String getErrorKey() {
         return errorKey;
-    }
-
-    public ProblemDetailWithCause getProblemDetailWithCause() {
-        return (ProblemDetailWithCause) this.getBody();
     }
 }

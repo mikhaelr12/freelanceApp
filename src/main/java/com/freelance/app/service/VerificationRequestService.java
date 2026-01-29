@@ -5,7 +5,6 @@ import com.freelance.app.domain.criteria.VerificationRequestCriteria;
 import com.freelance.app.domain.enumeration.VerificationRequestStatus;
 import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.repository.VerificationRequestRepository;
-import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.VerificationRequestDTO;
 import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.ProfileHelper;
@@ -131,43 +130,34 @@ public class VerificationRequestService {
     @Transactional
     public Mono<Void> updateRequestStatus(Long id, VerificationRequestStatus status, String message) {
         LOG.debug("Request to update request status with id {}", id);
-        return SecurityUtils.getCurrentUserLogin()
-            .flatMap(login ->
-                verificationRequestRepository
-                    .findById(id)
-                    .switchIfEmpty(
-                        Mono.error(new BadRequestAlertException("Request not found ", id.toString(), "verificationRequestNotFound"))
-                    )
-                    .flatMap(verificationRequest -> {
-                        if (verificationRequest.getStatus().equals(VerificationRequestStatus.CANCELED)) {
-                            return Mono.error(
-                                new BadRequestAlertException(
-                                    "The request is cancelled, can not change it",
-                                    "",
-                                    "verificationRequestCanceled"
-                                )
-                            );
-                        }
-                        if (status == VerificationRequestStatus.REJECTED) {
-                            verificationRequest.setStatus(VerificationRequestStatus.REJECTED);
-                            verificationRequest.setMessage(message);
-                        } else if (status == VerificationRequestStatus.COMPLETED) {
-                            verificationRequest.setStatus(VerificationRequestStatus.COMPLETED);
-                            verificationRequest.setMessage(null);
-                        } else {
-                            verificationRequest.setStatus(status);
-                        }
+        return verificationRequestRepository
+            .findById(id)
+            .switchIfEmpty(Mono.error(new BadRequestAlertException("Request not found ", id.toString(), "verificationRequestNotFound")))
+            .flatMap(verificationRequest -> {
+                if (verificationRequest.getStatus().equals(VerificationRequestStatus.CANCELED)) {
+                    return Mono.error(
+                        new BadRequestAlertException("The request is cancelled, can not change it", "", "verificationRequestCanceled")
+                    );
+                }
+                if (status == VerificationRequestStatus.REJECTED) {
+                    verificationRequest.setStatus(VerificationRequestStatus.REJECTED);
+                    verificationRequest.setMessage(message);
+                } else if (status == VerificationRequestStatus.COMPLETED) {
+                    verificationRequest.setStatus(VerificationRequestStatus.COMPLETED);
+                    verificationRequest.setMessage(null);
+                } else {
+                    verificationRequest.setStatus(status);
+                }
 
-                        return verificationRequestRepository
-                            .save(verificationRequest)
-                            .flatMap(saved -> {
-                                if (status == VerificationRequestStatus.COMPLETED) {
-                                    return verifyProfile(saved).thenReturn(saved);
-                                }
-                                return Mono.just(saved);
-                            });
-                    })
-            )
+                return verificationRequestRepository
+                    .save(verificationRequest)
+                    .flatMap(saved -> {
+                        if (status == VerificationRequestStatus.COMPLETED) {
+                            return verifyProfile(saved).thenReturn(saved);
+                        }
+                        return Mono.just(saved);
+                    });
+            })
             .then();
     }
 

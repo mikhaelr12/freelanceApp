@@ -1,5 +1,6 @@
 package com.freelance.app.web.filter;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -11,7 +12,7 @@ public class SpaWebFilter implements WebFilter {
      * Forwards any unmapped paths (except those containing a period) to the client {@code index.html}.
      */
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    public @NotNull Mono<Void> filter(ServerWebExchange exchange, @NotNull WebFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
         if (
             !path.startsWith("/api") &&

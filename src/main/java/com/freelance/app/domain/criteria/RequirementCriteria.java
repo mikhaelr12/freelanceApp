@@ -36,8 +36,6 @@ public class RequirementCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public RequirementCriteria() {}
-
     public RequirementCriteria(RequirementCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.prompt = other.optionalPrompt().map(StringFilter::copy).orElse(null);

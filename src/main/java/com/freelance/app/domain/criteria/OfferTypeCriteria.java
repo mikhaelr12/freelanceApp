@@ -42,8 +42,6 @@ public class OfferTypeCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public OfferTypeCriteria() {}
-
     public OfferTypeCriteria(OfferTypeCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.name = other.optionalName().map(StringFilter::copy).orElse(null);

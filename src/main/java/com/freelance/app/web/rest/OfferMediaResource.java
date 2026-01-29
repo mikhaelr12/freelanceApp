@@ -29,11 +29,13 @@ public class OfferMediaResource {
 
     @PostMapping(value = "/upload/{offerId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<ResponseEntity<Void>> uploadOfferMedia(@RequestPart Flux<FilePart> images, @PathVariable Long offerId) {
+        LOG.info("Received request to upload offer media with id {}", offerId);
         return offerMediaService.uploadOfferMedia(images, offerId).map(ResponseEntity::ok);
     }
 
     @DeleteMapping(value = "/delete/{offerId}")
     public Mono<ResponseEntity<Void>> deleteOfferMedia(@PathVariable Long offerId, @RequestBody List<Long> mediaIds) {
+        LOG.info("Received request to delete offer media with id {}", offerId);
         return offerMediaService.deleteOfferMedia(offerId, mediaIds).map(ResponseEntity::ok);
     }
 

@@ -44,8 +44,6 @@ public class OfferReviewCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public OfferReviewCriteria() {}
-
     public OfferReviewCriteria(OfferReviewCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.text = other.optionalText().map(StringFilter::copy).orElse(null);

@@ -11,8 +11,6 @@ import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.ImageHelper;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +23,6 @@ import reactor.core.publisher.Mono;
 @Service
 @Transactional
 public class OfferMediaService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OfferMediaService.class);
 
     private final OfferMediaRepository offerMediaRepository;
     private final OfferRepository offerRepository;

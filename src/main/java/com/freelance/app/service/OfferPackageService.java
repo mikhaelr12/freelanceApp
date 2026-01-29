@@ -9,8 +9,6 @@ import com.freelance.app.service.dto.OfferPackageDTO;
 import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -21,8 +19,6 @@ import reactor.core.publisher.Mono;
 @Service
 @Transactional
 public class OfferPackageService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OfferPackageService.class);
 
     private final OfferPackageRepository offerPackageRepository;
     private final ProfileHelper profileHelper;

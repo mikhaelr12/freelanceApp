@@ -2,7 +2,6 @@ package com.freelance.app.util;
 
 import io.minio.*;
 import io.minio.errors.*;
-import io.minio.http.Method;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class MinioUtil {
 
-    private static final int PART_SIZE = 10 * 1024 * 1024;
     private final MinioClient minio;
 
     public MinioUtil(MinioClient minio) {
@@ -44,12 +42,6 @@ public class MinioUtil {
 
     public StatObjectResponse stat(String bucket, String object) throws Exception {
         return minio.statObject(StatObjectArgs.builder().bucket(bucket).object(object).build());
-    }
-
-    public String presignedGet(String bucket, String object, int seconds) throws Exception {
-        return minio.getPresignedObjectUrl(
-            GetPresignedObjectUrlArgs.builder().method(Method.GET).bucket(bucket).object(object).expiry(seconds).build()
-        );
     }
 
     public String getImageAsBase64(String bucket, String object) {

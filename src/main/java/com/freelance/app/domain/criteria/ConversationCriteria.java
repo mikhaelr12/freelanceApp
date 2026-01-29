@@ -34,8 +34,6 @@ public class ConversationCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public ConversationCriteria() {}
-
     public ConversationCriteria(ConversationCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);

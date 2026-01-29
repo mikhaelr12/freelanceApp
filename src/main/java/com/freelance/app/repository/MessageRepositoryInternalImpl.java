@@ -2,7 +2,10 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Message;
 import com.freelance.app.domain.criteria.MessageCriteria;
-import com.freelance.app.repository.rowmapper.*;
+import com.freelance.app.repository.rowmapper.ColumnConverter;
+import com.freelance.app.repository.rowmapper.ConversationRowMapper;
+import com.freelance.app.repository.rowmapper.MessageRowMapper;
+import com.freelance.app.repository.rowmapper.ProfileRowMapper;
 import com.freelance.app.repository.sqlhelper.ConversationSqlHelper;
 import com.freelance.app.repository.sqlhelper.MessageSqlHelper;
 import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;

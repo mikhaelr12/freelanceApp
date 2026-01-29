@@ -39,8 +39,6 @@ public class DisputeCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public DisputeCriteria() {}
-
     public DisputeCriteria(DisputeCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.reason = other.optionalReason().map(StringFilter::copy).orElse(null);

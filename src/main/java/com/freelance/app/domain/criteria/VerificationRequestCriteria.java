@@ -33,8 +33,6 @@ public class VerificationRequestCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public VerificationRequestCriteria() {}
-
     public VerificationRequestCriteria(VerificationRequestCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.profileId = other.optionalProfileId().map(LongFilter::copy).orElse(null);

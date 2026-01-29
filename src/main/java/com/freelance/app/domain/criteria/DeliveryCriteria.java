@@ -39,8 +39,6 @@ public class DeliveryCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public DeliveryCriteria() {}
-
     public DeliveryCriteria(DeliveryCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.note = other.optionalNote().map(StringFilter::copy).orElse(null);

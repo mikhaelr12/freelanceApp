@@ -8,15 +8,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
 import tech.jhipster.service.filter.*;
 
-/**
- * Criteria class for the {@link com.freelance.app.domain.FileObject} entity. This class is used
- * in {@link com.freelance.app.web.rest.FileObjectResource} to receive all the possible filtering options from
- * the Http GET request parameters.
- * For example the following could be a valid request:
- * {@code /file-objects?id.greaterThan=5&attr1.contains=something&attr2.specified=false}
- * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
- * fix type specific filters.
- */
 @ParameterObject
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class FileObjectCriteria implements Serializable, Criteria {

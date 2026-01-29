@@ -6,6 +6,7 @@ import com.freelance.app.exception.UsernameAlreadyUsedException;
 import java.net.URI;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,7 @@ import tech.jhipster.web.util.HeaderUtil;
 
 /**
  * Controller advice to translate the server side exceptions to client-friendly json structures.
- * The error response follows RFC7807 - Problem Details for HTTP APIs (https://tools.ietf.org/html/rfc7807).
+ * The error response follows RFC7807 - Problem Details for HTTP APIs (<a href="https://tools.ietf.org/html/rfc7807">...</a>).
  */
 @ControllerAdvice
 @Component("jhiExceptionTranslator")
@@ -68,16 +69,15 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
         return handleExceptionInternal((Exception) ex, pdCause, buildHeaders(ex), HttpStatusCode.valueOf(pdCause.getStatus()), request);
     }
 
-    @Nullable
     @Override
-    protected Mono<ResponseEntity<Object>> handleExceptionInternal(
-        Exception ex,
+    protected @NotNull Mono<ResponseEntity<Object>> handleExceptionInternal(
+        @NotNull Exception ex,
         @Nullable Object body,
         HttpHeaders headers,
-        HttpStatusCode statusCode,
+        @NotNull HttpStatusCode statusCode,
         ServerWebExchange request
     ) {
-        body = body == null ? wrapAndCustomizeProblem((Throwable) ex, (ServerWebExchange) request) : body;
+        body = body == null ? wrapAndCustomizeProblem(ex, request) : body;
         if (request.getResponse().isCommitted()) {
             return Mono.error(ex);
         }
@@ -116,9 +116,8 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
     protected ProblemDetailWithCause customizeProblem(ProblemDetailWithCause problem, Throwable err, ServerWebExchange request) {
         if (problem.getStatus() <= 0) problem.setStatus(toStatus(err));
 
-        if (problem.getType() == null || problem.getType().equals(URI.create("about:blank"))) problem.setType(getMappedType(err));
+        if (problem.getType().equals(URI.create("about:blank"))) problem.setType(getMappedType(err));
 
-        // higher precedence to Custom/ResponseStatus types
         String title = extractTitle(err, problem.getStatus());
         String problemTitle = problem.getTitle();
         if (problemTitle == null || !problemTitle.equals(title)) {
@@ -126,7 +125,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
         }
 
         if (problem.getDetail() == null) {
-            // higher precedence to cause
             problem.setDetail(getCustomizedErrorDetails(err));
         }
 
@@ -173,7 +171,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
     }
 
     private HttpStatus toStatus(final Throwable throwable) {
-        // Let the ErrorResponse take this responsibility
         if (throwable instanceof ErrorResponse err) return HttpStatus.valueOf(err.getBody().getStatus());
 
         return Optional.ofNullable(getMappedStatus(throwable)).orElse(
@@ -182,7 +179,7 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
     }
 
     private ResponseStatus extractResponseStatus(final Throwable throwable) {
-        return Optional.ofNullable(resolveResponseStatus(throwable)).orElse(null);
+        return resolveResponseStatus(throwable);
     }
 
     private ResponseStatus resolveResponseStatus(final Throwable type) {
@@ -222,7 +219,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
     }
 
     private HttpStatus getMappedStatus(Throwable err) {
-        // Where we disagree with Spring defaults
         if (err instanceof AccessDeniedException) return HttpStatus.FORBIDDEN;
         if (err instanceof ConcurrencyFailureException) return HttpStatus.CONFLICT;
         if (err instanceof BadCredentialsException) return HttpStatus.UNAUTHORIZED;
@@ -259,16 +255,14 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler implemen
         if (throwable != null && isCasualChainEnabled()) {
             return Optional.of(customizeProblem(getProblemDetailWithCause(throwable), throwable, request));
         }
-        return Optional.ofNullable(null);
+        return Optional.empty();
     }
 
     private boolean isCasualChainEnabled() {
-        // Customize as per the needs
         return CASUAL_CHAIN_ENABLED;
     }
 
     private boolean containsPackageName(String message) {
-        // This list is for sure not complete
         return StringUtils.containsAny(message, "org.", "java.", "net.", "jakarta.", "javax.", "com.", "io.", "de.", "com.freelance.app");
     }
 }

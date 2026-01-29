@@ -117,7 +117,7 @@ public class AccountResource {
                     })
             )
             .switchIfEmpty(Mono.error(new AccountResourceException("User could not be found")))
-            .flatMap(user ->
+            .flatMap(_ ->
                 userService.updateUser(
                     userDTO.getFirstName(),
                     userDTO.getLastName(),

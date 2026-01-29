@@ -20,8 +20,6 @@ public class OfferPackageResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(OfferPackageResource.class);
 
-    private static final String ENTITY_NAME = "offerPackage";
-
     private final OfferPackageService offerPackageService;
 
     public OfferPackageResource(OfferPackageService offerPackageService) {

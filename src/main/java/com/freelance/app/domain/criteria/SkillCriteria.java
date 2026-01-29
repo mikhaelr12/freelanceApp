@@ -42,8 +42,6 @@ public class SkillCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public SkillCriteria() {}
-
     public SkillCriteria(SkillCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.name = other.optionalName().map(StringFilter::copy).orElse(null);

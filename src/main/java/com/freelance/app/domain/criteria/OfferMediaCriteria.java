@@ -64,8 +64,6 @@ public class OfferMediaCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public OfferMediaCriteria() {}
-
     public OfferMediaCriteria(OfferMediaCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.mediaKind = other.optionalMediaKind().map(MediaKindFilter::copy).orElse(null);

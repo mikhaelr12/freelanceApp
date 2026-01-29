@@ -72,7 +72,6 @@ public class WebConfigurer implements WebFluxConfigurer {
 
     @Bean
     ResourceHandlerRegistrationCustomizer registrationCustomizer() {
-        // Disable built-in cache control to use our custom filter instead
         return registration -> registration.setCacheControl(null);
     }
 

@@ -44,8 +44,6 @@ public class ProfileReviewCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
-    public ProfileReviewCriteria() {}
-
     public ProfileReviewCriteria(ProfileReviewCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.text = other.optionalText().map(StringFilter::copy).orElse(null);

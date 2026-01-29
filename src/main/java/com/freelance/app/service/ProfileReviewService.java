@@ -10,8 +10,6 @@ import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.List;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ import reactor.core.publisher.Mono;
 public class ProfileReviewService {
 
     private static final String ENTITY_NAME = "profileReview";
-    private static final Logger LOG = LoggerFactory.getLogger(ProfileReviewService.class);
 
     private final ProfileReviewRepository profileReviewRepository;
     private final ProfileHelper profileHelper;
