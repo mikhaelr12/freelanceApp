@@ -26,8 +26,7 @@ import reactor.core.publisher.Mono;
 @TestConfiguration
 @ConditionalOnProperty(
     name = { "logging.level.com.freelance", "logging.level.reactor.netty.http.client.HttpClient" },
-    havingValue = "DEBUG",
-    matchIfMissing = false
+    havingValue = "DEBUG"
 )
 public class WebTestClientLoggerConfiguration {
 
@@ -68,6 +67,7 @@ public class WebTestClientLoggerConfiguration {
      */
     @Bean
     public WebTestClientBuilderCustomizer loggingWebTestClientCustomizer() {
+        LOG.warn(">>> WebTestClientLoggerConfiguration ENABLED <<<");
         return builder -> builder.filter(logRequest()).filter(logResponse());
     }
 

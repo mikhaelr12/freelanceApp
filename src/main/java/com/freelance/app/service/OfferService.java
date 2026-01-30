@@ -98,29 +98,29 @@ public class OfferService {
      *
      */
     public Mono<Offer> createOffer(OfferDTO dto) {
+        Mono<Set<Tag>> tagsMono = dto.getTagIds() == null || dto.getTagIds().isEmpty()
+            ? Mono.just(java.util.Collections.emptySet())
+            : tagRepository.findAllById(dto.getTagIds()).collect(Collectors.toSet());
+
         return offerTypeRepository
             .findById(dto.getOfferTypeId())
-            .flatMap(offer ->
-                tagRepository
-                    .findAllById(dto.getTagIds())
-                    .switchIfEmpty(Mono.error(new NotFoundAlertException("No tags found", "Tags", "tagNotFound")))
-                    .collect(Collectors.toSet())
-                    .flatMap(tags ->
-                        profileHelper
-                            .getCurrentProfile()
-                            .flatMap(profile ->
-                                offerRepository.save(
-                                    new Offer()
-                                        .name(dto.getName())
-                                        .description(dto.getDescription())
-                                        .rating(0.0)
-                                        .status(OfferStatus.ACTIVE)
-                                        .visibility(true)
-                                        .owner(profile)
-                                        .offertype(offer)
-                                        .tags(tags)
-                                )
-                            )
+            .switchIfEmpty(Mono.error(new NotFoundAlertException("OfferType not found", "offertype", "offerTypeNotFound")))
+            .zipWith(tagsMono)
+            .flatMap(tuple ->
+                profileHelper
+                    .getCurrentProfile()
+                    .flatMap(profile ->
+                        offerRepository.save(
+                            new Offer()
+                                .name(dto.getName())
+                                .description(dto.getDescription())
+                                .rating(0.0)
+                                .status(OfferStatus.ACTIVE)
+                                .visibility(true)
+                                .owner(profile)
+                                .offertype(tuple.getT1())
+                                .tags(tuple.getT2())
+                        )
                     )
             );
     }

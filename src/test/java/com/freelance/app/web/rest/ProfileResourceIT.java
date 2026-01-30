@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.transaction.annotation.Transactional;
 
 @IntegrationTest
 @AutoConfigureWebTestClient
@@ -35,18 +36,20 @@ public class ProfileResourceIT {
 
     @Nested
     @DisplayName("Positive scenario test cases")
-    @WithMockUser(username = "testuser")
+    @WithMockUser(username = "newlogin")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class PositiveScenarios {
 
         @BeforeAll
         void setUp() {
-            userRepository.save(createUser()).block();
+            User user = createUser();
+            user.setLogin("newlogin");
+            user.setEmail("newmail@mail.com");
+            userRepository.save(user).block();
         }
 
         @Test
         @DisplayName("Should successfully create a profile and return the entity")
-        @WithMockUser(username = "testuser")
         void createProfileSuccessfully() {
             Profile responseBody = webTestClient
                 .post()
@@ -67,7 +70,6 @@ public class ProfileResourceIT {
 
         @Test
         @DisplayName("Should update a profile")
-        @WithMockUser
         void testUpdateProfile() {
             profileRepository.findAll().collectList().block();
             Profile profile = webTestClient
@@ -103,7 +105,6 @@ public class ProfileResourceIT {
 
         @Test
         @DisplayName("Should return profile by id")
-        @WithMockUser
         void testGetProfileById() {
             Profile profile = webTestClient
                 .post()
@@ -270,14 +271,17 @@ public class ProfileResourceIT {
         }
 
         @Test
-        @DisplayName("Should return 401 (UNAUTHORIZED) for deleting a profile not belonging to current user")
+        @DisplayName("Should return 403 (FORBIDDEN) for deleting a profile not belonging to current user")
         @WithMockUser
         void testDeleteProfileNotBelongingToCurrentUser() {
-            User user = userRepository.save(createUser()).block();
+            User user = createUser();
+            user.setLogin("some-login");
+            user.setEmail("somemail@mail.com");
+            userRepository.save(user).block();
             Profile profile = profileRepository.save(createProfile(user)).block();
 
             Assertions.assertNotNull(profile);
-            webTestClient.delete().uri(PROFILE_ID_API_URL, profile.getId()).exchange().expectStatus().isUnauthorized();
+            webTestClient.delete().uri(PROFILE_ID_API_URL, profile.getId()).exchange().expectStatus().isForbidden();
 
             Assertions.assertNotNull(user);
             profileRepository.delete(profile).block();
