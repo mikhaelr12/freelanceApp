@@ -4,7 +4,6 @@ import com.freelance.app.domain.Delivery;
 import com.freelance.app.domain.criteria.DeliveryCriteria;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -26,18 +25,6 @@ public interface DeliveryRepository extends ReactiveCrudRepository<Delivery, Lon
 
     @Override
     Flux<Delivery> findAllWithEagerRelationships(Pageable page);
-
-    @Query("SELECT * FROM delivery entity WHERE entity.order_id = :id")
-    Flux<Delivery> findByOrder(Long id);
-
-    @Query("SELECT * FROM delivery entity WHERE entity.order_id IS NULL")
-    Flux<Delivery> findAllWhereOrderIsNull();
-
-    @Query("SELECT * FROM delivery entity WHERE entity.file_id = :id")
-    Flux<Delivery> findByFile(Long id);
-
-    @Query("SELECT * FROM delivery entity WHERE entity.file_id IS NULL")
-    Flux<Delivery> findAllWhereFileIsNull();
 
     @Override
     <S extends Delivery> @NotNull Mono<S> save(@NotNull S entity);

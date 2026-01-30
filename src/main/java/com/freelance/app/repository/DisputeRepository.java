@@ -4,7 +4,6 @@ import com.freelance.app.domain.Dispute;
 import com.freelance.app.domain.criteria.DisputeCriteria;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -17,12 +16,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface DisputeRepository extends ReactiveCrudRepository<Dispute, Long>, DisputeRepositoryInternal {
     Flux<Dispute> findAllBy(Pageable pageable);
-
-    @Query("SELECT * FROM dispute entity WHERE entity.order_id = :id")
-    Flux<Dispute> findByOrder(Long id);
-
-    @Query("SELECT * FROM dispute entity WHERE entity.order_id IS NULL")
-    Flux<Dispute> findAllWhereOrderIsNull();
 
     @Override
     <S extends Dispute> @NotNull Mono<S> save(@NotNull S entity);

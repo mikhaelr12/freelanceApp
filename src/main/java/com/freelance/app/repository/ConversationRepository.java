@@ -18,12 +18,6 @@ import reactor.core.publisher.Mono;
 public interface ConversationRepository extends ReactiveCrudRepository<Conversation, Long>, ConversationRepositoryInternal {
     Flux<Conversation> findAllBy(Pageable pageable);
 
-    @Query("SELECT * FROM conversation entity WHERE entity.order_id = :id")
-    Flux<Conversation> findByOrder(Long id);
-
-    @Query("SELECT * FROM conversation entity WHERE entity.order_id IS NULL")
-    Flux<Conversation> findAllWhereOrderIsNull();
-
     @Override
     <S extends Conversation> @NotNull Mono<S> save(@NotNull S entity);
 

@@ -95,21 +95,6 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<OfferType> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<OfferType> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<OfferType> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private OfferType process(Row row, RowMetadata metadata) {
         OfferType entity = offertypeMapper.apply(row, "e");
         entity.setSubcategory(subcategoryMapper.apply(row, "subcategory"));

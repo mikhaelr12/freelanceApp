@@ -113,21 +113,6 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<Profile> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<Profile> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<Profile> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private Profile process(Row row, RowMetadata metadata) {
         Profile entity = profileMapper.apply(row, "e");
         entity.setUser(userMapper.apply(row, "user"));

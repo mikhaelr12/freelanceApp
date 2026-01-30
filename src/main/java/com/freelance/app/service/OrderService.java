@@ -110,24 +110,6 @@ public class OrderService {
     }
 
     /**
-     * Get all the orders with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<Order> findAllWithEagerRelationships(Pageable pageable) {
-        return orderRepository.findAllWithEagerRelationships(pageable);
-    }
-
-    /**
-     * Returns the number of orders available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return orderRepository.count();
-    }
-
-    /**
      * Get one order by id.
      *
      * @param id the id of the entity.
@@ -136,7 +118,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Mono<Order> findOne(Long id) {
         LOG.debug("Request to get Order : {}", id);
-        return orderRepository.findOneWithEagerRelationships(id);
+        return orderRepository.findById(id);
     }
 
     /**

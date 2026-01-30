@@ -110,21 +110,6 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<Order> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<Order> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<Order> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private Order process(Row row, RowMetadata metadata) {
         Order entity = orderMapper.apply(row, "e");
         entity.setBuyer(userMapper.apply(row, "buyer"));

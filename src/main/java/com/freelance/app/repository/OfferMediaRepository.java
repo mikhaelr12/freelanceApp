@@ -19,26 +19,8 @@ import reactor.core.publisher.Mono;
 public interface OfferMediaRepository extends ReactiveCrudRepository<OfferMedia, Long>, OfferMediaRepositoryInternal {
     Flux<OfferMedia> findAllBy(Pageable pageable);
 
-    @Override
-    Mono<OfferMedia> findOneWithEagerRelationships(Long id);
-
-    @Override
-    Flux<OfferMedia> findAllWithEagerRelationships();
-
-    @Override
-    Flux<OfferMedia> findAllWithEagerRelationships(Pageable page);
-
     @Query("SELECT * FROM offer_media entity WHERE entity.offer_id = :id")
     Flux<OfferMedia> findByOffer(Long id);
-
-    @Query("SELECT * FROM offer_media entity WHERE entity.offer_id IS NULL")
-    Flux<OfferMedia> findAllWhereOfferIsNull();
-
-    @Query("SELECT * FROM offer_media entity WHERE entity.file_id = :id")
-    Flux<OfferMedia> findByFile(Long id);
-
-    @Query("SELECT * FROM offer_media entity WHERE entity.file_id IS NULL")
-    Flux<OfferMedia> findAllWhereFileIsNull();
 
     @Override
     <S extends OfferMedia> @NotNull Mono<S> save(@NotNull S entity);
@@ -71,12 +53,6 @@ interface OfferMediaRepositoryInternal {
     Flux<OfferMedia> findByCriteria(OfferMediaCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(OfferMediaCriteria criteria);
-
-    Mono<OfferMedia> findOneWithEagerRelationships(Long id);
-
-    Flux<OfferMedia> findAllWithEagerRelationships();
-
-    Flux<OfferMedia> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
 }

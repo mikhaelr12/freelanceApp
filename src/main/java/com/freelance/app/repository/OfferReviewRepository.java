@@ -3,7 +3,6 @@ package com.freelance.app.repository;
 import com.freelance.app.domain.OfferReview;
 import com.freelance.app.domain.criteria.OfferReviewCriteria;
 import com.freelance.app.service.dto.ReviewShortDTO;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
@@ -22,27 +21,6 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
     Flux<OfferReview> findAllBy(Pageable pageable);
 
     @Override
-    Mono<OfferReview> findOneWithEagerRelationships(Long id);
-
-    @Override
-    Flux<OfferReview> findAllWithEagerRelationships();
-
-    @Override
-    Flux<OfferReview> findAllWithEagerRelationships(Pageable page);
-
-    @Query("SELECT * FROM offer_review entity WHERE entity.offer_id = :id")
-    Flux<OfferReview> findByOffer(Long id);
-
-    @Query("SELECT * FROM offer_review entity WHERE entity.offer_id IS NULL")
-    Flux<OfferReview> findAllWhereOfferIsNull();
-
-    @Query("SELECT * FROM offer_review entity WHERE entity.reviewer_id = :id")
-    Flux<OfferReview> findByReviewer(Long id);
-
-    @Query("SELECT * FROM offer_review entity WHERE entity.reviewer_id IS NULL")
-    Flux<OfferReview> findAllWhereReviewerIsNull();
-
-    @Override
     <S extends OfferReview> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
@@ -57,14 +35,8 @@ public interface OfferReviewRepository extends ReactiveCrudRepository<OfferRevie
     @NotNull
     Mono<Void> deleteById(@NotNull Long id);
 
-    @Query("SELECT * FROM offer_review entity WHERE entity.offer_id = :offerId AND entity.checked = false")
-    Flux<OfferReview> findAllWhereCheckedIsFalse(@Param("offerId") Long offerId);
-
     @Query("SELECT AVG(entity.rating) FROM offer_review entity WHERE entity.offer_id = :offerId")
     Mono<Double> getAverageRatingOffer(@Param("offerId") Long offerId);
-
-    @Query("UPDATE offer_review SET checked = true WHERE id IN (:reviewIds)")
-    Mono<Void> checkReviews(@Param("reviewIds") List<Long> reviewIds);
 
     @Query(
         """
@@ -123,12 +95,6 @@ interface OfferReviewRepositoryInternal {
     Flux<OfferReview> findByCriteria(OfferReviewCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(OfferReviewCriteria criteria);
-
-    Mono<OfferReview> findOneWithEagerRelationships(Long id);
-
-    Flux<OfferReview> findAllWithEagerRelationships();
-
-    Flux<OfferReview> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
 }

@@ -47,12 +47,6 @@ interface OfferRepositoryInternal {
 
     Mono<Long> countByCriteria(OfferCriteria criteria);
 
-    Mono<Offer> findOneWithEagerRelationships(Long id);
-
-    Flux<Offer> findAllWithEagerRelationships();
-
-    Flux<Offer> findAllWithEagerRelationships(Pageable page);
-
     Mono<Void> deleteById(Long id);
 
     Flux<OfferShortDTO> findByCriteriaShort(OfferCriteria criteria, Pageable pageable);

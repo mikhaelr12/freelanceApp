@@ -95,21 +95,6 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<Subcategory> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<Subcategory> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<Subcategory> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private Subcategory process(Row row, RowMetadata metadata) {
         Subcategory entity = subcategoryMapper.apply(row, "e");
         entity.setCategory(categoryMapper.apply(row, "category"));

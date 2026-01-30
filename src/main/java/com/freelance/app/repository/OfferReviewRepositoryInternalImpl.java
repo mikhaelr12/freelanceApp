@@ -105,21 +105,6 @@ class OfferReviewRepositoryInternalImpl extends SimpleR2dbcRepository<OfferRevie
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<OfferReview> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<OfferReview> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<OfferReview> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private OfferReview process(Row row, RowMetadata metadata) {
         OfferReview entity = offerreviewMapper.apply(row, "e");
         entity.setOffer(offerMapper.apply(row, "offer"));

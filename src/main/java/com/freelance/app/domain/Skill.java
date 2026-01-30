@@ -153,7 +153,6 @@ public class Skill extends AbstractAuditingEntity<Long> implements Serializable 
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 

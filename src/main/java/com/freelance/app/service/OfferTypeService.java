@@ -107,24 +107,6 @@ public class OfferTypeService {
     }
 
     /**
-     * Get all the offerTypes with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<OfferType> findAllWithEagerRelationships(Pageable pageable) {
-        return offerTypeRepository.findAllWithEagerRelationships(pageable);
-    }
-
-    /**
-     * Returns the number of offerTypes available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return offerTypeRepository.count();
-    }
-
-    /**
      * Get one offerType by id.
      *
      * @param id the id of the entity.
@@ -133,7 +115,7 @@ public class OfferTypeService {
     @Transactional(readOnly = true)
     public Mono<OfferType> findOne(Long id) {
         LOG.debug("Request to get OfferType : {}", id);
-        return offerTypeRepository.findOneWithEagerRelationships(id);
+        return offerTypeRepository.findById(id);
     }
 
     /**

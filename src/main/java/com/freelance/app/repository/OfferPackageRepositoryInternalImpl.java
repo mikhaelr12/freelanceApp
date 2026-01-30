@@ -98,21 +98,6 @@ class OfferPackageRepositoryInternalImpl extends SimpleR2dbcRepository<OfferPack
     }
 
     @Override
-    public Mono<OfferPackage> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<OfferPackage> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<OfferPackage> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
-    @Override
     public Flux<OfferPackageDTO> findAllByOfferId(Long offerId) {
         String columns = OfferPackageSqlHelper.getColumnsDTO(entityTable, "e")
             .stream()

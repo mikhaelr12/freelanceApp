@@ -20,27 +20,6 @@ public interface MessageRepository extends ReactiveCrudRepository<Message, Long>
     Flux<Message> findAllBy(Pageable pageable);
 
     @Override
-    Mono<Message> findOneWithEagerRelationships(Long id);
-
-    @Override
-    Flux<Message> findAllWithEagerRelationships();
-
-    @Override
-    Flux<Message> findAllWithEagerRelationships(Pageable page);
-
-    @Query("SELECT * FROM message entity WHERE entity.conversation_id = :id")
-    Flux<Message> findByConversation(Long id);
-
-    @Query("SELECT * FROM message entity WHERE entity.conversation_id IS NULL")
-    Flux<Message> findAllWhereConversationIsNull();
-
-    @Query("SELECT * FROM message entity WHERE entity.sender_id = :id")
-    Flux<Message> findBySender(Long id);
-
-    @Query("SELECT * FROM message entity WHERE entity.sender_id IS NULL")
-    Flux<Message> findAllWhereSenderIsNull();
-
-    @Override
     <S extends Message> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
@@ -78,12 +57,6 @@ interface MessageRepositoryInternal {
     Flux<Message> findByCriteria(MessageCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(MessageCriteria criteria);
-
-    Mono<Message> findOneWithEagerRelationships(Long id);
-
-    Flux<Message> findAllWithEagerRelationships();
-
-    Flux<Message> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
 

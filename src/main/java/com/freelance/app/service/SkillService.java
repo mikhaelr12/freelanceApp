@@ -107,15 +107,6 @@ public class SkillService {
     }
 
     /**
-     * Get all the skills with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<Skill> findAllWithEagerRelationships(Pageable pageable) {
-        return skillRepository.findAllWithEagerRelationships(pageable);
-    }
-
-    /**
      * Returns the number of skills available.
      * @return the number of entities in the database.
      *
@@ -133,7 +124,7 @@ public class SkillService {
     @Transactional(readOnly = true)
     public Mono<Skill> findOne(Long id) {
         LOG.debug("Request to get Skill : {}", id);
-        return skillRepository.findOneWithEagerRelationships(id);
+        return skillRepository.findById(id);
     }
 
     /**

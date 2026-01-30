@@ -95,21 +95,6 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<Skill> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<Skill> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<Skill> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private Skill process(Row row, RowMetadata metadata) {
         Skill entity = skillMapper.apply(row, "e");
         entity.setCategory(categoryMapper.apply(row, "category"));

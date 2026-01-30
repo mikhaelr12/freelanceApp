@@ -4,7 +4,6 @@ import com.freelance.app.domain.Requirement;
 import com.freelance.app.domain.criteria.RequirementCriteria;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -17,12 +16,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface RequirementRepository extends ReactiveCrudRepository<Requirement, Long>, RequirementRepositoryInternal {
     Flux<Requirement> findAllBy(Pageable pageable);
-
-    @Query("SELECT * FROM requirement entity WHERE entity.order_id = :id")
-    Flux<Requirement> findByOrder(Long id);
-
-    @Query("SELECT * FROM requirement entity WHERE entity.order_id IS NULL")
-    Flux<Requirement> findAllWhereOrderIsNull();
 
     @Override
     <S extends Requirement> @NotNull Mono<S> save(@NotNull S entity);

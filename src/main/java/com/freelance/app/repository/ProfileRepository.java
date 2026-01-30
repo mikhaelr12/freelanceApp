@@ -20,9 +20,6 @@ public interface ProfileRepository extends ReactiveCrudRepository<Profile, Long>
     Flux<Profile> findAllBy(Pageable pageable);
 
     @Override
-    Mono<Profile> findOneWithEagerRelationships(Long id);
-
-    @Override
     <S extends Profile> @NotNull Mono<S> save(@NotNull S entity);
 
     @Override
@@ -55,12 +52,6 @@ interface ProfileRepositoryInternal {
     Flux<Profile> findByCriteria(ProfileCriteria criteria, Pageable pageable);
 
     Mono<Long> countByCriteria(ProfileCriteria criteria);
-
-    Mono<Profile> findOneWithEagerRelationships(Long id);
-
-    Flux<Profile> findAllWithEagerRelationships();
-
-    Flux<Profile> findAllWithEagerRelationships(Pageable page);
 
     Mono<Void> deleteById(Long id);
 

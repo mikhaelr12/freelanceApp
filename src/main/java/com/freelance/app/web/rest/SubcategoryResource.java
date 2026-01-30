@@ -1,7 +1,5 @@
 package com.freelance.app.web.rest;
 
-import static java.util.Objects.nonNull;
-
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
 import com.freelance.app.service.SubcategoryService;
@@ -95,23 +93,14 @@ public class SubcategoryResource {
         if (!Objects.equals(id, subcategory.getId())) {
             return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
-
         return subcategoryService
-            .findOne(id)
-            .flatMap(exists -> {
-                if (!nonNull(exists)) {
-                    return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
-                }
-
-                return subcategoryService
-                    .update(subcategory)
-                    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                    .map(result ->
-                        ResponseEntity.ok()
-                            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                            .body(result)
-                    );
-            });
+            .update(subcategory)
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
+            .map(result ->
+                ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                    .body(result)
+            );
     }
 
     /**
@@ -137,23 +126,15 @@ public class SubcategoryResource {
             return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
         }
 
-        return subcategoryService
-            .findOne(id)
-            .flatMap(exists -> {
-                if (!nonNull(exists)) {
-                    return Mono.error(new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
-                }
+        Mono<Subcategory> result = subcategoryService.partialUpdate(subcategory);
 
-                Mono<Subcategory> result = subcategoryService.partialUpdate(subcategory);
-
-                return result
-                    .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
-                    .map(res ->
-                        ResponseEntity.ok()
-                            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, res.getId().toString()))
-                            .body(res)
-                    );
-            });
+        return result
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
+            .map(res ->
+                ResponseEntity.ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, res.getId().toString()))
+                    .body(res)
+            );
     }
 
     /**
