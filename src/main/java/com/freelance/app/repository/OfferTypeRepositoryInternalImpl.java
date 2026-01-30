@@ -7,10 +7,12 @@ import com.freelance.app.repository.rowmapper.OfferTypeRowMapper;
 import com.freelance.app.repository.rowmapper.SubcategoryRowMapper;
 import com.freelance.app.repository.sqlhelper.OfferTypeSqlHelper;
 import com.freelance.app.repository.sqlhelper.SubcategorySqlHelper;
+import com.freelance.app.service.dto.OfferTypeShortDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
@@ -116,6 +118,17 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
         return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
             .map((row, rowMetadata) -> row.get(0, Long.class))
             .one();
+    }
+
+    @Override
+    public Flux<OfferTypeShortDTO> findAllOfferTypesForSubcategory(Long subcategoryId) {
+        String columns = OfferTypeSqlHelper.getColumnsShort(entityTable, "e")
+            .stream()
+            .map(Expression::toString)
+            .collect(Collectors.joining(", "));
+
+        String sql = "SELECT " + columns + " FROM offer_type WHERE subcategory_id = :subcategory_id";
+        return db.sql(sql).bind("subcategory_id", subcategoryId).map((row, rowMetadata) -> offertypeMapper.applyShort(row, "e")).all();
     }
 
     private Condition buildConditions(OfferTypeCriteria criteria) {

@@ -13,4 +13,8 @@ public class OfferTypeSqlHelper {
         columns.add(Column.aliased("subcategory_id", table, columnPrefix + "_subcategory_id"));
         return columns;
     }
+
+    public static List<Expression> getColumnsShort(Table table, String columnPrefix) {
+        return List.of(Column.aliased("id", table, columnPrefix + "_id"), Column.aliased("name", table, columnPrefix + "_name"));
+    }
 }

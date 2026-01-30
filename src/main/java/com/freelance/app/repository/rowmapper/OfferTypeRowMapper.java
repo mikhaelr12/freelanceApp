@@ -1,6 +1,7 @@
 package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.OfferType;
+import com.freelance.app.service.dto.OfferTypeShortDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -34,5 +35,12 @@ public class OfferTypeRowMapper implements BiFunction<Row, String, OfferType> {
         entity.setActive(converter.fromRow(row, prefix + "_active", Boolean.class));
         entity.setSubcategoryId(converter.fromRow(row, prefix + "_subcategory_id", Long.class));
         return entity;
+    }
+
+    public OfferTypeShortDTO applyShort(Row row, String prefix) {
+        return new OfferTypeShortDTO(
+            converter.fromRow(row, prefix + "_id", Long.class),
+            converter.fromRow(row, prefix + "_name", String.class)
+        );
     }
 }
