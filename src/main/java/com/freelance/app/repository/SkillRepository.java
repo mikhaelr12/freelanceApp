@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.SkillCriteria;
+import com.freelance.app.service.dto.SkillShortDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -47,4 +48,6 @@ interface SkillRepositoryInternal {
     Mono<Long> countByCriteria(SkillCriteria criteria);
 
     Mono<Void> deleteById(Long id);
+
+    Flux<SkillShortDTO> findAllByCategoryShort(Long categoryId);
 }

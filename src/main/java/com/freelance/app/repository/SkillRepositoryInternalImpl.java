@@ -7,10 +7,12 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.SkillRowMapper;
 import com.freelance.app.repository.sqlhelper.CategorySqlHelper;
 import com.freelance.app.repository.sqlhelper.SkillSqlHelper;
+import com.freelance.app.service.dto.SkillShortDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
@@ -116,6 +118,17 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
         return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
             .map((row, rowMetadata) -> row.get(0, Long.class))
             .one();
+    }
+
+    @Override
+    public Flux<SkillShortDTO> findAllByCategoryShort(Long categoryId) {
+        String columns = SkillSqlHelper.getColumnsShort(entityTable, "e")
+            .stream()
+            .map(Expression::toString)
+            .collect(Collectors.joining(", "));
+
+        String sql = "SELECT " + columns + " FROM skill WHERE category_id = :categoryId";
+        return db.sql(sql).bind("categoryId", categoryId).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
     }
 
     private Condition buildConditions(SkillCriteria criteria) {
