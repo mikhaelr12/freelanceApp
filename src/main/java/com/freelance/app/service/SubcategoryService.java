@@ -107,24 +107,6 @@ public class SubcategoryService {
     }
 
     /**
-     * Get all the subcategories with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<Subcategory> findAllWithEagerRelationships(Pageable pageable) {
-        return subcategoryRepository.findAllWithEagerRelationships(pageable);
-    }
-
-    /**
-     * Returns the number of subcategories available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return subcategoryRepository.count();
-    }
-
-    /**
      * Get one subcategory by id.
      *
      * @param id the id of the entity.
@@ -133,7 +115,7 @@ public class SubcategoryService {
     @Transactional(readOnly = true)
     public Mono<Subcategory> findOne(Long id) {
         LOG.debug("Request to get Subcategory : {}", id);
-        return subcategoryRepository.findOneWithEagerRelationships(id);
+        return subcategoryRepository.findById(id);
     }
 
     /**

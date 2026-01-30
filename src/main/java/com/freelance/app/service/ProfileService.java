@@ -18,10 +18,7 @@ import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import com.freelance.app.web.rest.errors.UnauthorizedAlertException;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +81,9 @@ public class ProfileService {
             .findById(profileId)
             .switchIfEmpty(Mono.error(new NotFoundAlertException("Profile not found", ENTITY_NAME, "profileNotFound")))
             .flatMap(profile -> {
-                if (dto.firstName() != null) profile.setFirstName(dto.firstName());
-                if (dto.lastName() != null) profile.setLastName(dto.lastName());
-                if (dto.description() != null) profile.setDescription(dto.description());
+                Optional.ofNullable(dto.firstName()).ifPresent(profile::setFirstName);
+                Optional.ofNullable(dto.lastName()).ifPresent(profile::setLastName);
+                Optional.ofNullable(dto.description()).ifPresent(profile::setDescription);
 
                 Mono<Profile> afterSkills = (dto.skills() == null)
                     ? Mono.just(profile)

@@ -113,21 +113,6 @@ class MessageRepositoryInternalImpl extends SimpleR2dbcRepository<Message, Long>
     }
 
     @Override
-    public Mono<Message> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<Message> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<Message> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
-    @Override
     public Flux<MessageShortDTO> findAllConversationMessages(Long conversationId) {
         Condition where = Conditions.isEqual(entityTable.column("conversation_id"), Conditions.just(conversationId.toString()));
         List<Expression> columns = MessageSqlHelper.getColumnsShortDTO(entityTable, EntityManager.ENTITY_ALIAS);

@@ -11,6 +11,7 @@ import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -141,7 +142,7 @@ public class VerificationRequestService {
                 }
                 if (status == VerificationRequestStatus.REJECTED) {
                     verificationRequest.setStatus(VerificationRequestStatus.REJECTED);
-                    verificationRequest.setMessage(message);
+                    Optional.ofNullable(message).ifPresent(verificationRequest::setMessage);
                 } else if (status == VerificationRequestStatus.COMPLETED) {
                     verificationRequest.setStatus(VerificationRequestStatus.COMPLETED);
                     verificationRequest.setMessage(null);

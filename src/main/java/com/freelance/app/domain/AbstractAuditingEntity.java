@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -21,6 +22,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     public abstract T getId();
 
     @Column(name = "created_by", nullable = false, length = 50, updatable = false)
+    @CreatedBy
     private String createdBy;
 
     @CreatedDate

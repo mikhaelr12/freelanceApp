@@ -1,7 +1,5 @@
 package com.freelance.app.service;
 
-import static java.util.Objects.isNull;
-
 import com.freelance.app.domain.Offer;
 import com.freelance.app.domain.OfferMedia;
 import com.freelance.app.domain.Tag;
@@ -16,6 +14,7 @@ import com.freelance.app.util.ProfileHelper;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
@@ -130,19 +129,11 @@ public class OfferService {
         return offerRepository
             .findById(offerId)
             .flatMap(offer -> {
-                if (!isNull(dto.getName())) {
-                    offer.setName(dto.getName());
-                }
-                if (!isNull(dto.getDescription())) {
-                    offer.setDescription(dto.getDescription());
-                }
-                if (!isNull(dto.getTagIds())) {
-                    offer.setTags(fetchTags(dto.getTagIds()));
-                }
-                if (!isNull(dto.getOfferTypeId())) {
-                    offer.setOffertypeId(dto.getOfferTypeId());
-                }
-                return Mono.just(offer);
+                Optional.ofNullable(dto.getName()).ifPresent(offer::setName);
+                Optional.ofNullable(dto.getDescription()).ifPresent(offer::setDescription);
+                Optional.ofNullable(dto.getTagIds()).ifPresent(tagIds -> offer.setTags(fetchTags(tagIds)));
+                Optional.ofNullable(dto.getOfferTypeId()).ifPresent(offer::setOffertypeId);
+                return offerRepository.save(offer);
             });
     }
 
