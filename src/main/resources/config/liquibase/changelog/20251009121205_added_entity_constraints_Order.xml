@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
-                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <!--
         Added the constraints for entity Order.
     -->
@@ -31,4 +29,24 @@
                                  referencedTableName="offer_package"
                                  />
     </changeSet>
+
+  <changeSet id="20251009121205-3" author="mihairusu">
+    <dropForeignKeyConstraint baseTableName="jhi_order"
+                              constraintName="fk_jhi_order__buyer_id"/>
+
+    <dropForeignKeyConstraint baseTableName="jhi_order"
+                              constraintName="fk_jhi_order__seller_id"/>
+
+    <addForeignKeyConstraint baseTableName="jhi_order"
+                             baseColumnNames="buyer_id"
+                             constraintName="fk_jhi_order__buyer_id"
+                             referencedColumnNames="id"
+                             referencedTableName="profile"/>
+
+    <addForeignKeyConstraint baseTableName="jhi_order"
+                             baseColumnNames="seller_id"
+                             constraintName="fk_jhi_order__seller_id"
+                             referencedColumnNames="id"
+                             referencedTableName="profile"/>
+  </changeSet>
 </databaseChangeLog>

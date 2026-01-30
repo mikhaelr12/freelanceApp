@@ -105,21 +105,6 @@ class OfferMediaRepositoryInternalImpl extends SimpleR2dbcRepository<OfferMedia,
         return createQuery(null, whereClause).one();
     }
 
-    @Override
-    public Mono<OfferMedia> findOneWithEagerRelationships(Long id) {
-        return findById(id);
-    }
-
-    @Override
-    public Flux<OfferMedia> findAllWithEagerRelationships() {
-        return findAll();
-    }
-
-    @Override
-    public Flux<OfferMedia> findAllWithEagerRelationships(Pageable page) {
-        return findAllBy(page);
-    }
-
     private OfferMedia process(Row row, RowMetadata metadata) {
         OfferMedia entity = offermediaMapper.apply(row, "e");
         entity.setOffer(offerMapper.apply(row, "offer"));

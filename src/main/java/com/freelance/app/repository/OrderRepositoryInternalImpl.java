@@ -2,10 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Order;
 import com.freelance.app.domain.criteria.OrderCriteria;
-import com.freelance.app.repository.rowmapper.ColumnConverter;
-import com.freelance.app.repository.rowmapper.OfferPackageRowMapper;
-import com.freelance.app.repository.rowmapper.OrderRowMapper;
-import com.freelance.app.repository.rowmapper.UserRowMapper;
+import com.freelance.app.repository.rowmapper.*;
 import com.freelance.app.repository.sqlhelper.OfferPackageSqlHelper;
 import com.freelance.app.repository.sqlhelper.OrderSqlHelper;
 import com.freelance.app.repository.sqlhelper.UserSqlHelper;
@@ -36,20 +33,20 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
 
     private final DatabaseClient db;
     private final EntityManager entityManager;
-    private final UserRowMapper userMapper;
+    private final ProfileRowMapper profileRowMapper;
     private final OfferPackageRowMapper offerpackageMapper;
     private final OrderRowMapper orderMapper;
     private final ColumnConverter columnConverter;
 
     private static final Table entityTable = Table.aliased("jhi_order", EntityManager.ENTITY_ALIAS);
-    private static final Table buyerTable = Table.aliased("jhi_user", "buyer");
-    private static final Table sellerTable = Table.aliased("jhi_user", "seller");
+    private static final Table buyerTable = Table.aliased("profile", "buyer");
+    private static final Table sellerTable = Table.aliased("profile", "seller");
     private static final Table offerpackageTable = Table.aliased("offer_package", "offerpackage");
 
     public OrderRepositoryInternalImpl(
         R2dbcEntityTemplate template,
         EntityManager entityManager,
-        UserRowMapper userMapper,
+        ProfileRowMapper profileRowMapper,
         OfferPackageRowMapper offerpackageMapper,
         OrderRowMapper orderMapper,
         R2dbcEntityOperations entityOperations,
@@ -63,7 +60,7 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
         );
         this.db = template.getDatabaseClient();
         this.entityManager = entityManager;
-        this.userMapper = userMapper;
+        this.profileRowMapper = profileRowMapper;
         this.offerpackageMapper = offerpackageMapper;
         this.orderMapper = orderMapper;
         this.columnConverter = columnConverter;
@@ -112,8 +109,8 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
 
     private Order process(Row row, RowMetadata metadata) {
         Order entity = orderMapper.apply(row, "e");
-        entity.setBuyer(userMapper.apply(row, "buyer"));
-        entity.setSeller(userMapper.apply(row, "seller"));
+        entity.setBuyer(profileRowMapper.apply(row, "buyer"));
+        entity.setSeller(profileRowMapper.apply(row, "seller"));
         entity.setOfferpackage(offerpackageMapper.apply(row, "offerpackage"));
         return entity;
     }

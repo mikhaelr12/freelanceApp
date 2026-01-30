@@ -36,13 +36,13 @@ public class Order extends AbstractAuditingEntity<Long> implements Serializable 
     @NotNull(message = "must not be null")
     @Size(max = 3)
     @Column("currency")
-    private String currency;
+    private String currency = "USD";
 
     @org.springframework.data.annotation.Transient
-    private User buyer;
+    private Profile buyer;
 
     @org.springframework.data.annotation.Transient
-    private User seller;
+    private Profile seller;
 
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "offer" }, allowSetters = true)
@@ -111,31 +111,31 @@ public class Order extends AbstractAuditingEntity<Long> implements Serializable 
         this.currency = currency;
     }
 
-    public User getBuyer() {
+    public Profile getBuyer() {
         return this.buyer;
     }
 
-    public void setBuyer(User user) {
-        this.buyer = user;
-        this.buyerId = user != null ? user.getId() : null;
+    public void setBuyer(Profile profile) {
+        this.buyer = profile;
+        this.buyerId = profile != null ? profile.getId() : null;
     }
 
-    public Order buyer(User user) {
-        this.setBuyer(user);
+    public Order buyer(Profile profile) {
+        this.setBuyer(profile);
         return this;
     }
 
-    public User getSeller() {
+    public Profile getSeller() {
         return this.seller;
     }
 
-    public void setSeller(User user) {
-        this.seller = user;
-        this.sellerId = user != null ? user.getId() : null;
+    public void setSeller(Profile profile) {
+        this.seller = profile;
+        this.sellerId = profile != null ? profile.getId() : null;
     }
 
-    public Order seller(User user) {
-        this.setSeller(user);
+    public Order seller(Profile profile) {
+        this.setSeller(profile);
         return this;
     }
 
@@ -150,6 +150,16 @@ public class Order extends AbstractAuditingEntity<Long> implements Serializable 
 
     public Order offerpackage(OfferPackage offerPackage) {
         this.setOfferpackage(offerPackage);
+        return this;
+    }
+
+    public Order offerpackageId(Long offerpackageId) {
+        this.setOfferpackageId(offerpackageId);
+        return this;
+    }
+
+    public Order sellerId(Long sellerId) {
+        this.setSellerId(sellerId);
         return this;
     }
 
