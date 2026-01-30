@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.OfferType;
 import com.freelance.app.domain.criteria.OfferTypeCriteria;
+import com.freelance.app.service.dto.OfferTypeShortDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -47,4 +48,6 @@ interface OfferTypeRepositoryInternal {
     Mono<Long> countByCriteria(OfferTypeCriteria criteria);
 
     Mono<Void> deleteById(Long id);
+
+    Flux<OfferTypeShortDTO> findAllOfferTypesForSubcategory(Long subcategoryId);
 }
