@@ -36,6 +36,7 @@ public class MessageService {
         return messageRepository.findAllConversationMessages(conversationId).collectList();
     }
 
+    @Transactional
     public Mono<Message> editMessage(Long messageId, String editedMessage) {
         return profileHelper
             .getCurrentProfile()

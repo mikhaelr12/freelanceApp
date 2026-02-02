@@ -41,6 +41,7 @@ public class OfferReviewService {
      * @param dto     the dto of the new review.
      * @return the persistent entity.
      */
+    @Transactional
     public Mono<OfferReview> createOfferReview(Long offerId, ReviewCreateDTO dto) {
         return profileHelper
             .getCurrentProfile()
@@ -116,6 +117,7 @@ public class OfferReviewService {
      * @param reviewId the id of the review to delete.
      * @return an empty Mono indicating completion.
      */
+    @Transactional
     public Mono<Void> deleteOfferReview(Long reviewId) {
         return offerReviewRepository
             .findById(reviewId)
@@ -147,6 +149,7 @@ public class OfferReviewService {
      * @return an empty Mono indicating completion.
      * @throws NotFoundAlertException if the review does not belong to the current user.
      */
+    @Transactional
     public Mono<Void> deleteMyReview(Long reviewId) {
         return profileHelper
             .getCurrentProfile()

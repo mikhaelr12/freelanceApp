@@ -34,6 +34,7 @@ public class OfferPackageService {
         this.offerRepository = offerRepository;
     }
 
+    @Transactional
     public Mono<OfferPackage> createOfferPackage(Long offerId, OfferPackageDTO dto) {
         return profileHelper
             .getCurrentProfile()
@@ -59,6 +60,7 @@ public class OfferPackageService {
         return offerPackageRepository.findAllByOfferId(offerId).collectList();
     }
 
+    @Transactional
     public Mono<Void> deleteOfferPackage(Long offerId) {
         return offerPackageRepository
             .findById(offerId)

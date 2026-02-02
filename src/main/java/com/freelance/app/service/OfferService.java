@@ -97,6 +97,7 @@ public class OfferService {
      * @return entity.
      *
      */
+    @Transactional
     public Mono<Offer> createOffer(OfferDTO dto) {
         Mono<Set<Tag>> tagsMono = dto.getTagIds() == null || dto.getTagIds().isEmpty()
             ? Mono.just(java.util.Collections.emptySet())
@@ -125,6 +126,7 @@ public class OfferService {
             );
     }
 
+    @Transactional
     public Mono<Offer> updateOffer(OfferDTO dto, Long offerId) {
         return offerRepository
             .findById(offerId)
@@ -137,6 +139,7 @@ public class OfferService {
             });
     }
 
+    @Transactional
     public Mono<Void> deleteOffer(Long offerId) {
         return profileHelper
             .getCurrentProfile()

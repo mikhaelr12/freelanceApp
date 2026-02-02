@@ -41,6 +41,7 @@ public class OfferMediaService {
         this.imageHelper = imageHelper;
     }
 
+    @Transactional
     public Mono<Void> uploadOfferMedia(Flux<FilePart> images, Long offerId) {
         return SecurityUtils.getCurrentUserLogin()
             .zipWith(offerRepository.findById(offerId))
@@ -68,6 +69,7 @@ public class OfferMediaService {
             .then();
     }
 
+    @Transactional
     public Mono<Void> deleteOfferMedia(Long offerId, List<Long> mediaIds) {
         return offerMediaRepository
             .findByOffer(offerId)
