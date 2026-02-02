@@ -17,10 +17,10 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.transaction.annotation.Transactional;
 
 @IntegrationTest
 @AutoConfigureWebTestClient
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfileResourceIT {
 
     private static final String ENTITY_NAME = "profile";
@@ -34,19 +34,25 @@ public class ProfileResourceIT {
     @Autowired
     private ProfileRepository profileRepository;
 
+    private User user;
+
+    @BeforeAll
+    void setUp() {
+        user = createUser();
+        user.setLogin("newlogin");
+        user.setEmail("newmail@mail.com");
+        userRepository.save(user).block();
+    }
+
+    @AfterAll
+    void tearDown() {
+        userRepository.delete(user).block();
+    }
+
     @Nested
     @DisplayName("Positive scenario test cases")
     @WithMockUser(username = "newlogin")
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class PositiveScenarios {
-
-        @BeforeAll
-        void setUp() {
-            User user = createUser();
-            user.setLogin("newlogin");
-            user.setEmail("newmail@mail.com");
-            userRepository.save(user).block();
-        }
 
         @Test
         @DisplayName("Should successfully create a profile and return the entity")
@@ -64,7 +70,7 @@ public class ProfileResourceIT {
                 .getResponseBody();
 
             assertThat(responseBody).isNotNull();
-            assertThat(responseBody.getUser().getLogin()).isEqualTo("testuser");
+            assertThat(responseBody.getUser().getLogin()).isEqualTo("newlogin");
             profileRepository.deleteAll().block();
         }
 

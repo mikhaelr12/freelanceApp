@@ -22,6 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @IntegrationTest
 @AutoConfigureWebTestClient
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FavoriteOfferResourceIT {
 
     @Autowired
@@ -49,19 +50,22 @@ public class FavoriteOfferResourceIT {
     private Profile profile;
     private User user;
 
+    @BeforeAll
+    void beforeAll() {
+        createEntities();
+    }
+
+    @AfterAll
+    void afterAll() {
+        offerRepository.delete(offer).block();
+        profileRepository.delete(profile).block();
+        userRepository.delete(user).block();
+    }
+
     @Nested
     @DisplayName("Tests for (POST) create favorite offer endpoint")
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     @Order(1)
     class FavoriteOfferCreationTests {
-
-        @BeforeAll
-        void beforeAll() {
-            createEntities();
-        }
-
-        @AfterAll
-        void afterAll() {}
 
         @Test
         @DisplayName("Should create a favorite offer")
@@ -233,7 +237,7 @@ public class FavoriteOfferResourceIT {
     }
 
     void createEntities() {
-        User user = userRepository.save(createUser()).block();
+        user = userRepository.save(createUser()).block();
         profile = profileRepository.save(createProfile(user)).block();
         OfferType offerType = offerTypeRepository.findAll().blockFirst();
         offer = offerRepository.save(createOffer(profile, offerType)).block();
