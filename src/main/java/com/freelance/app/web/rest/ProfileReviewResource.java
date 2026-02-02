@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -90,6 +91,7 @@ public class ProfileReviewResource {
      * @return an empty response indicating successful deletion.
      */
     @DeleteMapping("/{profileReviewId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<Void>> deleteProfileReview(@PathVariable Long profileReviewId) {
         LOG.debug("REST request to delete a ProfileReview : {}", profileReviewId);
         return profileReviewService.deleteProfileReview(profileReviewId).map(ResponseEntity::ok);

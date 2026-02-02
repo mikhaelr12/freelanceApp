@@ -94,13 +94,14 @@ public class ConversationService {
             Long otherId = otherParticipantId(c, myId);
             Message last = lastByConvoId.get(c.getId());
 
-            ConversationDTO dto = new ConversationDTO();
-            dto.setConversationId(c.getId());
-            dto.setPersonal(true);
-            dto.setLastMessage(last != null ? last.getBody() : null);
-            dto.setReceiverName(otherId != null ? namesById.getOrDefault(otherId, "Unknown") : "Unknown");
-
-            out.add(dto);
+            out.add(
+                new ConversationDTO(
+                    c.getId(),
+                    last != null ? last.getBody() : null,
+                    true,
+                    otherId != null ? namesById.getOrDefault(otherId, "Unknown") : "Unknown"
+                )
+            );
         }
 
         return out;

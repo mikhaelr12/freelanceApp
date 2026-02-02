@@ -7,6 +7,7 @@ import com.freelance.app.repository.rowmapper.ColumnConverter;
 import com.freelance.app.repository.rowmapper.SubcategoryRowMapper;
 import com.freelance.app.repository.sqlhelper.CategorySqlHelper;
 import com.freelance.app.repository.sqlhelper.SubcategorySqlHelper;
+import com.freelance.app.service.dto.SubcategoryDTO;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -101,6 +102,10 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
         return entity;
     }
 
+    private SubcategoryDTO processDTO(Row row, RowMetadata metadata) {
+        return subcategoryMapper.map(row);
+    }
+
     @Override
     public <S extends Subcategory> @NotNull Mono<S> save(@NotNull S entity) {
         return super.save(entity);
@@ -116,6 +121,13 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
         return createQuery(null, buildConditions(criteria), List.of(Functions.count(Expressions.asterisk())))
             .map((row, rowMetadata) -> row.get(0, Long.class))
             .one();
+    }
+
+    @Override
+    public Flux<SubcategoryDTO> findAllDTO() {
+        List<Expression> columns = new ArrayList<>(SubcategorySqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS));
+        columns.addAll(CategorySqlHelper.getColumnsDTO(categoryTable, "category"));
+        return createQuery(null, null, columns).map(this::processDTO).all();
     }
 
     private Condition buildConditions(SubcategoryCriteria criteria) {

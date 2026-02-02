@@ -70,8 +70,8 @@ public class ProfileReviewService {
 
                                 ProfileReview review = new ProfileReview()
                                     .reviewer(reviewer)
-                                    .text(dto.getText() != null ? dto.getText() : null)
-                                    .rating(dto.getRating())
+                                    .text(dto.text() != null ? dto.text() : null)
+                                    .rating(dto.rating())
                                     .reviewee(reviewee)
                                     .createdBy(reviewer.getUser().getLogin());
 

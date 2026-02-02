@@ -2,6 +2,7 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.Subcategory;
 import com.freelance.app.domain.criteria.SubcategoryCriteria;
+import com.freelance.app.service.dto.SubcategoryDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -47,4 +48,6 @@ interface SubcategoryRepositoryInternal {
     Mono<Long> countByCriteria(SubcategoryCriteria criteria);
 
     Mono<Void> deleteById(Long id);
+
+    Flux<SubcategoryDTO> findAllDTO();
 }

@@ -5,7 +5,7 @@ import com.freelance.app.domain.criteria.OrderCriteria;
 import com.freelance.app.repository.rowmapper.*;
 import com.freelance.app.repository.sqlhelper.OfferPackageSqlHelper;
 import com.freelance.app.repository.sqlhelper.OrderSqlHelper;
-import com.freelance.app.repository.sqlhelper.UserSqlHelper;
+import com.freelance.app.repository.sqlhelper.ProfileSqlHelper;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
@@ -90,8 +90,8 @@ class OrderRepositoryInternalImpl extends SimpleR2dbcRepository<Order, Long> imp
 
     RowsFetchSpec<Order> createQuery(Pageable pageable, Condition whereClause) {
         List<Expression> columns = OrderSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
-        columns.addAll(UserSqlHelper.getColumns(buyerTable, "buyer"));
-        columns.addAll(UserSqlHelper.getColumns(sellerTable, "seller"));
+        columns.addAll(ProfileSqlHelper.getColumns(buyerTable, "buyer"));
+        columns.addAll(ProfileSqlHelper.getColumns(sellerTable, "seller"));
         columns.addAll(OfferPackageSqlHelper.getColumns(offerpackageTable, "offerpackage"));
         return createQuery(pageable, whereClause, columns).map(this::process);
     }

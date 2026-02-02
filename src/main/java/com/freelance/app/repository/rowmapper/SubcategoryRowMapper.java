@@ -1,6 +1,8 @@
 package com.freelance.app.repository.rowmapper;
 
 import com.freelance.app.domain.Subcategory;
+import com.freelance.app.service.dto.CategoryShortDTO;
+import com.freelance.app.service.dto.SubcategoryDTO;
 import io.r2dbc.spi.Row;
 import java.time.Instant;
 import java.util.function.BiFunction;
@@ -34,5 +36,13 @@ public class SubcategoryRowMapper implements BiFunction<Row, String, Subcategory
         entity.setActive(converter.fromRow(row, prefix + "_active", Boolean.class));
         entity.setCategoryId(converter.fromRow(row, prefix + "_category_id", Long.class));
         return entity;
+    }
+
+    public SubcategoryDTO map(Row row) {
+        return new SubcategoryDTO(
+            row.get("e_id", Long.class),
+            row.get("e_name", String.class),
+            new CategoryShortDTO(row.get("category_id", Long.class), row.get("category_name", String.class))
+        );
     }
 }

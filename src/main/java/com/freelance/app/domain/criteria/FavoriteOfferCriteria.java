@@ -36,6 +36,8 @@ public class FavoriteOfferCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
+    public FavoriteOfferCriteria() {}
+
     public FavoriteOfferCriteria(FavoriteOfferCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);

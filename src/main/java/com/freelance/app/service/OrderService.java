@@ -7,9 +7,9 @@ import com.freelance.app.domain.enumeration.OrderStatus;
 import com.freelance.app.repository.OfferPackageRepository;
 import com.freelance.app.repository.OrderRepository;
 import com.freelance.app.util.ProfileHelper;
+import com.freelance.app.web.rest.errors.ForbiddenAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -20,8 +20,6 @@ import reactor.core.publisher.Mono;
 @Service
 @Transactional
 public class OrderService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OrderService.class);
 
     private final OrderRepository orderRepository;
     private final OfferPackageRepository offerPackageRepository;
@@ -55,6 +53,27 @@ public class OrderService {
                         .sellerId(offerPackage.getOffer().getOwnerId())
                         .offerpackage(offerPackage)
                 );
+            });
+    }
+
+    public Mono<Void> updateOrderStatus(Long orderId, OrderStatus orderStatus) {
+        return profileHelper
+            .getCurrentProfile()
+            .zipWith(
+                orderRepository
+                    .findById(orderId)
+                    .switchIfEmpty(Mono.error(new NotFoundAlertException("Order not found", "Order", "orderNotFound")))
+            )
+            .flatMap(tuple -> {
+                Profile profile = tuple.getT1();
+                Order order = tuple.getT2();
+                if (!Objects.equals(profile.getId(), order.getSellerId())) {
+                    return Mono.error(
+                        new ForbiddenAlertException("Order does not belong to current profile", "Order", "orderNotBelongingToProfile")
+                    );
+                }
+                order.setStatus(orderStatus);
+                return orderRepository.save(order).then();
             });
     }
 }
