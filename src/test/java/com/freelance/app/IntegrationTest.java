@@ -9,6 +9,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.junit.jupiter.api.ClassOrderer;
+import org.junit.jupiter.api.TestClassOrder;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
@@ -24,9 +27,9 @@ import org.springframework.context.annotation.Import;
 @EmbeddedSQL
 @EmbeddedMinIO
 @Import(WebTestClientLoggerConfiguration.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestClassOrder(ClassOrderer.OrderAnnotation.class)
 public @interface IntegrationTest {
     // 5s is Spring's default https://github.com/spring-projects/spring-framework/blob/main/spring-test/src/main/java/org/springframework/test/web/reactive/server/DefaultWebTestClient.java#L106
     String DEFAULT_TIMEOUT = "PT5S";
-
-    String DEFAULT_ENTITY_TIMEOUT = "PT5S";
 }

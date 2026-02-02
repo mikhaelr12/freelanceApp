@@ -7,6 +7,8 @@ import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
 import jakarta.annotation.PostConstruct;
 import java.time.Instant;
+import java.util.List;
+import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,21 @@ public final class TestUtil {
         applicationName = appName;
     }
 
+    //API URLs
+    //Profile URLs
+    public static final String PROFILE_API_URL = "/api/profiles";
+    public static final String PROFILE_ID_API_URL = PROFILE_API_URL + "/{id}";
+
+    //Favorite offer URLs
+    public static final String FAVORITE_OFFER_API_URL = "/api/favorite-offers";
+    public static final String FAVORITE_OFFER_ID_API_URL = FAVORITE_OFFER_API_URL + "/{offerId}";
+    public static final String FAVORITE_OFFER_REMOVE_API_URL = FAVORITE_OFFER_API_URL + "/remove/{favoriteOfferId}";
+
+    //Offer URLs
+    public static final String OFFER_API_URL = "/api/offers";
+    public static final String OFFER_ID_API_URL = OFFER_API_URL + "/{offerId}";
+
+    //Headers
     public static String getApplicationName() {
         return applicationName != null ? applicationName : "app";
     }
@@ -34,14 +51,9 @@ public final class TestUtil {
         return "X-" + getApplicationName() + "-alert";
     }
 
-    //API URLs
-    public static final String PROFILE_API_URL = "/api/profiles";
-    public static final String PROFILE_ID_API_URL = PROFILE_API_URL + "/{id}";
+    public static final String X_TOTAL_COUNT = "X-Total-Count";
 
-    public static final String FAVORITE_OFFER_API_URL = "/api/favorite-offers";
-    public static final String FAVORITE_OFFER_ID_API_URL = FAVORITE_OFFER_API_URL + "/{offerId}";
-    public static final String FAVORITE_OFFER_REMOVE_API_URL = FAVORITE_OFFER_API_URL + "/remove/{favoriteOfferId}";
-
+    //Entity creation methods
     public static User createUser() {
         User user = new User();
         user.setLogin("testuser");
@@ -76,5 +88,19 @@ public final class TestUtil {
 
     public static FavoriteOffer createFavoriteOffer(Profile profile, Offer offer) {
         return new FavoriteOffer().profile(profile).offer(offer);
+    }
+
+    public static List<Offer> createTempOffers(OfferType offerType, int range, Profile profile) {
+        return IntStream.rangeClosed(1, range)
+            .mapToObj(i ->
+                new Offer()
+                    .name("testName " + i)
+                    .description("testDescription " + i)
+                    .owner(profile)
+                    .status(OfferStatus.ACTIVE)
+                    .visibility(true)
+                    .offertype(offerType)
+            )
+            .toList();
     }
 }

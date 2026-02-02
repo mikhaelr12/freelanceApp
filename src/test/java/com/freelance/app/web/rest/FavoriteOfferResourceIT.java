@@ -21,8 +21,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @IntegrationTest
 @AutoConfigureWebTestClient
-@TestClassOrder(ClassOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FavoriteOfferResourceIT {
 
     @Autowired

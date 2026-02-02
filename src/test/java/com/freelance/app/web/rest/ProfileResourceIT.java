@@ -20,7 +20,6 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @IntegrationTest
 @AutoConfigureWebTestClient
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfileResourceIT {
 
     private static final String ENTITY_NAME = "profile";

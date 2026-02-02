@@ -8,9 +8,11 @@ import com.freelance.app.domain.enumeration.OfferStatus;
 import com.freelance.app.repository.*;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferShortDTO;
+import com.freelance.app.service.dto.OfferUpdateDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.util.ImageHelper;
 import com.freelance.app.util.ProfileHelper;
+import com.freelance.app.web.rest.errors.ForbiddenAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import java.util.HashSet;
 import java.util.List;
@@ -99,12 +101,12 @@ public class OfferService {
      */
     @Transactional
     public Mono<Offer> createOffer(OfferDTO dto) {
-        Mono<Set<Tag>> tagsMono = dto.getTagIds() == null || dto.getTagIds().isEmpty()
+        Mono<Set<Tag>> tagsMono = dto.tagIds() == null || dto.tagIds().isEmpty()
             ? Mono.just(java.util.Collections.emptySet())
-            : tagRepository.findAllById(dto.getTagIds()).collect(Collectors.toSet());
+            : tagRepository.findAllById(dto.tagIds()).collect(Collectors.toSet());
 
         return offerTypeRepository
-            .findById(dto.getOfferTypeId())
+            .findById(dto.offerTypeId())
             .switchIfEmpty(Mono.error(new NotFoundAlertException("OfferType not found", "offertype", "offerTypeNotFound")))
             .zipWith(tagsMono)
             .flatMap(tuple ->
@@ -113,8 +115,8 @@ public class OfferService {
                     .flatMap(profile ->
                         offerRepository.save(
                             new Offer()
-                                .name(dto.getName())
-                                .description(dto.getDescription())
+                                .name(dto.name())
+                                .description(dto.description())
                                 .rating(0.0)
                                 .status(OfferStatus.ACTIVE)
                                 .visibility(true)
@@ -127,14 +129,15 @@ public class OfferService {
     }
 
     @Transactional
-    public Mono<Offer> updateOffer(OfferDTO dto, Long offerId) {
+    public Mono<Offer> updateOffer(OfferUpdateDTO dto, Long offerId) {
         return offerRepository
             .findById(offerId)
+            .switchIfEmpty(Mono.error(new NotFoundAlertException("Offer not found", "offer", "offerNotFound")))
             .flatMap(offer -> {
-                Optional.ofNullable(dto.getName()).ifPresent(offer::setName);
-                Optional.ofNullable(dto.getDescription()).ifPresent(offer::setDescription);
-                Optional.ofNullable(dto.getTagIds()).ifPresent(tagIds -> offer.setTags(fetchTags(tagIds)));
-                Optional.ofNullable(dto.getOfferTypeId()).ifPresent(offer::setOffertypeId);
+                Optional.ofNullable(dto.name()).ifPresent(offer::setName);
+                Optional.ofNullable(dto.description()).ifPresent(offer::setDescription);
+                Optional.ofNullable(dto.tagIds()).ifPresent(tagIds -> offer.setTags(fetchTags(tagIds)));
+                Optional.ofNullable(dto.offerTypeId()).ifPresent(offer::setOffertypeId);
                 return offerRepository.save(offer);
             });
     }
@@ -146,12 +149,13 @@ public class OfferService {
             .flatMap(profile ->
                 offerRepository
                     .findById(offerId)
+                    .switchIfEmpty(Mono.error(new NotFoundAlertException("Offer not found", "offer", "offerNotFound")))
                     .flatMap(offer -> {
                         if (!offer.getOwnerId().equals(profile.getId())) {
                             return Mono.error(
-                                new NotFoundAlertException(
+                                new ForbiddenAlertException(
                                     "Offer does not belong to current user",
-                                    "OfferMedia",
+                                    "offer",
                                     "offerDoesNotBelongToThisUser"
                                 )
                             );
@@ -169,6 +173,10 @@ public class OfferService {
                             );
                     })
             );
+    }
+
+    public Mono<Long> countByCriteria(OfferCriteria criteria) {
+        return offerRepository.countByCriteria(criteria);
     }
 
     private Set<Tag> fetchTags(Set<Long> tagIds) {
