@@ -10,8 +10,10 @@ import PasswordResetInit from 'app/modules/account/password-reset/init/password-
 import PasswordResetFinish from 'app/modules/account/password-reset/finish/password-reset-finish';
 import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
+import ProfileCreate from 'app/modules/profile/profile-create';
 import EntitiesRoutes from 'app/entities/routes';
 import PrivateRoute from 'app/shared/auth/private-route';
+import ProfileRequiredRoute from 'app/shared/auth/profile-required-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
@@ -31,9 +33,24 @@ const AppRoutes = () => {
   return (
     <div className="view-routes">
       <ErrorBoundaryRoutes>
-        <Route index element={<Home />} />
+        <Route
+          index
+          element={
+            <ProfileRequiredRoute>
+              <Home />
+            </ProfileRequiredRoute>
+          }
+        />
         <Route path="login" element={<Login />} />
         <Route path="logout" element={<Logout />} />
+        <Route
+          path="profile/create"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]}>
+              <ProfileCreate />
+            </PrivateRoute>
+          }
+        />
         <Route path="account">
           <Route
             path="*"
@@ -62,7 +79,9 @@ const AppRoutes = () => {
           path="*"
           element={
             <PrivateRoute hasAnyAuthorities={[AUTHORITIES.USER]}>
-              <EntitiesRoutes />
+              <ProfileRequiredRoute>
+                <EntitiesRoutes />
+              </ProfileRequiredRoute>
             </PrivateRoute>
           }
         />

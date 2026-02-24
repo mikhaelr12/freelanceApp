@@ -131,6 +131,19 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
         return db.sql(sql).bind("categoryId", categoryId).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
     }
 
+    @Override
+    public Flux<SkillShortDTO> findAllShort() {
+        //        String columns = SkillSqlHelper.getColumnsShort(entityTable, "e")
+        //            .stream()
+        //            .map(Expression::toString)
+        //            .collect(Collectors.joining(", "));
+
+        List<Expression> columns = SkillSqlHelper.getColumnsShort(entityTable, EntityManager.ENTITY_ALIAS);
+        return createQuery(null, null, columns).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
+        //        String sql = "SELECT " + columns + " FROM skill WHERE active = true ORDER BY name ASC";
+        //        return db.sql(sql).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
+    }
+
     private Condition buildConditions(SkillCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
         List<Condition> allConditions = new ArrayList<>();

@@ -156,7 +156,13 @@ class ProfileRepositoryInternalImpl extends SimpleR2dbcRepository<Profile, Long>
             .map(Expression::toString)
             .collect(Collectors.joining(", "));
 
-        String sql = "SELECT " + columns + " " + "FROM skill skill " + "JOIN rel_profile__skill sk ON sk.profile_id = :profileId";
+        String sql =
+            "SELECT " +
+            columns +
+            " " +
+            "FROM skill skill " +
+            "JOIN rel_profile__skill sk ON sk.skill_id = skill.id " +
+            "WHERE sk.profile_id = :profileId";
         return db
             .sql(sql)
             .bind("profileId", entity.getId())

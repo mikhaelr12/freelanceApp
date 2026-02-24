@@ -82,6 +82,9 @@ public interface ProfileReviewRepository extends ReactiveCrudRepository<ProfileR
 
     @Query("SELECT AVG(entity.rating) FROM profile_review entity WHERE entity.reviewee_id = :revieweeId")
     Mono<Double> getAverageRatingOffer(@Param("revieweeId") Long revieweeId);
+
+    @Query("SELECT COUNT(*) FROM profile_review entity WHERE entity.reviewee_id = :revieweeId")
+    Mono<Long> countByRevieweeId(@Param("revieweeId") Long revieweeId);
 }
 
 interface ProfileReviewRepositoryInternal {

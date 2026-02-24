@@ -3,7 +3,7 @@ logging:
     ROOT: INFO
     tech.jhipster: INFO
     org.hibernate.SQL: INFO
-    com.freelance.app: INFO
+    com.freelance.app: DEBUG
 #    io.r2dbc.postgresql.QUERY: DEBUG
 #    io.r2dbc.postgresql.PARAM: DEBUG
 
@@ -22,7 +22,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/freelanceapp
   mail:
     host: localhost
-    port: 3025
+    port: 2525
     username: null
     password: null
   messages:

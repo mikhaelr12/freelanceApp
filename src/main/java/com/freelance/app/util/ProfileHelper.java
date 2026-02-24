@@ -29,6 +29,10 @@ public class ProfileHelper {
             .flatMap(user ->
                 profileRepository
                     .findByUserId(user.getId())
+                    .flatMap(profile -> {
+                        profile.setUser(user);
+                        return Mono.just(profile);
+                    })
                     .switchIfEmpty(Mono.error(new NotFoundAlertException("Profile not found", user.getId().toString(), "profileNotFound")))
             );
     }

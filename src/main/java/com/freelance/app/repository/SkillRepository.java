@@ -49,5 +49,7 @@ interface SkillRepositoryInternal {
 
     Mono<Void> deleteById(Long id);
 
+    Flux<SkillShortDTO> findAllShort();
+
     Flux<SkillShortDTO> findAllByCategoryShort(Long categoryId);
 }

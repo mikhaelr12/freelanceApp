@@ -14,6 +14,7 @@ public class ProfileDTO {
     private ProfileType profileType;
     private Boolean verified;
     private Double rating;
+    private Long reviewCount;
     private Set<SkillShortDTO> skills;
     private String imageBase64;
     private Long profilePictureId;
@@ -104,5 +105,13 @@ public class ProfileDTO {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public Long getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(Long reviewCount) {
+        this.reviewCount = reviewCount;
     }
 }

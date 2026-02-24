@@ -40,7 +40,12 @@ public class CategoryCriteria implements Serializable, Criteria {
 
     private Boolean distinct;
 
+    public CategoryCriteria() {}
+
     public CategoryCriteria(CategoryCriteria other) {
+        if (other == null) {
+            return;
+        }
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
         this.name = other.optionalName().map(StringFilter::copy).orElse(null);
         this.createdDate = other.optionalCreatedDate().map(InstantFilter::copy).orElse(null);

@@ -18,17 +18,21 @@ public class SkillResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(SkillResource.class);
 
-    private static final String ENTITY_NAME = "skill";
-
     private final SkillService skillService;
 
     public SkillResource(SkillService skillService) {
         this.skillService = skillService;
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/all")
+    public Mono<ResponseEntity<List<SkillShortDTO>>> getAllSkills() {
+        LOG.debug("REST request to get all active skills");
+        return skillService.getAllSkills().map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/category/{categoryId}")
     public Mono<ResponseEntity<List<SkillShortDTO>>> getAllSkillsForCategory(@PathVariable Long categoryId) {
-        LOG.info("REST request to get all skills for category {}", categoryId);
+        LOG.debug("REST request to get all skills for category {}", categoryId);
         return skillService.getAllSkillsForCategory(categoryId).map(ResponseEntity::ok);
     }
 }

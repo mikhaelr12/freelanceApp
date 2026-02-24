@@ -1,22 +1,30 @@
 package com.freelance.app.web.rest;
 
 import com.freelance.app.domain.Profile;
+import com.freelance.app.domain.criteria.ProfileCriteria;
 import com.freelance.app.service.ProfileService;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.ForwardedHeaderUtils;
 import reactor.core.publisher.Mono;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.reactive.ResponseUtil;
 
 /**
@@ -68,6 +76,35 @@ public class ProfileResource {
     public Mono<ResponseEntity<Profile>> updateProfile(@PathVariable Long id, @Valid @RequestBody ProfileEditDTO profileDTO) {
         LOG.debug("REST request to update Profile : {}, {}", id, profileDTO);
         return profileService.update(profileDTO, id).map(ResponseEntity::ok);
+    }
+
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<List<ProfileDTO>>> getAllProfiles(
+        ProfileCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        ServerHttpRequest request
+    ) {
+        LOG.debug("REST request to get Profiles by criteria: {}", criteria);
+        return profileService
+            .countByCriteria(criteria)
+            .zipWith(profileService.findByCriteriaDTO(criteria, pageable).collectList())
+            .map(countWithEntities ->
+                ResponseEntity.ok()
+                    .headers(
+                        PaginationUtil.generatePaginationHttpHeaders(
+                            ForwardedHeaderUtils.adaptFromForwardedHeaders(request.getURI(), request.getHeaders()),
+                            new PageImpl<>(countWithEntities.getT2(), pageable, countWithEntities.getT1())
+                        )
+                    )
+                    .body(countWithEntities.getT2())
+            );
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public Mono<ResponseEntity<ProfileDTO>> getCurrentUserProfile() {
+        LOG.debug("REST request to get current authenticated user profile");
+        return ResponseUtil.wrapOrNotFound(profileService.findCurrentUserProfile());
     }
 
     /**

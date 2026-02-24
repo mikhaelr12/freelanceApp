@@ -20,7 +20,13 @@ public class SkillService {
         this.skillRepository = skillRepository;
     }
 
+    @Transactional(readOnly = true)
     public Mono<List<SkillShortDTO>> getAllSkillsForCategory(Long categoryId) {
         return skillRepository.findAllByCategoryShort(categoryId).collectList();
+    }
+
+    @Transactional(readOnly = true)
+    public Mono<List<SkillShortDTO>> getAllSkills() {
+        return skillRepository.findAllShort().collectList();
     }
 }

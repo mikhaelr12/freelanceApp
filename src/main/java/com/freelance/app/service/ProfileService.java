@@ -5,12 +5,14 @@ import com.freelance.app.domain.Skill;
 import com.freelance.app.domain.criteria.ProfileCriteria;
 import com.freelance.app.repository.FileObjectRepository;
 import com.freelance.app.repository.ProfileRepository;
+import com.freelance.app.repository.ProfileReviewRepository;
 import com.freelance.app.repository.SkillRepository;
 import com.freelance.app.repository.UserRepository;
 import com.freelance.app.security.SecurityUtils;
 import com.freelance.app.service.dto.ProfileCreationDTO;
 import com.freelance.app.service.dto.ProfileDTO;
 import com.freelance.app.service.dto.ProfileEditDTO;
+import com.freelance.app.service.dto.SkillShortDTO;
 import com.freelance.app.util.FileProcessUtil;
 import com.freelance.app.util.MinioUtil;
 import com.freelance.app.util.ProfileHelper;
@@ -22,12 +24,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -42,6 +46,7 @@ public class ProfileService {
     private static final String ENTITY_NAME = "profile";
 
     private final ProfileRepository profileRepository;
+    private final ProfileReviewRepository profileReviewRepository;
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
     private final MinioUtil minioUtil;
@@ -51,6 +56,7 @@ public class ProfileService {
 
     public ProfileService(
         ProfileRepository profileRepository,
+        ProfileReviewRepository profileReviewRepository,
         UserRepository userRepository,
         SkillRepository skillRepository,
         MinioUtil minioUtil,
@@ -59,6 +65,7 @@ public class ProfileService {
         FileProcessUtil fileProcessUtil
     ) {
         this.profileRepository = profileRepository;
+        this.profileReviewRepository = profileReviewRepository;
         this.userRepository = userRepository;
         this.skillRepository = skillRepository;
         this.minioUtil = minioUtil;
@@ -104,6 +111,12 @@ public class ProfileService {
         return profileRepository.countByCriteria(criteria);
     }
 
+    @Transactional(readOnly = true)
+    public Flux<ProfileDTO> findByCriteriaDTO(ProfileCriteria criteria, Pageable pageable) {
+        LOG.debug("Request to get all ProfileDTOs by Criteria");
+        return profileRepository.findByCriteria(criteria, pageable).flatMapSequential(profile -> findOne(profile.getId()));
+    }
+
     /**
      * Get one profile by id.
      *
@@ -133,7 +146,35 @@ public class ProfileService {
                             })
                     )
                     .switchIfEmpty(Mono.just(profile));
+            })
+            .flatMap(this::enrichWithReviewCount);
+    }
+
+    private Mono<ProfileDTO> enrichWithReviewCount(ProfileDTO profile) {
+        if (profile.getId() == null) {
+            profile.setReviewCount(0L);
+            return Mono.just(profile);
+        }
+        return profileReviewRepository
+            .countByRevieweeId(profile.getId())
+            .defaultIfEmpty(0L)
+            .map(count -> {
+                profile.setReviewCount(count);
+                return profile;
             });
+    }
+
+    @Transactional(readOnly = true)
+    public Mono<ProfileDTO> findCurrentUserProfile() {
+        return SecurityUtils.getCurrentUserLogin()
+            .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
+            .flatMap(login ->
+                userRepository
+                    .findOneByLogin(login)
+                    .switchIfEmpty(Mono.error(new NotFoundAlertException("User not found", "user", "userNotFound")))
+                    .flatMap(user -> profileRepository.findByUserId(user.getId()))
+            )
+            .flatMap(profile -> findOne(profile.getId()));
     }
 
     /**
