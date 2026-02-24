@@ -24,6 +24,12 @@ public class OfferTypeResource {
         this.offerTypeService = offerTypeService;
     }
 
+    @GetMapping("/category/{categoryId}")
+    public Mono<ResponseEntity<List<OfferTypeShortDTO>>> getAllOfferTypesForCategory(@PathVariable Long categoryId) {
+        LOG.info("REST request to get all OfferTypes for category id {}", categoryId);
+        return offerTypeService.getAllOfferTypesForCategory(categoryId).map(ResponseEntity::ok);
+    }
+
     @GetMapping("/{subcategoryId}")
     public Mono<ResponseEntity<List<OfferTypeShortDTO>>> getAllOfferTypesForSubcategory(@PathVariable Long subcategoryId) {
         LOG.info("REST request to get all OfferTypes for subcategory id {}", subcategoryId);

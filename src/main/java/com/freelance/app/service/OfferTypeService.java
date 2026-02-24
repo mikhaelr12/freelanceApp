@@ -23,4 +23,8 @@ public class OfferTypeService {
     public Mono<List<OfferTypeShortDTO>> getAllOfferTypesForSubcategory(Long subcategoryId) {
         return offerTypeRepository.findAllOfferTypesForSubcategory(subcategoryId).collectList();
     }
+
+    public Mono<List<OfferTypeShortDTO>> getAllOfferTypesForCategory(Long categoryId) {
+        return offerTypeRepository.findAllOfferTypesForCategory(categoryId).collectList();
+    }
 }

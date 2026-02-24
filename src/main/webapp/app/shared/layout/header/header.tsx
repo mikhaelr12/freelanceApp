@@ -77,8 +77,8 @@ const Header = (props: IHeaderProps) => {
     () =>
       normalizedSubcategories
         .filter(subcategory => subcategory.categoryId === activeCategory?.id)
-        .map(subcategory => subcategory.name)
-        .filter(Boolean) as string[],
+        .filter(subcategory => subcategory.id && subcategory.name)
+        .map(subcategory => ({ id: subcategory.id as number, name: subcategory.name as string })),
     [normalizedSubcategories, activeCategory?.id],
   );
 
@@ -141,22 +141,25 @@ const Header = (props: IHeaderProps) => {
                     {categoriesLoading && <div className="category-state">Loading categories...</div>}
                     {!categoriesLoading &&
                       categories.map(category => (
-                        <button
-                          type="button"
+                        <RouterLink
+                          to={`/services/${category.id}`}
                           key={category.id}
                           className={`category-list-item ${category.id === activeCategory?.id ? 'active' : ''}`}
                           onMouseEnter={() => setActiveCategoryId(category.id ?? null)}
-                          onClick={() => setActiveCategoryId(category.id ?? null)}
+                          onClick={() => {
+                            setActiveCategoryId(category.id ?? null);
+                            setIsCategoriesOpen(false);
+                          }}
                         >
                           <span className="bullet" />
                           {category.name}
-                        </button>
+                        </RouterLink>
                       ))}
                   </aside>
                   <section className="category-details">
                     <header>
                       <h4>{activeCategory?.name ?? 'Categories'}</h4>
-                      <RouterLink to="/offer" className="view-all">
+                      <RouterLink to={activeCategory?.id ? `/services/${activeCategory.id}` : '/'} className="view-all">
                         View all
                       </RouterLink>
                     </header>
@@ -165,8 +168,8 @@ const Header = (props: IHeaderProps) => {
                         <div key={`column-${index}`} className="subcategory-column">
                           {column.length > 0 ? (
                             column.map(subcategory => (
-                              <RouterLink key={subcategory} to="/offer" className="subcategory-link">
-                                {subcategory}
+                              <RouterLink key={subcategory.id} to={`/services/subcategory/${subcategory.id}`} className="subcategory-link">
+                                {subcategory.name}
                               </RouterLink>
                             ))
                           ) : (

@@ -23,6 +23,8 @@ public class OfferShortDTO implements Serializable {
     @DecimalMax(value = "5")
     private Double rating;
 
+    private Long offertypeId;
+
     private ProfileDTO owner;
 
     private Set<TagDTO> tags;
@@ -51,6 +53,14 @@ public class OfferShortDTO implements Serializable {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public Long getOffertypeId() {
+        return offertypeId;
+    }
+
+    public void setOffertypeId(Long offertypeId) {
+        this.offertypeId = offertypeId;
     }
 
     public ProfileDTO getOwner() {
@@ -85,6 +95,11 @@ public class OfferShortDTO implements Serializable {
 
     public OfferShortDTO rating(Double rating) {
         this.setRating(rating);
+        return this;
+    }
+
+    public OfferShortDTO offertypeId(Long offertypeId) {
+        this.setOffertypeId(offertypeId);
         return this;
     }
 

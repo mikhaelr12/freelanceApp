@@ -77,6 +77,8 @@ public class SecurityConfiguration {
                     .pathMatchers("/*.*").permitAll()
                     .pathMatchers("/api/categories/**").permitAll()
                     .pathMatchers("/api/subcategories/**").permitAll()
+                    .pathMatchers("/api/offer-types/**").permitAll()
+                    .pathMatchers("/api/offers/**").permitAll()
                     .pathMatchers("/api/profiles/**").permitAll()
                     .pathMatchers("/api/ws/**").permitAll()
                     .pathMatchers("/api/authenticate").permitAll()

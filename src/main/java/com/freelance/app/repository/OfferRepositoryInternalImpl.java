@@ -46,6 +46,8 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
     private static final Table entityTable = Table.aliased("offer", EntityManager.ENTITY_ALIAS);
     private static final Table ownerTable = Table.aliased("profile", "owner");
     private static final Table offertypeTable = Table.aliased("offer_type", "offertype");
+    private static final Table subcategoryTable = Table.aliased("subcategory", "subcategory");
+    private static final Table categoryTable = Table.aliased("category", "category");
 
     private static final EntityManager.LinkTable tagLink = new EntityManager.LinkTable("rel_offer__tag", "offer_id", "tag_id");
 
@@ -93,7 +95,13 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
             .equals(Column.create("id", ownerTable))
             .leftOuterJoin(offertypeTable)
             .on(Column.create("offertype_id", entityTable))
-            .equals(Column.create("id", offertypeTable));
+            .equals(Column.create("id", offertypeTable))
+            .leftOuterJoin(subcategoryTable)
+            .on(Column.create("subcategory_id", offertypeTable))
+            .equals(Column.create("id", subcategoryTable))
+            .leftOuterJoin(categoryTable)
+            .on(Column.create("category_id", subcategoryTable))
+            .equals(Column.create("id", categoryTable));
         String select = entityManager.createSelect(selectFrom, Offer.class, pageable, whereClause);
         return db.sql(select);
     }
@@ -196,6 +204,12 @@ class OfferRepositoryInternalImpl extends SimpleR2dbcRepository<Offer, Long> imp
             }
             if (criteria.getOffertypeId() != null) {
                 builder.buildFilterConditionForField(criteria.getOffertypeId(), offertypeTable.column("id"));
+            }
+            if (criteria.getSubcategoryId() != null) {
+                builder.buildFilterConditionForField(criteria.getSubcategoryId(), subcategoryTable.column("id"));
+            }
+            if (criteria.getCategoryId() != null) {
+                builder.buildFilterConditionForField(criteria.getCategoryId(), categoryTable.column("id"));
             }
         }
         return builder.buildConditions();

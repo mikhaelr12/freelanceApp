@@ -38,9 +38,11 @@ Development Ribbon
 Navbar styles
 ========================================================================== */
 .jh-navbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e9f0;
-  padding: 0.55rem 1.4rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(145%) blur(9px);
+  border-bottom: 1px solid #dde5f2;
+  box-shadow: 0 6px 20px rgba(20, 40, 65, 0.08);
+  padding: 0.6rem 1.4rem;
   display: flex;
   align-items: center;
 
@@ -79,14 +81,16 @@ Navbar styles
   .header-link {
     text-decoration: none;
     color: #24324a;
-    font-weight: 500;
+    font-weight: 600;
     border: 0;
     background: transparent;
-    padding: 0.4rem 0.15rem;
+    padding: 0.42rem 0.2rem;
+    border-radius: 0.55rem;
   }
 
   .header-link:hover {
     color: #0d4b7a;
+    background: #eef4fd;
   }
 
   .categories-trigger {
@@ -115,8 +119,13 @@ Navbar styles
   .header-auth-link {
     text-decoration: none;
     color: #1e2a3d;
-    font-weight: 500;
-    padding: 0.35rem 0.15rem;
+    font-weight: 600;
+    padding: 0.4rem 0.42rem;
+    border-radius: 0.55rem;
+  }
+
+  .header-auth-link:hover {
+    background: #edf3fd;
   }
 
   .header-signup-btn {

@@ -1,5 +1,6 @@
 package com.freelance.app.service;
 
+import com.freelance.app.domain.criteria.SubcategoryCriteria;
 import com.freelance.app.repository.SubcategoryRepository;
 import com.freelance.app.service.dto.SubcategoryDTO;
 import java.util.List;
@@ -20,7 +21,7 @@ public class SubcategoryService {
         this.subcategoryRepository = subcategoryRepository;
     }
 
-    public Mono<List<SubcategoryDTO>> findAllDTO() {
-        return subcategoryRepository.findAllDTO().collectList();
+    public Mono<List<SubcategoryDTO>> findAllDTO(SubcategoryCriteria criteria) {
+        return subcategoryRepository.findAllDTO(criteria).collectList();
     }
 }

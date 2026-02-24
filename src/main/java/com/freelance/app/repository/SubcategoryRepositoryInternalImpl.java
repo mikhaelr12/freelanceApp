@@ -124,10 +124,10 @@ class SubcategoryRepositoryInternalImpl extends SimpleR2dbcRepository<Subcategor
     }
 
     @Override
-    public Flux<SubcategoryDTO> findAllDTO() {
+    public Flux<SubcategoryDTO> findAllDTO(SubcategoryCriteria criteria) {
         List<Expression> columns = new ArrayList<>(SubcategorySqlHelper.getColumnsDTO(entityTable, EntityManager.ENTITY_ALIAS));
         columns.addAll(CategorySqlHelper.getColumnsDTO(categoryTable, "category"));
-        return createQuery(null, null, columns).map(this::processDTO).all();
+        return createQuery(null, buildConditions(criteria), columns).map(this::processDTO).all();
     }
 
     private Condition buildConditions(SubcategoryCriteria criteria) {

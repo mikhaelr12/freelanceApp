@@ -1,6 +1,6 @@
 import './home.scss';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -12,6 +12,8 @@ const CATEGORY_FETCH_SIZE = 2000;
 const SUBCATEGORY_FETCH_SIZE = 5000;
 const FREELANCER_FETCH_SIZE = 200;
 const FREELANCER_DISPLAY_COUNT = 8;
+const SERVICE_VISIBLE_COUNT = 4;
+const SERVICE_AUTOPLAY_INTERVAL_MS = 3600;
 
 interface ISkillShortDTO {
   id?: number;
@@ -39,11 +41,13 @@ export const Home = () => {
   const subcategoryList = useAppSelector(state => state.subcategory.entities);
   const categoriesLoading = useAppSelector(state => state.category.loading);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
+  const [isServicesHovered, setIsServicesHovered] = useState(false);
+  const [servicesStartIndex, setServicesStartIndex] = useState(0);
+  const [servicesTransitionDirection, setServicesTransitionDirection] = useState<'left' | 'right' | null>(null);
   const [freelancerPool, setFreelancerPool] = useState<IProfileDTO[]>([]);
   const [featuredFreelancers, setFeaturedFreelancers] = useState<IProfileDTO[]>([]);
   const [freelancersLoading, setFreelancersLoading] = useState(false);
+  const servicesTransitionTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     dispatch(
@@ -117,7 +121,24 @@ export const Home = () => {
   }, []);
 
   const activeCategories = useMemo(() => categoryList.filter(category => category.active !== false), [categoryList]);
-  const featuredCategories = useMemo(() => activeCategories.slice(0, 6), [activeCategories]);
+  const randomPopularCategories = useMemo(() => {
+    const shuffled = [...activeCategories];
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = shuffled[i];
+      shuffled[i] = shuffled[j];
+      shuffled[j] = temp;
+    }
+    return shuffled.slice(0, Math.min(10, shuffled.length));
+  }, [activeCategories]);
+
+  const visibleServiceCategories = useMemo(() => {
+    const total = randomPopularCategories.length;
+    if (total === 0) return [];
+
+    const count = Math.min(SERVICE_VISIBLE_COUNT, total);
+    return Array.from({ length: count }, (_, offset) => randomPopularCategories[(servicesStartIndex + offset) % total]);
+  }, [randomPopularCategories, servicesStartIndex]);
 
   const popularTags = useMemo(
     () =>
@@ -170,27 +191,6 @@ export const Home = () => {
     if (normalizedName.includes('cloud') || normalizedName.includes('devops')) return 'Cloud infrastructure and deployment automation.';
     if (normalizedName.includes('market')) return 'SEO, social media, and growth marketing services.';
     return 'Explore specialist services across this domain.';
-  };
-
-  useEffect(() => {
-    if (featuredCategories.length === 0) {
-      setActiveSlide(0);
-      return;
-    }
-
-    if (activeSlide > featuredCategories.length - 1) {
-      setActiveSlide(0);
-    }
-  }, [activeSlide, featuredCategories.length]);
-
-  const goToPreviousSlide = () => {
-    if (featuredCategories.length === 0) return;
-    setActiveSlide(previous => (previous === 0 ? featuredCategories.length - 1 : previous - 1));
-  };
-
-  const goToNextSlide = () => {
-    if (featuredCategories.length === 0) return;
-    setActiveSlide(previous => (previous === featuredCategories.length - 1 ? 0 : previous + 1));
   };
 
   const normalizeBase64 = (value: string) => value.replace(/\s/g, '').replace(/-/g, '+').replace(/_/g, '/');
@@ -278,17 +278,57 @@ export const Home = () => {
       .filter(Boolean);
   };
 
-  useEffect(() => {
-    if (featuredCategories.length < 2 || isCarouselPaused) return;
+  const scrollServicesBy = (direction: 'left' | 'right') => {
+    const total = randomPopularCategories.length;
+    if (total === 0) return;
+    setServicesTransitionDirection(direction);
+    setServicesStartIndex(previous => {
+      if (direction === 'right') {
+        return (previous + 1) % total;
+      }
+      return (previous - 1 + total) % total;
+    });
 
-    const sliderInterval = window.setInterval(() => {
-      setActiveSlide(previous => (previous === featuredCategories.length - 1 ? 0 : previous + 1));
-    }, 3200);
+    if (servicesTransitionTimeoutRef.current) {
+      window.clearTimeout(servicesTransitionTimeoutRef.current);
+    }
+    servicesTransitionTimeoutRef.current = window.setTimeout(() => {
+      setServicesTransitionDirection(null);
+      servicesTransitionTimeoutRef.current = null;
+    }, 360);
+  };
+
+  useEffect(() => {
+    if (randomPopularCategories.length < 2) {
+      return undefined;
+    }
+    const autoScrollInterval = window.setInterval(() => {
+      if (isServicesHovered) return;
+      scrollServicesBy('right');
+    }, SERVICE_AUTOPLAY_INTERVAL_MS);
 
     return () => {
-      window.clearInterval(sliderInterval);
+      window.clearInterval(autoScrollInterval);
     };
-  }, [featuredCategories.length, isCarouselPaused]);
+  }, [isServicesHovered, randomPopularCategories.length]);
+
+  useEffect(() => {
+    const total = randomPopularCategories.length;
+    if (total === 0) {
+      setServicesStartIndex(0);
+      return;
+    }
+    setServicesStartIndex(previous => previous % total);
+  }, [randomPopularCategories.length]);
+
+  useEffect(
+    () => () => {
+      if (servicesTransitionTimeoutRef.current) {
+        window.clearTimeout(servicesTransitionTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   return (
     <div className="home-page">
@@ -325,64 +365,73 @@ export const Home = () => {
       </section>
 
       <section className="home-categories">
-        <h2>Browse Categories</h2>
-        <p>Explore services across all fields</p>
+        <h2>Popular services</h2>
+        <p>Explore standout categories clients hire for most.</p>
 
         {categoriesLoading ? <div className="section-state">Loading categories...</div> : null}
-        {!categoriesLoading && featuredCategories.length === 0 ? (
+        {!categoriesLoading && randomPopularCategories.length === 0 ? (
           <div className="section-state">No categories available right now.</div>
         ) : null}
 
-        {!categoriesLoading && featuredCategories.length > 0 ? (
-          <div
-            className="categories-carousel"
-            onMouseEnter={() => setIsCarouselPaused(true)}
-            onMouseLeave={() => setIsCarouselPaused(false)}
-          >
-            <button type="button" className="carousel-control prev" onClick={goToPreviousSlide} aria-label="Previous category">
+        {!categoriesLoading && randomPopularCategories.length > 0 ? (
+          <div className="popular-services-shell">
+            <button
+              type="button"
+              className="services-arrow left"
+              onClick={() => scrollServicesBy('left')}
+              aria-label="Previous services"
+              onMouseEnter={() => setIsServicesHovered(true)}
+              onMouseLeave={() => setIsServicesHovered(false)}
+            >
               ‹
             </button>
-            <div className="carousel-track">
-              {featuredCategories.map((category, index) => {
-                const categorySubcategories = normalizedSubcategories
-                  .filter(subcategory => subcategory.categoryId === category.id)
-                  .map(subcategory => subcategory.name)
-                  .filter(Boolean) as string[];
+            <div
+              className="popular-services-viewport"
+              onMouseEnter={() => setIsServicesHovered(true)}
+              onMouseLeave={() => setIsServicesHovered(false)}
+              onTouchStart={() => setIsServicesHovered(true)}
+              onTouchEnd={() => setIsServicesHovered(false)}
+            >
+              <div className={`popular-services-grid ${servicesTransitionDirection ? `transition-${servicesTransitionDirection}` : ''}`}>
+                {visibleServiceCategories.map((category, index) => {
+                  const themeIndex = (servicesStartIndex + index) % 6;
+                  const categorySubcategories = normalizedSubcategories
+                    .filter(subcategory => subcategory.categoryId === category.id)
+                    .map(subcategory => subcategory.name)
+                    .filter(Boolean) as string[];
 
-                const visibleSubcategories = categorySubcategories.slice(0, 3);
-                const remainingSubcategories = categorySubcategories.length - visibleSubcategories.length;
+                  const firstSubcategory = categorySubcategories[0] ?? 'Top services';
+                  const secondSubcategory = categorySubcategories[1] ?? getCategoryDescription(category.name);
 
-                return (
-                  <article className={`category-card ${index === activeSlide ? 'active' : ''}`} key={category.id}>
-                    <div className="category-icon">{getCategoryIcon(category.name)}</div>
-                    <h3>{category.name}</h3>
-                    <p>{getCategoryDescription(category.name)}</p>
-                    <div className="subcategory-pills">
-                      {visibleSubcategories.map(subcategoryName => (
-                        <span className="subcategory-pill" key={subcategoryName}>
-                          {subcategoryName}
-                        </span>
-                      ))}
-                    </div>
-                    {remainingSubcategories > 0 ? <span className="subcategories-more">+{remainingSubcategories} more</span> : null}
-                  </article>
-                );
-              })}
+                  return (
+                    <RouterLink
+                      to={`/services/${category.id}`}
+                      className="service-card-link"
+                      key={`${category.id}-${servicesStartIndex}-${index}`}
+                    >
+                      <article className={`service-card theme-${themeIndex + 1}`}>
+                        <h3>{category.name}</h3>
+                        <div className="service-visual">
+                          <div className="service-icon">{getCategoryIcon(category.name)}</div>
+                          <span>{firstSubcategory}</span>
+                          <small>{secondSubcategory}</small>
+                        </div>
+                      </article>
+                    </RouterLink>
+                  );
+                })}
+              </div>
             </div>
-            <button type="button" className="carousel-control next" onClick={goToNextSlide} aria-label="Next category">
+            <button
+              type="button"
+              className="services-arrow right"
+              onClick={() => scrollServicesBy('right')}
+              aria-label="Next services"
+              onMouseEnter={() => setIsServicesHovered(true)}
+              onMouseLeave={() => setIsServicesHovered(false)}
+            >
               ›
             </button>
-            <div className="carousel-dots">
-              {featuredCategories.map((category, index) => (
-                <button
-                  key={category.id}
-                  type="button"
-                  className={`carousel-dot ${index === activeSlide ? 'active' : ''}`}
-                  onClick={() => setActiveSlide(index)}
-                  aria-label={`Go to ${category.name} category`}
-                />
-              ))}
-            </div>
           </div>
         ) : null}
       </section>

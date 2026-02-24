@@ -1,5 +1,6 @@
 package com.freelance.app.web.rest;
 
+import com.freelance.app.domain.criteria.SubcategoryCriteria;
 import com.freelance.app.service.SubcategoryService;
 import com.freelance.app.service.dto.SubcategoryDTO;
 import java.util.List;
@@ -27,8 +28,8 @@ public class SubcategoryResource {
 
     @Cacheable("categories")
     @GetMapping
-    public Mono<ResponseEntity<List<SubcategoryDTO>>> getAllSubcategories() {
+    public Mono<ResponseEntity<List<SubcategoryDTO>>> getAllSubcategories(SubcategoryCriteria criteria) {
         LOG.info("REST request to get all Subcategories");
-        return subcategoryService.findAllDTO().map(ResponseEntity::ok);
+        return subcategoryService.findAllDTO(criteria).map(ResponseEntity::ok);
     }
 }

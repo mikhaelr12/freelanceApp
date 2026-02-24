@@ -2,14 +2,32 @@
 @import 'bootstrap-variables';
 // Import Bootstrap source files from node_modules
 @import 'bootstrap/scss/bootstrap';
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;600;700&display=swap');
+
+:root {
+  --fh-bg: #f4f7fb;
+  --fh-surface: #ffffff;
+  --fh-surface-soft: #fbfdff;
+  --fh-text: #17243a;
+  --fh-text-soft: #5f7392;
+  --fh-border: #d9e2ef;
+  --fh-primary: #ee6a43;
+  --fh-primary-hover: #d95b37;
+  --fh-shadow: 0 14px 34px rgba(18, 36, 60, 0.08);
+}
+
 body {
-  background: #fafafa;
+  background: radial-gradient(circle at top, #eef3fa 0%, var(--fh-bg) 42%, #f7f9fc 100%);
+  color: var(--fh-text);
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  line-height: 1.45;
   margin: 0;
 }
 
 a {
-  color: #533f03;
-  font-weight: bold;
+  color: #274777;
+  font-weight: 600;
 }
 
 * {
@@ -23,6 +41,7 @@ a {
 }
 
 .app-container {
+  min-height: 100vh;
   box-sizing: border-box;
   .view-container {
     width: 100%;
@@ -35,11 +54,16 @@ a {
     //}
     .view-routes {
       height: 100%;
+      padding: 1rem 0;
       > div {
         height: 100%;
       }
     }
   }
+}
+
+.view-routes {
+  width: 100%;
 }
 
 .fullscreen {
@@ -263,6 +287,143 @@ a:hover {
 
 .hand {
   cursor: pointer;
+}
+
+/* ==========================================================================
+Modern Theme Overrides
+========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #16253f;
+  font-family: 'Space Grotesk', 'Trebuchet MS', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.card {
+  border: 1px solid var(--fh-border);
+  border-radius: 1rem;
+  background: var(--fh-surface);
+  box-shadow: var(--fh-shadow);
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--fh-surface);
+  border: 1px solid var(--fh-border);
+  border-radius: 0.9rem;
+  overflow: hidden;
+
+  th {
+    font-weight: 700;
+    color: #2a3d5b;
+    background: #f5f8fd;
+    border-bottom: 1px solid var(--fh-border);
+  }
+
+  td {
+    color: #283d5d;
+    border-bottom: 1px solid #ecf1f8;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+.btn {
+  border-radius: 0.72rem;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: var(--fh-primary);
+  border-color: var(--fh-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--fh-primary-hover);
+  border-color: var(--fh-primary-hover);
+}
+
+.btn-outline-primary {
+  border-color: #b7c8e2;
+  color: #284775;
+}
+
+.btn-outline-primary:hover {
+  background: #eaf1fc;
+  border-color: #9db3d4;
+  color: #1f3a63;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid #d6dfee;
+  border-radius: 0.72rem;
+  color: #203554;
+  background: var(--fh-surface);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #85a7d8;
+  box-shadow: 0 0 0 0.2rem rgba(55, 106, 179, 0.16);
+}
+
+.input-group-text {
+  border-color: #d6dfee;
+  background: #f5f8fd;
+  color: #3e567b;
+}
+
+.alert {
+  border-radius: 0.8rem;
+}
+
+.alert-warning {
+  background: #fff6ec;
+  border-color: #f2ddc4;
+  color: #7f5b2c;
+}
+
+.alert-danger {
+  background: #fff2f3;
+  border-color: #f2cad0;
+  color: #8f2a37;
+}
+
+.pagination {
+  gap: 0.32rem;
+}
+
+.page-link {
+  border-radius: 0.6rem;
+  border: 1px solid #d0dced;
+  color: #2d4670;
+}
+
+.page-item.active .page-link {
+  background: #2f4f81;
+  border-color: #2f4f81;
+}
+
+.modal-content {
+  border: 1px solid #d8e1ef;
+  border-radius: 1rem;
+  box-shadow:
+    0 26px 50px rgba(16, 34, 58, 0.2),
+    0 6px 14px rgba(16, 34, 58, 0.08);
+}
+
+.text-muted {
+  color: var(--fh-text-soft) !important;
 }
 
 button.anchor-btn {

@@ -131,6 +131,18 @@ class OfferTypeRepositoryInternalImpl extends SimpleR2dbcRepository<OfferType, L
         return db.sql(sql).bind("subcategory_id", subcategoryId).map((row, rowMetadata) -> offertypeMapper.applyShort(row, "e")).all();
     }
 
+    @Override
+    public Flux<OfferTypeShortDTO> findAllOfferTypesForCategory(Long categoryId) {
+        String columns = OfferTypeSqlHelper.getColumnsShort(entityTable, "e")
+            .stream()
+            .map(Expression::toString)
+            .collect(Collectors.joining(", "));
+
+        String sql =
+            "SELECT " + columns + " FROM offer_type e JOIN subcategory s ON e.subcategory_id = s.id WHERE s.category_id = :category_id";
+        return db.sql(sql).bind("category_id", categoryId).map((row, rowMetadata) -> offertypeMapper.applyShort(row, "e")).all();
+    }
+
     private Condition buildConditions(OfferTypeCriteria criteria) {
         ConditionBuilder builder = new ConditionBuilder(this.columnConverter);
         List<Condition> allConditions = new ArrayList<>();

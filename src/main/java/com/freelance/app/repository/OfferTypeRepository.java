@@ -50,4 +50,6 @@ interface OfferTypeRepositoryInternal {
     Mono<Void> deleteById(Long id);
 
     Flux<OfferTypeShortDTO> findAllOfferTypesForSubcategory(Long subcategoryId);
+
+    Flux<OfferTypeShortDTO> findAllOfferTypesForCategory(Long categoryId);
 }

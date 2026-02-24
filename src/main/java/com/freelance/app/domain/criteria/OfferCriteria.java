@@ -66,6 +66,10 @@ public class OfferCriteria implements Serializable, Criteria {
 
     private LongFilter offertypeId;
 
+    private LongFilter subcategoryId;
+
+    private LongFilter categoryId;
+
     private Boolean distinct;
 
     public OfferCriteria() {}
@@ -83,6 +87,8 @@ public class OfferCriteria implements Serializable, Criteria {
         this.lastModifiedBy = other.optionalLastModifiedBy().map(StringFilter::copy).orElse(null);
         this.ownerId = other.optionalOwnerId().map(LongFilter::copy).orElse(null);
         this.offertypeId = other.optionalOffertypeId().map(LongFilter::copy).orElse(null);
+        this.subcategoryId = other.optionalSubcategoryId().map(LongFilter::copy).orElse(null);
+        this.categoryId = other.optionalCategoryId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -319,6 +325,44 @@ public class OfferCriteria implements Serializable, Criteria {
         this.offertypeId = offertypeId;
     }
 
+    public LongFilter getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public Optional<LongFilter> optionalSubcategoryId() {
+        return Optional.ofNullable(subcategoryId);
+    }
+
+    public LongFilter subcategoryId() {
+        if (subcategoryId == null) {
+            setSubcategoryId(new LongFilter());
+        }
+        return subcategoryId;
+    }
+
+    public void setSubcategoryId(LongFilter subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
+
+    public LongFilter getCategoryId() {
+        return categoryId;
+    }
+
+    public Optional<LongFilter> optionalCategoryId() {
+        return Optional.ofNullable(categoryId);
+    }
+
+    public LongFilter categoryId() {
+        if (categoryId == null) {
+            setCategoryId(new LongFilter());
+        }
+        return categoryId;
+    }
+
+    public void setCategoryId(LongFilter categoryId) {
+        this.categoryId = categoryId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -360,6 +404,8 @@ public class OfferCriteria implements Serializable, Criteria {
             Objects.equals(lastModifiedBy, that.lastModifiedBy) &&
             Objects.equals(ownerId, that.ownerId) &&
             Objects.equals(offertypeId, that.offertypeId) &&
+            Objects.equals(subcategoryId, that.subcategoryId) &&
+            Objects.equals(categoryId, that.categoryId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -379,6 +425,8 @@ public class OfferCriteria implements Serializable, Criteria {
             lastModifiedBy,
             ownerId,
             offertypeId,
+            subcategoryId,
+            categoryId,
             distinct
         );
     }
@@ -399,6 +447,8 @@ public class OfferCriteria implements Serializable, Criteria {
             optionalLastModifiedBy().map(f -> "lastModifiedBy=" + f + ", ").orElse("") +
             optionalOwnerId().map(f -> "ownerId=" + f + ", ").orElse("") +
             optionalOffertypeId().map(f -> "offertypeId=" + f + ", ").orElse("") +
+            optionalSubcategoryId().map(f -> "subcategoryId=" + f + ", ").orElse("") +
+            optionalCategoryId().map(f -> "categoryId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

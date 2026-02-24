@@ -10,6 +10,8 @@ import PasswordResetInit from 'app/modules/account/password-reset/init/password-
 import PasswordResetFinish from 'app/modules/account/password-reset/finish/password-reset-finish';
 import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
+import CategoryOffers from 'app/modules/home/category-offers';
+import OfferTypeOffers from 'app/modules/home/offer-type-offers';
 import ProfileCreate from 'app/modules/profile/profile-create';
 import EntitiesRoutes from 'app/entities/routes';
 import PrivateRoute from 'app/shared/auth/private-route';
@@ -41,6 +43,9 @@ const AppRoutes = () => {
             </ProfileRequiredRoute>
           }
         />
+        <Route path="services/:categoryId" element={<CategoryOffers />} />
+        <Route path="services/subcategory/:subcategoryId" element={<CategoryOffers />} />
+        <Route path="services/offer-type/:offerTypeId" element={<OfferTypeOffers />} />
         <Route path="login" element={<Login />} />
         <Route path="logout" element={<Logout />} />
         <Route

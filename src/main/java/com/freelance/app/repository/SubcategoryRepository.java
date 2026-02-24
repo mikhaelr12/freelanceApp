@@ -49,5 +49,5 @@ interface SubcategoryRepositoryInternal {
 
     Mono<Void> deleteById(Long id);
 
-    Flux<SubcategoryDTO> findAllDTO();
+    Flux<SubcategoryDTO> findAllDTO(SubcategoryCriteria criteria);
 }

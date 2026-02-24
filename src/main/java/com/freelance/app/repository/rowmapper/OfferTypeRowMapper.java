@@ -40,7 +40,8 @@ public class OfferTypeRowMapper implements BiFunction<Row, String, OfferType> {
     public OfferTypeShortDTO applyShort(Row row, String prefix) {
         return new OfferTypeShortDTO(
             converter.fromRow(row, prefix + "_id", Long.class),
-            converter.fromRow(row, prefix + "_name", String.class)
+            converter.fromRow(row, prefix + "_name", String.class),
+            converter.fromRow(row, prefix + "_subcategory_id", Long.class)
         );
     }
 }

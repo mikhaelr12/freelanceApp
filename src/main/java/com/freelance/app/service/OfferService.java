@@ -85,6 +85,7 @@ public class OfferService {
                         .id(o.getId())
                         .name(o.getName())
                         .rating(o.getRating())
+                        .offertypeId(o.getOffertypeId())
                         .owner(owner)
                         .offerImages(new HashSet<>(images));
                 })
