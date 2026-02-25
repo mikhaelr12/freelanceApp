@@ -130,15 +130,21 @@ public class UserResource {
                 return userService.createUser(userDTO);
             })
             .doOnSuccess(mailService::sendCreationEmail)
-            .map(user -> {
+            .handle((user, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/admin/users/" + user.getLogin()))
-                        .headers(
-                            HeaderUtil.createAlert(applicationName, "A user is created with identifier " + user.getLogin(), user.getLogin())
-                        )
-                        .body(user);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/admin/users/" + user.getLogin()))
+                            .headers(
+                                HeaderUtil.createAlert(
+                                    applicationName,
+                                    "A user is created with identifier " + user.getLogin(),
+                                    user.getLogin()
+                                )
+                            )
+                            .body(user)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -212,12 +218,15 @@ public class UserResource {
             .countManagedUsers()
             .map(total -> new PageImpl<>(new ArrayList<>(), pageable, total))
             .map(page ->
-                PaginationUtil.generatePaginationHttpHeaders(
-                    ForwardedHeaderUtils.adaptFromForwardedHeaders(request.getURI(), request.getHeaders()),
-                    page
-                )
-            )
-            .map(headers -> ResponseEntity.ok().headers(headers).body(userService.getAllManagedUsers(pageable)));
+                ResponseEntity.ok()
+                    .headers(
+                        PaginationUtil.generatePaginationHttpHeaders(
+                            ForwardedHeaderUtils.adaptFromForwardedHeaders(request.getURI(), request.getHeaders()),
+                            page
+                        )
+                    )
+                    .body(userService.getAllManagedUsers(pageable))
+            );
     }
 
     private boolean onlyContainsAllowedProperties(Pageable pageable) {

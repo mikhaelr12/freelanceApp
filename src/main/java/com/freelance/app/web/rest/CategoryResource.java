@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,18 +57,18 @@ public class CategoryResource {
     @PostMapping("")
     public Mono<ResponseEntity<Category>> createCategory(@Valid @RequestBody Category category) {
         LOG.debug("REST request to save Category : {}", category);
-        if (category.getId() != null) {
-            return Mono.error(new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists"));
-        }
+
         return categoryService
             .save(category)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/categories/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/categories/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -89,12 +88,6 @@ public class CategoryResource {
         @Valid @RequestBody Category category
     ) {
         LOG.debug("REST request to update Category : {}, {}", id, category);
-        if (category.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
-        }
-        if (!Objects.equals(id, category.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
-        }
 
         return categoryService
             .findOne(id)
@@ -130,12 +123,6 @@ public class CategoryResource {
         @NotNull @RequestBody Category category
     ) {
         LOG.debug("REST request to partial update Category partially : {}, {}", id, category);
-        if (category.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
-        }
-        if (!Objects.equals(id, category.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
-        }
 
         return categoryService
             .findOne(id)

@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,13 +62,15 @@ public class RequirementResource {
         }
         return requirementService
             .save(requirement)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/requirements/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/requirements/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -89,12 +90,6 @@ public class RequirementResource {
         @Valid @RequestBody Requirement requirement
     ) {
         LOG.debug("REST request to update Requirement : {}, {}", id, requirement);
-        if (requirement.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
-        }
-        if (!Objects.equals(id, requirement.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
-        }
 
         return requirementService
             .findOne(id)
@@ -130,12 +125,6 @@ public class RequirementResource {
         @NotNull @RequestBody Requirement requirement
     ) {
         LOG.debug("REST request to partial update Requirement partially : {}, {}", id, requirement);
-        if (requirement.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
-        }
-        if (!Objects.equals(id, requirement.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
-        }
 
         return requirementService
             .findOne(id)

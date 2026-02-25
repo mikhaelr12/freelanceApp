@@ -12,7 +12,6 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.convert.R2dbcConverter;
@@ -27,6 +26,7 @@ import org.springframework.r2dbc.core.RowsFetchSpec;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tech.jhipster.service.ConditionBuilder;
+import tech.jhipster.service.filter.LongFilter;
 
 /**
  * Spring Data R2DBC custom repository implementation for the Skill entity.
@@ -122,26 +122,17 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
 
     @Override
     public Flux<SkillShortDTO> findAllByCategoryShort(Long categoryId) {
-        String columns = SkillSqlHelper.getColumnsShort(entityTable, "e")
-            .stream()
-            .map(Expression::toString)
-            .collect(Collectors.joining(", "));
-
-        String sql = "SELECT " + columns + " FROM skill e WHERE e.category_id = :categoryId";
-        return db.sql(sql).bind("categoryId", categoryId).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
+        List<Expression> columns = SkillSqlHelper.getColumns(entityTable, EntityManager.ENTITY_ALIAS);
+        SkillCriteria criteria = new SkillCriteria();
+        LongFilter filter = new LongFilter();
+        criteria.setCategoryId((LongFilter) filter.setEquals(categoryId));
+        return createQuery(null, buildConditions(criteria), columns).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
     }
 
     @Override
     public Flux<SkillShortDTO> findAllShort() {
-        //        String columns = SkillSqlHelper.getColumnsShort(entityTable, "e")
-        //            .stream()
-        //            .map(Expression::toString)
-        //            .collect(Collectors.joining(", "));
-
         List<Expression> columns = SkillSqlHelper.getColumnsShort(entityTable, EntityManager.ENTITY_ALIAS);
         return createQuery(null, null, columns).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
-        //        String sql = "SELECT " + columns + " FROM skill WHERE active = true ORDER BY name ASC";
-        //        return db.sql(sql).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
     }
 
     private Condition buildConditions(SkillCriteria criteria) {

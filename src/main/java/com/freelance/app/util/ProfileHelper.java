@@ -4,7 +4,6 @@ import com.freelance.app.domain.Profile;
 import com.freelance.app.repository.ProfileRepository;
 import com.freelance.app.repository.UserRepository;
 import com.freelance.app.security.SecurityUtils;
-import com.freelance.app.web.rest.errors.BadRequestAlertException;
 import com.freelance.app.web.rest.errors.NotFoundAlertException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;

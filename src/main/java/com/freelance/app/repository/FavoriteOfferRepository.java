@@ -2,7 +2,6 @@ package com.freelance.app.repository;
 
 import com.freelance.app.domain.FavoriteOffer;
 import com.freelance.app.domain.criteria.FavoriteOfferCriteria;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

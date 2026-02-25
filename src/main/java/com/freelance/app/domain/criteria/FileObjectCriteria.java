@@ -6,7 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 import org.springdoc.core.annotations.ParameterObject;
 import tech.jhipster.service.Criteria;
-import tech.jhipster.service.filter.*;
+import tech.jhipster.service.filter.InstantFilter;
+import tech.jhipster.service.filter.IntegerFilter;
+import tech.jhipster.service.filter.LongFilter;
+import tech.jhipster.service.filter.StringFilter;
 
 @ParameterObject
 @SuppressWarnings("common-java:DuplicatedBlocks")

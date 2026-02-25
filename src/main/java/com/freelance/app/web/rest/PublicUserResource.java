@@ -62,12 +62,15 @@ public class PublicUserResource {
             .countManagedUsers()
             .map(total -> new PageImpl<>(new ArrayList<>(), pageable, total))
             .map(page ->
-                PaginationUtil.generatePaginationHttpHeaders(
-                    ForwardedHeaderUtils.adaptFromForwardedHeaders(request.getURI(), request.getHeaders()),
-                    page
-                )
-            )
-            .map(headers -> ResponseEntity.ok().headers(headers).body(userService.getAllPublicUsers(pageable)));
+                ResponseEntity.ok()
+                    .headers(
+                        PaginationUtil.generatePaginationHttpHeaders(
+                            ForwardedHeaderUtils.adaptFromForwardedHeaders(request.getURI(), request.getHeaders()),
+                            page
+                        )
+                    )
+                    .body(userService.getAllPublicUsers(pageable))
+            );
     }
 
     private boolean onlyContainsAllowedProperties(Pageable pageable) {

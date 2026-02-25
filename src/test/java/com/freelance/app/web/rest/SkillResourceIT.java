@@ -25,7 +25,7 @@ class SkillResourceIT {
     private WebTestClient webTestClient;
 
     @Test
-    @DisplayName("GET /api/skills/all should return all skills")
+    @DisplayName("GET should return all skills")
     void getAllSkillsShouldReturnSeededSkills() {
         List<SkillShortDTO> responseBody = webTestClient
             .get()
@@ -45,7 +45,7 @@ class SkillResourceIT {
     }
 
     @Test
-    @DisplayName("GET /api/skills/category/{categoryId} should return category scoped skills")
+    @DisplayName("GET should return category scoped skills")
     void getAllSkillsForCategoryShouldReturnOnlyMatchingCategory() {
         List<SkillShortDTO> responseBody = webTestClient
             .get()

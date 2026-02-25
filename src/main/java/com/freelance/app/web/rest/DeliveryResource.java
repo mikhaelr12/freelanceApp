@@ -63,13 +63,15 @@ public class DeliveryResource {
         }
         return deliveryService
             .save(delivery)
-            .map(result -> {
+            .handle((result, sink) -> {
                 try {
-                    return ResponseEntity.created(new URI("/api/deliveries/" + result.getId()))
-                        .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                        .body(result);
+                    sink.next(
+                        ResponseEntity.created(new URI("/api/deliveries/" + result.getId()))
+                            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+                            .body(result)
+                    );
                 } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
+                    sink.error(new RuntimeException(e));
                 }
             });
     }
@@ -89,12 +91,6 @@ public class DeliveryResource {
         @Valid @RequestBody Delivery delivery
     ) {
         LOG.debug("REST request to update Delivery : {}, {}", id, delivery);
-        if (delivery.getId() == null) {
-            return Mono.error(new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull"));
-        }
-        if (!Objects.equals(id, delivery.getId())) {
-            return Mono.error(new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid"));
-        }
 
         return deliveryService
             .findOne(id)
