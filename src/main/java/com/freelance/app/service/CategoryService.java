@@ -107,15 +107,6 @@ public class CategoryService {
     }
 
     /**
-     * Returns the number of categories available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return categoryRepository.count();
-    }
-
-    /**
      * Get one category by id.
      *
      * @param id the id of the entity.

@@ -95,24 +95,6 @@ public class DeliveryService {
     }
 
     /**
-     * Get all the deliveries with eager load of many-to-many relationships.
-     *
-     * @return the list of entities.
-     */
-    public Flux<Delivery> findAllWithEagerRelationships(Pageable pageable) {
-        return deliveryRepository.findAllWithEagerRelationships(pageable);
-    }
-
-    /**
-     * Returns the number of deliveries available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return deliveryRepository.count();
-    }
-
-    /**
      * Get one delivery by id.
      *
      * @param id the id of the entity.

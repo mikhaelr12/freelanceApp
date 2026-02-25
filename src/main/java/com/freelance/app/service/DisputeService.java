@@ -98,15 +98,6 @@ public class DisputeService {
     }
 
     /**
-     * Returns the number of disputes available.
-     * @return the number of entities in the database.
-     *
-     */
-    public Mono<Long> countAll() {
-        return disputeRepository.count();
-    }
-
-    /**
      * Get one dispute by id.
      *
      * @param id the id of the entity.
