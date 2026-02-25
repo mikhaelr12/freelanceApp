@@ -86,7 +86,7 @@ public class OfferReviewResource {
     @Operation(summary = "Delete a review (only permitted for an admin)")
     public Mono<ResponseEntity<Void>> deleteReview(@PathVariable Long reviewId) {
         LOG.debug("REST request to delete offer review : {}", reviewId);
-        return offerReviewService.deleteOfferReview(reviewId).map(ResponseEntity::ok);
+        return offerReviewService.deleteOfferReview(reviewId).then(Mono.just(ResponseEntity.ok().build()));
     }
 
     /**
@@ -99,6 +99,6 @@ public class OfferReviewResource {
     @Operation(summary = "Delete a personal review of an offer")
     public Mono<ResponseEntity<Void>> deleteMyReview(@PathVariable Long reviewId) {
         LOG.debug("REST request to delete my offer review : {}", reviewId);
-        return offerReviewService.deleteMyReview(reviewId).map(ResponseEntity::ok);
+        return offerReviewService.deleteMyReview(reviewId).then(Mono.just(ResponseEntity.ok().build()));
     }
 }

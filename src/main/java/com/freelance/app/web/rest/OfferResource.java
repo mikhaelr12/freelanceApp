@@ -68,6 +68,6 @@ public class OfferResource {
 
     @DeleteMapping("/{offerId}")
     public Mono<ResponseEntity<Void>> deleteOffer(@PathVariable Long offerId) {
-        return offerService.deleteOffer(offerId).map(ResponseEntity::ok);
+        return offerService.deleteOffer(offerId).then(Mono.just(ResponseEntity.ok().build()));
     }
 }

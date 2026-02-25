@@ -33,7 +33,7 @@ public class OrderResource {
     @PatchMapping("/{orderId}/status/{status}")
     public Mono<ResponseEntity<Void>> updateOfferStatus(@PathVariable Long orderId, @PathVariable OrderStatus status) {
         LOG.info("Received request to update order with orderId {}", orderId);
-        return orderService.updateOrderStatus(orderId, status).map(ResponseEntity::ok);
+        return orderService.updateOrderStatus(orderId, status).then(Mono.just(ResponseEntity.ok().build()));
     }
     //    @GetMapping("/my")
     //    public Mono<ResponseEntity<List<>>>

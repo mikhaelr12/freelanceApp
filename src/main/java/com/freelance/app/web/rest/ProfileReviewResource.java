@@ -94,7 +94,7 @@ public class ProfileReviewResource {
     @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<Void>> deleteProfileReview(@PathVariable Long profileReviewId) {
         LOG.debug("REST request to delete a ProfileReview : {}", profileReviewId);
-        return profileReviewService.deleteProfileReview(profileReviewId).map(ResponseEntity::ok);
+        return profileReviewService.deleteProfileReview(profileReviewId).then(Mono.just(ResponseEntity.ok().build()));
     }
 
     /**
@@ -111,6 +111,6 @@ public class ProfileReviewResource {
     @DeleteMapping("/my/{profileReviewId}")
     public Mono<ResponseEntity<Void>> deleteMyProfileReview(@PathVariable Long profileReviewId) {
         LOG.debug("REST request to delete my ProfileReview : {}", profileReviewId);
-        return profileReviewService.deleteMyReview(profileReviewId).map(ResponseEntity::ok);
+        return profileReviewService.deleteMyReview(profileReviewId).then(Mono.just(ResponseEntity.ok().build()));
     }
 }
