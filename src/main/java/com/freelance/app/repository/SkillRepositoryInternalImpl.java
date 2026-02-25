@@ -127,7 +127,7 @@ class SkillRepositoryInternalImpl extends SimpleR2dbcRepository<Skill, Long> imp
             .map(Expression::toString)
             .collect(Collectors.joining(", "));
 
-        String sql = "SELECT " + columns + " FROM skill WHERE category_id = :categoryId";
+        String sql = "SELECT " + columns + " FROM skill e WHERE e.category_id = :categoryId";
         return db.sql(sql).bind("categoryId", categoryId).map((row, rowMetadata) -> skillMapper.applyShort(row, "e")).all();
     }
 

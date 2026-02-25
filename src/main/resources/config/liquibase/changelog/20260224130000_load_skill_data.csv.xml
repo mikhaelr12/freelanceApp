@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="20260224130000-1-load-skill-data" author="codex" runOnChange="true">
+    <loadData
+      tableName="skill"
+      file="/config/liquibase/data/skill.csv"
+      separator=";"
+      usePreparedStatements="true"/>
+  </changeSet>
+
+  <changeSet id="20260224130000-2-set-skill-seq" author="codex">
+    <sql>
+      SELECT setval('skill_id_seq', COALESCE((SELECT MAX(id) FROM skill), 1));
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>

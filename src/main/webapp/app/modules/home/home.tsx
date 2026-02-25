@@ -513,16 +513,6 @@ export const Home = () => {
           </div>
         ) : null}
       </section>
-
-      <footer className="home-footer">
-        <div className="footer-inner">
-          <div className="footer-brand">
-            <strong>FreelanceHub</strong>
-          </div>
-          <p>Find trusted freelancers and manage projects in one place.</p>
-          <span className="footer-meta">© 2026 FreelanceHub. All rights reserved.</span>
-        </div>
-      </footer>
     </div>
   );
 };

@@ -487,37 +487,6 @@
   color: #213b63;
 }
 
-.home-footer {
-  border-top: 1px solid var(--line);
-  background: #fbfcfe;
-}
-
-.footer-inner {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 1.3rem 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.9rem;
-}
-
-.footer-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-}
-
-.footer-inner p {
-  margin: 0;
-  color: #50627c;
-}
-
-.footer-meta {
-  color: #72839b;
-  font-size: 0.92rem;
-}
-
 @media (max-width: 991px) {
   .popular-services-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -547,10 +516,6 @@
     display: none;
   }
 
-  .footer-inner {
-    grid-template-columns: 1fr;
-  }
-
   .freelancers-header {
     flex-direction: column;
     align-items: flex-start;
@@ -558,11 +523,6 @@
 
   .freelancers-grid {
     grid-template-columns: 1fr;
-  }
-
-  .footer-inner {
-    display: grid;
-    justify-items: start;
   }
 }
 
