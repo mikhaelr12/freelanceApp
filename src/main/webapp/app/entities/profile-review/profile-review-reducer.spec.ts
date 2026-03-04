@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IProfileReview, defaultValue } from 'app/shared/model/profile-review.model';
+import { defaultValue, IProfileReview } from 'app/shared/model/profile-review.model';
 import reducer, {
   createEntity,
   deleteEntity,

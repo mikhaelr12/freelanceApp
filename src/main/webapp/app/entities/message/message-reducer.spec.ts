@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IMessage, defaultValue } from 'app/shared/model/message.model';
+import { defaultValue, IMessage } from 'app/shared/model/message.model';
 import reducer, { createEntity, deleteEntity, getEntities, getEntity, partialUpdateEntity, reset, updateEntity } from './message.reducer';
 
 describe('Entities reducer tests', () => {

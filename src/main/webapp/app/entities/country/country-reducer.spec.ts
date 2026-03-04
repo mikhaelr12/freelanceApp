@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { ICountry, defaultValue } from 'app/shared/model/country.model';
+import { defaultValue, ICountry } from 'app/shared/model/country.model';
 import reducer, { createEntity, deleteEntity, getEntities, getEntity, partialUpdateEntity, reset, updateEntity } from './country.reducer';
 
 describe('Entities reducer tests', () => {

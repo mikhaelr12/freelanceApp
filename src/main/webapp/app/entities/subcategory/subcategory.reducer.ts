@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit';
 import { cleanEntity } from 'app/shared/util/entity-utils';
-import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { ISubcategory, defaultValue } from 'app/shared/model/subcategory.model';
+import { createEntitySlice, EntityState, IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { defaultValue, ISubcategory } from 'app/shared/model/subcategory.model';
 
 const initialState: EntityState<ISubcategory> = {
   loading: false,

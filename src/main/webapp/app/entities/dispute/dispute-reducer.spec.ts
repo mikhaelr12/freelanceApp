@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IDispute, defaultValue } from 'app/shared/model/dispute.model';
+import { defaultValue, IDispute } from 'app/shared/model/dispute.model';
 import reducer, { createEntity, deleteEntity, getEntities, getEntity, partialUpdateEntity, reset, updateEntity } from './dispute.reducer';
 
 describe('Entities reducer tests', () => {

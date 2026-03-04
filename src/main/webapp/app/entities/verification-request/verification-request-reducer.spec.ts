@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IVerificationRequest, defaultValue } from 'app/shared/model/verification-request.model';
+import { defaultValue, IVerificationRequest } from 'app/shared/model/verification-request.model';
 import reducer, {
   createEntity,
   deleteEntity,

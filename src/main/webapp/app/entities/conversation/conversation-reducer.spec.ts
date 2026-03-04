@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IConversation, defaultValue } from 'app/shared/model/conversation.model';
+import { defaultValue, IConversation } from 'app/shared/model/conversation.model';
 import reducer, {
   createEntity,
   deleteEntity,

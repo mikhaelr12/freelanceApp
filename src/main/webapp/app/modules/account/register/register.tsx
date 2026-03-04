@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ValidatedField, ValidatedForm, isEmail } from 'react-jhipster';
+import { isEmail, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { Alert, Button, Col, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';

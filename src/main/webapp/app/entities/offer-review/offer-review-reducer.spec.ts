@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IOfferReview, defaultValue } from 'app/shared/model/offer-review.model';
+import { defaultValue, IOfferReview } from 'app/shared/model/offer-review.model';
 import reducer, {
   createEntity,
   deleteEntity,

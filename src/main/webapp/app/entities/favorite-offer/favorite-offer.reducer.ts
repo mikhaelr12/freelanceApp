@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit';
 import { cleanEntity } from 'app/shared/util/entity-utils';
-import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { IFavoriteOffer, defaultValue } from 'app/shared/model/favorite-offer.model';
+import { createEntitySlice, EntityState, IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { defaultValue, IFavoriteOffer } from 'app/shared/model/favorite-offer.model';
 
 const initialState: EntityState<IFavoriteOffer> = {
   loading: false,

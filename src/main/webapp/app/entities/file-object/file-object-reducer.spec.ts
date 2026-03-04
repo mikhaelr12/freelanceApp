@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IFileObject, defaultValue } from 'app/shared/model/file-object.model';
+import { defaultValue, IFileObject } from 'app/shared/model/file-object.model';
 import reducer, {
   createEntity,
   deleteEntity,

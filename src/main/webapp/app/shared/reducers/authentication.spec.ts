@@ -4,11 +4,11 @@ import { Storage } from 'react-jhipster';
 import { configureStore, createReducer } from '@reduxjs/toolkit';
 
 import authentication, {
-  authError,
   authenticate,
+  authError,
   clearAuth,
-  clearAuthToken,
   clearAuthentication,
+  clearAuthToken,
   getAccount,
   initialState,
   login,

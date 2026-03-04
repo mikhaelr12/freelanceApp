@@ -4,9 +4,15 @@ import static com.freelance.app.util.TestUtil.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.freelance.app.IntegrationTest;
-import com.freelance.app.domain.*;
+import com.freelance.app.domain.Offer;
+import com.freelance.app.domain.OfferType;
+import com.freelance.app.domain.Profile;
+import com.freelance.app.domain.User;
 import com.freelance.app.domain.enumeration.OfferStatus;
-import com.freelance.app.repository.*;
+import com.freelance.app.repository.OfferRepository;
+import com.freelance.app.repository.OfferTypeRepository;
+import com.freelance.app.repository.ProfileRepository;
+import com.freelance.app.repository.UserRepository;
 import com.freelance.app.service.dto.OfferDTO;
 import com.freelance.app.service.dto.OfferShortDTO;
 import com.freelance.app.service.dto.OfferUpdateDTO;

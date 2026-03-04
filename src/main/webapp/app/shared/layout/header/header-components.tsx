@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NavItem, NavLink, NavbarBrand } from 'reactstrap';
+import { NavbarBrand, NavItem, NavLink } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
 export const Brand = () => (

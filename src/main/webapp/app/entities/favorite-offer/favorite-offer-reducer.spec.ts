@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IFavoriteOffer, defaultValue } from 'app/shared/model/favorite-offer.model';
+import { defaultValue, IFavoriteOffer } from 'app/shared/model/favorite-offer.model';
 import reducer, {
   createEntity,
   deleteEntity,

@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { IOfferMedia, defaultValue } from 'app/shared/model/offer-media.model';
+import { defaultValue, IOfferMedia } from 'app/shared/model/offer-media.model';
 import reducer, {
   createEntity,
   deleteEntity,

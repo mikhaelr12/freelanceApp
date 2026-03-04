@@ -4,7 +4,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import sinon from 'sinon';
 
 import { EntityState } from 'app/shared/reducers/reducer.utils';
-import { ISubcategory, defaultValue } from 'app/shared/model/subcategory.model';
+import { defaultValue, ISubcategory } from 'app/shared/model/subcategory.model';
 import reducer, {
   createEntity,
   deleteEntity,

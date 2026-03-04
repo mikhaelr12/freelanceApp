@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ValidatedField, ValidatedForm, isEmail } from 'react-jhipster';
+import { isEmail, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { Alert, Button, Col, Row } from 'reactstrap';
 import { toast } from 'react-toastify';
 
